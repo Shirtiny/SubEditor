@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import SubEditor from "./components/subEditor";
+import { ToastContainer, toast } from "react-toastify";
+import notifier from "./services/notyifierService";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {};
+  render() {
+    notifier.notify("hello",'TOP_CENTER');
+    return (
+      <React.Fragment>
+        <ToastContainer autoClose={2000} position={toast.POSITION.TOP_LEFT} />
+        <SubEditor />
+      </React.Fragment>
+    );
+  }
 }
 
 export default App;
