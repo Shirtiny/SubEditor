@@ -142,9 +142,16 @@ class Header extends Component {
   handleSubFile = async e => {
     progressor.start();
     const file = e.currentTarget.files[0];
+
     try {
-      const str = await fileReader.readSubFile(file);
-      notifier.notifyDiv(<p style={{ whiteSpace: "pre-wrap" }}>{str}</p>, {
+      const vttSub = await fileReader.readSubFile(file);
+      const subBlob = new Blob([vttSub], {
+        type: "text/vtt"
+      });
+      console.log("字幕Blob对象", subBlob);
+      const subUrl = URL.createObjectURL(subBlob);
+      console.log("url", subUrl);
+      notifier.notifyDiv(<p style={{ whiteSpace: "pre-wrap" }}>{vttSub}</p>, {
         autoClose: false
       });
     } catch (e) {
@@ -202,10 +209,7 @@ class Header extends Component {
             </BtnYbutton>
           </div>
           <div className="links">
-            <a
-              href="https://github.com/Shirtiny/SubEditor"
-              title="前往Github"
-            >
+            <a href="https://github.com/Shirtiny/SubEditor" title="前往Github">
               <i className="fa fa-github" aria-hidden="true"></i>Github
             </a>
             <a href="http://bbs.vcb-s.com/" title="用户">
