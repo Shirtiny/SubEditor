@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import SubEditor from "./components/subEditor";
 import { ToastContainer, toast } from "react-toastify";
-import notifier from "./services/notyifierService";
+import notifier from "./services/notifierService";
 import "react-toastify/dist/ReactToastify.css";
 
 class App extends Component {
   state = {};
   render() {
-    notifier.notify("hello",'TOP_CENTER');
+    notifier.notify("hello", "top_left");
     return (
       <React.Fragment>
-        <ToastContainer autoClose={2000} position={toast.POSITION.TOP_LEFT} />
+        <ToastContainer autoClose={3000} position={toast.POSITION.TOP_LEFT} />
         <SubEditor />
       </React.Fragment>
     );

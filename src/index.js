@@ -5,6 +5,7 @@ import App from "./App";
 import "./index.css";
 import "normalize.css";
 import "font-awesome/css/font-awesome.css";
+import 'nprogress/nprogress.css';
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

@@ -1,6 +1,10 @@
-.Toastify__toast-container--top-right {
+/* .Toastify__toast-container--top-right {
   top: 60px;
 }
 .Toastify__toast-container--top-left {
   top: 50px;
+} */
+
+div[class*="Toastify__toast-container--top"] {
+  top: 60px;
 }

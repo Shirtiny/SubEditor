@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.2.1",
     "font-awesome": "^4.7.0",
     "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-i18nify": "^3.1.5",
