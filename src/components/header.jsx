@@ -154,8 +154,24 @@ class Header extends Component {
       notifier.notifyDiv(<p style={{ whiteSpace: "pre-wrap" }}>{vttSub}</p>, {
         autoClose: false
       });
+
+      //
+      const $video = document.createElement("video");
+      const $track = document.createElement("track");
+      $video.appendChild($track);
+      $track.src = subUrl;
+      $track.default = true;
+      $track.kind = "metadata";
+
+      setTimeout(() => {
+        console.log("创建track", $track.track.cues);
+        console.log("将对象的属性，复制为数组", Array.from($track.track.cues));
+        //释放资源
+        window.URL.revokeObjectURL(subUrl);
+        console.log("释放资源：", subUrl);
+      }, 2000);
     } catch (e) {
-      notifier.error("读取字幕文件失败", "top_center");
+      notifier.error(`读取字幕文件失败，${e.message}`, "top_center");
     }
     progressor.done();
   };
