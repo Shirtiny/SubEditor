@@ -16,7 +16,6 @@ export function notify(
   toast(content, toastConfig);
 }
 
-
 const notifier = {
   notify
 };

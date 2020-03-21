@@ -1,24 +1,33 @@
+import Sub from "../model/sub";
+import timeFormatter from "../utils/timeFormatter";
+
 //PromiseExecutor
 function readAsTextPromiseExecutor(resolve, reject, file) {
   const reader = new FileReader();
   reader.readAsText(file);
   //出错时触发
   reader.onerror = error => {
-    console.log("读取出错", error);
     reject(error);
   };
   //读取完成时 成功或失败 触发
   reader.onload = () => {
-    console.log("读取完成，成功或失败", reader);
     //读取失败时 result为null
     resolve(reader.result);
   };
 }
 
-export function readSubFileAsText(subFile) {
-  return new Promise((resolve, reject) =>
-    readAsTextPromiseExecutor(resolve, reject, subFile)
-  );
+export async function readSubFileAsText(subFile) {
+  let text = "";
+  try {
+    text = await new Promise((resolve, reject) =>
+      readAsTextPromiseExecutor(resolve, reject, subFile)
+    );
+  } catch (e) {
+    console.log("字幕文件读取失败；", e);
+    e.message = "字幕文件读取失败；";
+    throw e;
+  }
+  return text;
 }
 
 //PromiseExecutor 使用track分析vtt字幕 返回完成后的cues对象
@@ -32,23 +41,37 @@ function analyseSubPE(resolve, reject, subUrl) {
   $track.src = subUrl;
   //执行中出错
   $track.onerror = error => {
-    console.log("字幕装载失败：", error);
     reject(error);
   };
   //执行完成后 成功或失败
   $track.onload = () => {
-    console.log("执行完成，成功或失败：", $track);
     //返回cues对象
     resolve($track.track.cues);
   };
 }
 
+//将字幕的秒数 转为 时:分:秒 的时间轴格式
+export function toTime(number) {
+  return timeFormatter.number2Time(number);
+}
+
 //创建字幕数组 参数是一个vtt字幕文件的url
 export async function createSubArray(subUrl) {
-  const subCues = await new Promise((resolve, reject) =>
-    analyseSubPE(resolve, reject, subUrl)
-  );
-  const subArray = Array.from(subCues);
+  let subCues = null;
+  try {
+    subCues = await new Promise((resolve, reject) =>
+      analyseSubPE(resolve, reject, subUrl)
+    );
+  } catch (e) {
+    console.log("字幕装载失败：", e);
+    e.message = "字幕装载失败";
+    throw e;
+  }
+  const VTTCues = Array.from(subCues || {});
+  console.log("得到VTTCues数组：", VTTCues);
+  const subArray = VTTCues.map(c => {
+    return new Sub(toTime(c.startTime), toTime(c.endTime), c.text);
+  });
   console.log("得到字幕数组：", subArray);
   return subArray;
 }

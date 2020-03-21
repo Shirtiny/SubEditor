@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.4.1",
+    "duration-time-conversion": "^1.0.1",
     "font-awesome": "^4.7.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",

@@ -3,8 +3,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { Switch, Route } from "react-router-dom";
 import SubEditor from "./components/subEditor";
 import Test from "./components/test";
-import notifier from "./services/notifierService";
-import guider from "./services/guiderService";
+import notifier from "./utils/notifier";
+import guideService from "./services/guideService";
 import "react-toastify/dist/ReactToastify.css";
 
 class App extends Component {
@@ -15,8 +15,8 @@ class App extends Component {
       <React.Fragment>
         <ToastContainer autoClose={3000} position={toast.POSITION.TOP_LEFT} className='toastContainerClass'/>
         <Switch>
-          <Route path={guider.trackTest} component={Test} />
-          <Route path={guider.subEditorPath} component={SubEditor} />
+          <Route path={guideService.trackTest} component={Test} />
+          <Route path={guideService.subEditorPath} component={SubEditor} />
         </Switch>
       </React.Fragment>
     );

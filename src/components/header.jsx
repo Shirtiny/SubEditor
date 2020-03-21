@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import guider from "../services/guiderService";
-import progressor from "../services/progressorService";
-import notifier from "../services/notifierService";
+import guideService from "../services/guideService";
+import progressor from "../utils/progressor";
+import notifier from "../utils/notifier";
 import subService from "../services/subService";
 
 const HeaderWrap = styled.header`
@@ -147,7 +147,7 @@ class Header extends Component {
   handleSubFile = async e => {
     progressor.start();
     const file = e.currentTarget.files[0];
-
+    const { updateOneState } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
       notifier.notify(<p>{vttStr}</p>, "top_left", "default", {
@@ -155,15 +155,15 @@ class Header extends Component {
         className: "textReader"
       });
       const subUrl = subService.createVttSubBlobUrl(vttStr);
-      console.log("url", subUrl);
+      updateOneState({ subUrl });
       //从url中读取字幕数组
       const subArray = await subService.createSubArray(subUrl);
-      console.log("更新subArray", subArray);
+      updateOneState({ subArray });
       //释放url资源
       URL.revokeObjectURL(subUrl);
       console.log("释放资源：", subUrl);
     } catch (e) {
-      notifier.notify(`<Header>读取字幕文件失败`, "top_center", "warning");
+      notifier.notify(`<Header>${e.message}`, "top_center", "warning");
     }
     progressor.done();
   };
@@ -184,7 +184,7 @@ class Header extends Component {
     return (
       <HeaderWrap>
         <div className="band">
-          <LogoYa href={guider.subEditorPath} title="Copyright © 2020 SH">
+          <LogoYa href={guideService.subEditorPath} title="Copyright © 2020 SH">
             SubEditor
             <span className="version">version 1.0.1</span>
           </LogoYa>
