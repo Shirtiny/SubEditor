@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import guider from "../services/guiderService";
-import fileReader from "../services/fileReaderService";
 import progressor from "../services/progressorService";
 import notifier from "../services/notifierService";
+import subService from "../services/subService";
 
 const HeaderWrap = styled.header`
   height: 50px;
@@ -76,6 +76,11 @@ const LogoYa = styled.a`
   font-weight: 400;
   color: #66cccc;
 
+  : hover {
+    text-decoration: none;
+    color: #66cccc;
+  }
+
   .version {
     font-size: 12px;
     font-weight: 600;
@@ -144,34 +149,21 @@ class Header extends Component {
     const file = e.currentTarget.files[0];
 
     try {
-      const vttSub = await fileReader.readSubFile(file);
-      const subBlob = new Blob([vttSub], {
-        type: "text/vtt"
+      const vttStr = await subService.readSubFileAsText(file);
+      notifier.notify(<p>{vttStr}</p>, "top_left", "default", {
+        autoClose: false,
+        className: "textReader"
       });
-      console.log("字幕Blob对象", subBlob);
-      const subUrl = URL.createObjectURL(subBlob);
+      const subUrl = subService.createVttSubBlobUrl(vttStr);
       console.log("url", subUrl);
-      notifier.notifyDiv(<p style={{ whiteSpace: "pre-wrap" }}>{vttSub}</p>, {
-        autoClose: false
-      });
-
-      //
-      const $video = document.createElement("video");
-      const $track = document.createElement("track");
-      $video.appendChild($track);
-      $track.src = subUrl;
-      $track.default = true;
-      $track.kind = "metadata";
-
-      setTimeout(() => {
-        console.log("创建track", $track.track.cues);
-        console.log("将对象的属性，复制为数组", Array.from($track.track.cues));
-        //释放资源
-        window.URL.revokeObjectURL(subUrl);
-        console.log("释放资源：", subUrl);
-      }, 2000);
+      //从url中读取字幕数组
+      const subArray = await subService.createSubArray(subUrl);
+      console.log("更新subArray", subArray);
+      //释放url资源
+      URL.revokeObjectURL(subUrl);
+      console.log("释放资源：", subUrl);
     } catch (e) {
-      notifier.error(`读取字幕文件失败，${e.message}`, "top_center");
+      notifier.notify(`<Header>读取字幕文件失败`, "top_center", "warning");
     }
     progressor.done();
   };
@@ -179,10 +171,11 @@ class Header extends Component {
   handleVideoFile = e => {
     const file = e.currentTarget.files[0];
     const $video = document.createElement("video");
-
     console.log("创建元素：", $video, $video.canPlayType(file.type));
     const videoUrl = URL.createObjectURL(file);
     console.log("视频url", videoUrl);
+    const { updateOneState } = this.props;
+    updateOneState({ videoUrl });
     //释放资源
     // URL.revokeObjectURL(videoUrl);
   };

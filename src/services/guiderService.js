@@ -1,7 +1,9 @@
-const subEditorPath = "/subEditor";
+const subEditorPath = "/";
+const trackTest = "/trackTest"
 
 const guider = {
-  subEditorPath
+  subEditorPath,
+  trackTest
 };
 
 export default guider;

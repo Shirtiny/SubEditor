@@ -1,10 +1,16 @@
-/* .Toastify__toast-container--top-right {
-  top: 60px;
-}
-.Toastify__toast-container--top-left {
-  top: 50px;
-} */
-
+/* 所有在top位置的提示 高度减少60 */
 div[class*="Toastify__toast-container--top"] {
   top: 60px;
+}
+
+/* 在toast容器设置的类 */
+.toastContainerClass {
+  padding: 4px;
+}
+
+/* 带有滚动条 可识别换行  需要一个高度*/
+.textReader {
+  white-space: pre-wrap;
+  overflow-y: scroll;
+  /* height: 350px; */
 }

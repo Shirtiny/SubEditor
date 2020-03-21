@@ -52,12 +52,28 @@ const Main = styled.div`
 `;
 
 class SubEditor extends Component {
-  state = {};
+  state = {
+    videoUrl: "",
+    subUrl: "",
+    subArray: []
+  };
+
+  updateOneState = (stateObject) => {
+    this.setState(stateObject);
+    console.log("更新state：", stateObject);
+  };
+
+
   render() {
+    const props = {
+      ...this.state,
+      updateOneState: this.updateOneState
+    };
+
     return (
       <React.Fragment>
         <GlobalStyle />
-        <Header />
+        <Header {...props} />
         <Main></Main>
       </React.Fragment>
     );

@@ -1,32 +1,24 @@
 import { toast } from "react-toastify";
 
-export function notify(content, positionStr) {
-  const positionConfig = translatePosition(positionStr);
-  toast(content, positionConfig);
-}
-
-export function notifyDiv(content, config) {
-  toast(content, config);
-}
-
-export function error(content, positionStr) {
-  const positionConfig = translatePosition(positionStr);
-  toast.error(content, positionConfig);
-}
-
-//@positionStr 如：top_center
-function translatePosition(positionStr) {
+export function notify(
+  content,
+  positionStr = "top_left",
+  typeStr = "DEFAULT",
+  config = null
+) {
   const postionStrUpper = (positionStr + "").toUpperCase();
-  let positionConfig = postionStrUpper && {
-    position: toast.POSITION[postionStrUpper]
+  const typeStrUpper = (typeStr + "").toUpperCase();
+  const toastConfig = {
+    position: toast.POSITION[postionStrUpper],
+    type: toast.TYPE[typeStrUpper],
+    ...config
   };
-  return positionConfig;
+  toast(content, toastConfig);
 }
+
 
 const notifier = {
-  notify,
-  error,
-  notifyDiv
+  notify
 };
 
 export default notifier;

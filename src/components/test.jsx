@@ -11,7 +11,7 @@ const Test = () => {
         <track
           default
           kind="subtitles"
-          srclang="en"
+          srcLang="en"
           src="http://localhost:2020/friday.vtt"
         />
       </video>
