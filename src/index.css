@@ -12,5 +12,7 @@ div[class*="Toastify__toast-container--top"] {
 .textReader {
   white-space: pre-wrap;
   overflow-y: scroll;
+  overflow-x: auto;
+  resize: both;
   /* height: 350px; */
 }

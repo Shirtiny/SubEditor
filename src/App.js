@@ -13,7 +13,13 @@ class App extends Component {
     notifier.notify("hello", "top_left");
     return (
       <React.Fragment>
-        <ToastContainer autoClose={3000} position={toast.POSITION.TOP_LEFT} className='toastContainerClass'/>
+        <ToastContainer
+          autoClose={3000}
+          closeOnClick={false}
+          draggable={false}
+          position={toast.POSITION.TOP_LEFT}
+          className="toastContainerClass"
+        />
         <Switch>
           <Route path={guideService.trackTest} component={Test} />
           <Route path={guideService.subEditorPath} component={SubEditor} />

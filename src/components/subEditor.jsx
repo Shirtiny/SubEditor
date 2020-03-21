@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from "./header";
 import styled, { createGlobalStyle } from "styled-components";
+import SubTable from "./subTable";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -58,11 +59,10 @@ class SubEditor extends Component {
     subArray: []
   };
 
-  updateOneState = (stateObject) => {
+  updateOneState = stateObject => {
     this.setState(stateObject);
     console.log("更新state：", stateObject);
   };
-
 
   render() {
     const props = {
@@ -74,7 +74,9 @@ class SubEditor extends Component {
       <React.Fragment>
         <GlobalStyle />
         <Header {...props} />
-        <Main></Main>
+        <Main>
+          <SubTable {...props} />
+        </Main>
       </React.Fragment>
     );
   }
