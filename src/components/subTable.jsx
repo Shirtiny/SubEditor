@@ -106,7 +106,8 @@ const Wrapper = styled.div`
 
 class SubTable extends Component {
   render() {
-    const { subArray, containerHeight, containerWidth } = this.props;
+    const { subArray, container } = this.props;
+    const { containerHeight, containerWidth } = container;
 
     return (
       <Wrapper>

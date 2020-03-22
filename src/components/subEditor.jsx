@@ -58,17 +58,56 @@ class SubEditor extends Component {
     videoUrl: "",
     subUrl: "",
     subArray: [],
-    containerHeight: 10,
-    containerWidth: 10
+    //容器 装着SubTab 和 VideoPlayer
+    container: {
+      containerHeight: 10,
+      containerWidth: 10
+    }
   };
 
+  //组件装载并渲染完成后
   componentDidMount() {
+    //首次调整container的宽高
+    this.resizeContainer();
+
+    //把this.resizeContainer的引用作为参数 传到匿名函数内的setTimeout内
+    function debounce(func, wait) {
+      let timeout;
+      return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, wait);
+      };
+    }
+    //延时执行的调整
+    const timeOutResize = debounce(this.resizeContainer, 500);
+    // const timeOutResize = () => {
+    //   let timeout;
+    //   return () => {
+    //     clearTimeout(timeout);
+    //这里的this是访问不到的
+    //     timeout = setTimeout(this.resizeContainer, 500);
+    //   };
+    // };
+    //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
+    window.addEventListener("resize", timeOutResize);
+    console.log("添加resize事件监听");
+  }
+
+  //卸载组件前
+  componentWillUnmount() {
+    //移除添加的事件监听 不然页面切换多了会可能卡顿 ??
+    // window.removeEventListener("resize", this.resizeContainer);
+    // console.log("移除resize事件监听");
+  }
+
+  //调整container的宽高
+  resizeContainer = () => {
     //减去导航栏的50 底部时间轴的150
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
     console.log("更新container的宽高", containerWidth, containerHeight);
-    this.setState({ containerHeight, containerWidth });
-  }
+    this.setState({ container: { containerHeight, containerWidth } });
+  };
 
   updateOneState = stateObject => {
     this.setState(stateObject);
