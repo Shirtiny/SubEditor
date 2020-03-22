@@ -1,20 +1,21 @@
 import React, { Component } from "react";
 import { Table } from "react-virtualized";
 import styled from "styled-components";
+import SubRow from "./subRow";
 
 const Wrapper = styled.div`
   //   flex: 1;
   border-right: 1px solid rgb(10, 10, 10);
   .ReactVirtualized__Table {
     font-size: 12px;
-    background: #24292d;
+    background: #526c6c;
 
     .ReactVirtualized__Table__Grid {
       outline: none;
     }
 
     .ReactVirtualized__Table__headerRow {
-      background: rgb(46, 54, 60);
+      background: #1c2022;
       border-bottom: 1px solid rgb(10, 10, 10);
 
       .rowT {
@@ -28,12 +29,12 @@ const Wrapper = styled.div`
     }
 
     .ReactVirtualized__Table__row {
-      background-color: #1c2022;
+      background-color: #294242;
       border-bottom: 1px solid rgb(36, 41, 45);
       transition: all 0.2s ease;
 
       &.odd {
-        background-color: rgb(46, 54, 60);
+        background-color: #1c2022;
       }
 
       &.highlight {
@@ -104,19 +105,15 @@ const Wrapper = styled.div`
 `;
 
 class SubTable extends Component {
-  state = {
-    mainH: 100,
-    mainW: 100
-  };
   render() {
-    const { subArray } = this.props;
-    const { mainH, mainW } = this.state;
+    const { subArray, containerHeight, containerWidth } = this.props;
+
     return (
       <Wrapper>
         <Table
           headerHeight={40}
-          width={300}
-          height={500}
+          width={containerWidth / 2}
+          height={containerHeight}
           rowHeight={60}
           // scrollToIndex={currentIndex}
           rowCount={subArray.length}
@@ -124,14 +121,29 @@ class SubTable extends Component {
           headerRowRenderer={() => {
             return (
               <div className="ReactVirtualized__Table__headerRow">
-                <div className="rowT">#</div>
-                <div className="rowT">开始</div>
-                <div className="rowT">结束</div>
-                <div className="rowT">时长</div>
-                <div className="rowT">文本</div>
-                <div className="rowT">操作</div>
+                <div className="rowT" style={{ width: 50 }}>
+                  #
+                </div>
+                <div className="rowT" style={{ width: 100 }}>
+                  开始
+                </div>
+                <div className="rowT" style={{ width: 100 }}>
+                  结束
+                </div>
+                <div className="rowT" style={{ width: 100 }}>
+                  时长
+                </div>
+                <div className="rowT" style={{ flex: 1 }}>
+                  文本
+                </div>
+                <div className="rowT" style={{ width: 90 }}>
+                  操作
+                </div>
               </div>
             );
+          }}
+          rowRenderer={props => {
+            return <SubRow {...props} />;
           }}
         ></Table>
       </Wrapper>

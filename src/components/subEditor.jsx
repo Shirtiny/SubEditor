@@ -22,7 +22,8 @@ const GlobalStyle = createGlobalStyle`
         flex-direction: column;
         font-size: 14px;
         color: #ccc;
-        background: #66CCCC;
+        background: #C0D9D9;
+        // background: #66CCCC;
     }
 
     #nprogress .bar {
@@ -56,8 +57,18 @@ class SubEditor extends Component {
   state = {
     videoUrl: "",
     subUrl: "",
-    subArray: []
+    subArray: [],
+    containerHeight: 10,
+    containerWidth: 10
   };
+
+  componentDidMount() {
+    //减去导航栏的50 底部时间轴的150
+    const containerHeight = document.body.clientHeight - 200;
+    const containerWidth = document.body.clientWidth;
+    console.log("更新container的宽高", containerWidth, containerHeight);
+    this.setState({ containerHeight, containerWidth });
+  }
 
   updateOneState = stateObject => {
     this.setState(stateObject);

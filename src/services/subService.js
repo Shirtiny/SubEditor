@@ -70,7 +70,7 @@ export async function createSubArray(subUrl) {
   const VTTCues = Array.from(subCues || {});
   console.log("得到VTTCues数组：", VTTCues);
   const subArray = VTTCues.map(c => {
-    return new Sub(toTime(c.startTime), toTime(c.endTime), c.text);
+    return new Sub(c.startTime, c.endTime, c.text);
   });
   console.log("得到字幕数组：", subArray);
   return subArray;
