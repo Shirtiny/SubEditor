@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Header from "./header";
 import styled, { createGlobalStyle } from "styled-components";
 import SubTable from "./subTable";
+import VideoPlayer from "./videoPlayer";
+import Timeline from "./timeline";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -21,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
         display: flex;
         flex-direction: column;
         font-size: 14px;
-        color: #ccc;
+        // color: #ccc; 白字
         background: #C0D9D9;
         // background: #66CCCC;
     }
@@ -69,28 +71,8 @@ class SubEditor extends Component {
   componentDidMount() {
     //首次调整container的宽高
     this.resizeContainer();
-
-    //把this.resizeContainer的引用作为参数 传到匿名函数内的setTimeout内
-    function debounce(func, wait) {
-      let timeout;
-      return () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(func, wait);
-      };
-    }
-    //延时执行的调整
-    const timeOutResize = debounce(this.resizeContainer, 500);
-    // const timeOutResize = () => {
-    //   let timeout;
-    //   return () => {
-    //     clearTimeout(timeout);
-    //这里的this是访问不到的
-    //     timeout = setTimeout(this.resizeContainer, 500);
-    //   };
-    // };
-    //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
-    window.addEventListener("resize", timeOutResize);
-    console.log("添加resize事件监听");
+    //添加resize的事件监听
+    this.addResizeListener();
   }
 
   //卸载组件前
@@ -109,6 +91,23 @@ class SubEditor extends Component {
     this.setState({ container: { containerHeight, containerWidth } });
   };
 
+  //添加resize事件监听
+  addResizeListener = () => {
+    //把this.resizeContainer的引用作为参数 传到匿名函数内的setTimeout内
+    function debounce(func, wait) {
+      let timeout;
+      return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(func, wait);
+      };
+    }
+    //500ms内只执行一次的调整
+    const timeOutResize = debounce(this.resizeContainer, 500);
+    //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
+    window.addEventListener("resize", timeOutResize);
+    console.log("添加resize事件监听");
+  };
+
   updateOneState = stateObject => {
     this.setState(stateObject);
     console.log("更新state：", stateObject);
@@ -125,8 +124,10 @@ class SubEditor extends Component {
         <GlobalStyle />
         <Header {...props} />
         <Main>
+          <VideoPlayer />
           <SubTable {...props} />
         </Main>
+        <Timeline />
       </React.Fragment>
     );
   }

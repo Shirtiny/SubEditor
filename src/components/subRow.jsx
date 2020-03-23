@@ -7,8 +7,8 @@ const SubRow = props => {
       style={props.style}
       className={[props.className, props.index % 2 ? "odd" : ""].join(" ")}
     >
-      <div className="rowT" style={{ width: 50 }}>
-        {props.index}
+      <div className="rowT" style={{ width: 90 }}>
+        操作
       </div>
       <div className="rowT" style={{ width: 100 }}>
         {props.rowData.startTime}
@@ -22,8 +22,9 @@ const SubRow = props => {
       <div className="rowT" style={{ flex: 1 }}>
         {props.rowData.content}
       </div>
-      <div className="rowT" style={{ width: 90 }}>
-        操作
+
+      <div className="rowT" style={{ width: 50 }}>
+        {props.index}
       </div>
     </div>
   );

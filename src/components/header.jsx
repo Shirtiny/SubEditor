@@ -10,7 +10,6 @@ const HeaderWrap = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid;
   background-color: hsla(0, 0%, 100%, 0.8);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
@@ -104,7 +103,6 @@ const BtnYbutton = styled.div`
   background: #529393;
   border-style: none;
   border-radius: 20px;
-  // border-left: 1px solid rgb(10, 10, 10);
   padding: 9px 16px;
   margin-right: 10px;
   // outline: none;
@@ -120,6 +118,9 @@ const BtnYbutton = styled.div`
     height: 40px;
     span {
       display: block;
+    }
+    i {
+      display: none;
     }
   }
 
@@ -150,7 +151,8 @@ class Header extends Component {
     const { updateOneState } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
-      notifier.notify(<p>{vttStr}</p>, "top_left", "default", {
+      //开一个预览字幕的提示
+      notifier.notify(<p>{vttStr}</p>, "top_center", "default", {
         autoClose: false,
         className: "textReader"
       });

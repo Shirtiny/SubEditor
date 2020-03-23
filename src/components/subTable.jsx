@@ -3,20 +3,28 @@ import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
 
-const Wrapper = styled.div`
-  //   flex: 1;
-  border-right: 1px solid rgb(10, 10, 10);
+const tableBackGroundColor = subArray => {
+  return subArray ? "#c0d9d9" : "#e3eeee";
+};
+
+const TableWrapper = styled.div`
+  flex: 1;
+  margin-top: 5px;
   .ReactVirtualized__Table {
     font-size: 12px;
-    background: #526c6c;
+    background: ${tableBackGroundColor};
+    // background: #e3eeee;
+    // background: #c0d9d9; root背景色
 
     .ReactVirtualized__Table__Grid {
       outline: none;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
     }
 
     .ReactVirtualized__Table__headerRow {
-      background: #1c2022;
-      border-bottom: 1px solid rgb(10, 10, 10);
+      background: #c0d9d9;
+      display: flex;
 
       .rowT {
         padding: 10px 5px;
@@ -26,25 +34,51 @@ const Wrapper = styled.div`
         text-align: center;
         text-transform: none;
       }
+
+      .buttonLike {
+        position: relative;
+        background: #ffffff;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        // margin-right: 10px;
+        padding: 9px 16px;
+        border-style: none;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 200ms linear 0s;
+
+        i {
+          margin-right: 5px;
+        }
+
+        &:hover {
+          color: #fff;
+          background-color: #43d7d7;
+          span {
+            display: block;
+          }
+        }
+      }
     }
 
     .ReactVirtualized__Table__row {
-      background-color: #294242;
-      border-bottom: 1px solid rgb(36, 41, 45);
+      background-color: #f2f2f2;
+      // border-bottom: 1px solid rgb(36, 41, 45);
       transition: all 0.2s ease;
 
       &.odd {
-        background-color: #1c2022;
+        background-color: #fff;
       }
 
       &.highlight {
-        color: #fff;
         background-color: #2196f3;
         text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
       }
 
       &.illegal {
-        color: #fff;
         background-color: #c75123;
         text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
       }
@@ -52,6 +86,11 @@ const Wrapper = styled.div`
       .rowT {
         padding: 10px 5px;
         text-align: center;
+      }
+
+      &: hover {
+        background-color: #529393;
+        color: #fff;
       }
     }
 
@@ -62,7 +101,6 @@ const Wrapper = styled.div`
       min-height: 30px;
       font-size: 12px;
       text-align: center;
-      color: #fff;
       background-color: #3a3a3a;
     }
 
@@ -105,14 +143,19 @@ const Wrapper = styled.div`
 `;
 
 class SubTable extends Component {
+  //没用到
+  $tableRef = React.createRef();
+
   render() {
     const { subArray, container } = this.props;
     const { containerHeight, containerWidth } = container;
-
+    //table背景色 无内容时为银色 有内容和root背景一样
+    tableBackGroundColor(subArray);
     return (
-      <Wrapper>
+      <TableWrapper>
         <Table
-          headerHeight={40}
+          ref={this.$tableRef}
+          headerHeight={35}
           width={containerWidth / 2}
           height={containerHeight}
           rowHeight={60}
@@ -122,23 +165,37 @@ class SubTable extends Component {
           headerRowRenderer={() => {
             return (
               <div className="ReactVirtualized__Table__headerRow">
-                <div className="rowT" style={{ width: 50 }}>
-                  #
+                <div className="rowT" style={{ width: 100 }}>
+                  <span className="buttonLike">
+                    <i className="fa fa-pencil" aria-hidden="true"></i>编辑
+                  </span>
                 </div>
                 <div className="rowT" style={{ width: 100 }}>
-                  开始
+                  <span className="buttonLike">
+                    <i className="fa fa-step-backward" aria-hidden="true"></i>
+                    开始
+                  </span>
                 </div>
                 <div className="rowT" style={{ width: 100 }}>
-                  结束
+                  <span className="buttonLike">
+                    <i className="fa fa-step-forward" aria-hidden="true"></i>
+                    结束
+                  </span>
                 </div>
                 <div className="rowT" style={{ width: 100 }}>
-                  时长
+                  <span className="buttonLike">
+                    <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                    时长
+                  </span>
                 </div>
                 <div className="rowT" style={{ flex: 1 }}>
-                  文本
+                  <span className="buttonLike ">
+                    {" "}
+                    <i className="fa fa-text-width" aria-hidden="true"></i>文本
+                  </span>
                 </div>
-                <div className="rowT" style={{ width: 90 }}>
-                  操作
+                <div className="rowT" style={{ width: 50 }}>
+                  <span className="buttonLike fa fa-sort-amount-asc"></span>
                 </div>
               </div>
             );
@@ -147,7 +204,7 @@ class SubTable extends Component {
             return <SubRow {...props} />;
           }}
         ></Table>
-      </Wrapper>
+      </TableWrapper>
     );
   }
 }
