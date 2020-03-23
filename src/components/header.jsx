@@ -129,6 +129,45 @@ const BtnYbutton = styled.div`
   }
 `;
 
+const BtnYbuttonDanger = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  // height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  color: #ccc;
+  background: #ec6464;
+  border-style: none;
+  border-radius: 20px;
+  padding: 9px 16px;
+  margin-right: 10px;
+  // outline: none;
+  transition: all 300ms linear 0s;
+
+  span {
+    display: none;
+  }
+
+  &:hover {
+    color: #ec6464;
+    background-color: #e1e1e1;
+    height: 40px;
+    span {
+      display: block;
+    }
+    i {
+      display: none;
+    }
+  }
+
+  i {
+    margin-right: 0px;
+  }
+`;
+
 //利用了绝对定位 绝对定位可以让元素脱离正常的文档流，实现更灵活的布局方式
 const FileYinput = styled.input`
   position: absolute;
@@ -182,6 +221,8 @@ class Header extends Component {
     // URL.revokeObjectURL(videoUrl);
   };
 
+  handleSubClear = () => {};
+
   render() {
     return (
       <HeaderWrap>
@@ -218,6 +259,10 @@ class Header extends Component {
               <i className="fa fa-cloud-download" aria-hidden="true"></i>
               <span>下载字幕</span>
             </BtnYbutton>
+            <BtnYbuttonDanger onClick={this.handleSubClear}>
+              <i className="fa fa-trash" aria-hidden="true"></i>
+              <span>清空字幕</span>
+            </BtnYbuttonDanger>
           </div>
           <div className="links">
             <a href="https://github.com/Shirtiny/SubEditor" title="前往Github">

@@ -3,17 +3,12 @@ import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
 
-const tableBackGroundColor = subArray => {
-  return subArray ? "#c0d9d9" : "#e3eeee";
-};
-
 const TableWrapper = styled.div`
   flex: 1;
   margin-top: 5px;
   .ReactVirtualized__Table {
     font-size: 12px;
-    background: ${tableBackGroundColor};
-    // background: #e3eeee;
+    background: #e3eeee;
     // background: #c0d9d9; root背景色
 
     .ReactVirtualized__Table__Grid {
@@ -146,14 +141,23 @@ class SubTable extends Component {
   //没用到
   $tableRef = React.createRef();
 
+  tableBackGroundColor = subArray => {
+    const color = subArray && subArray.length === 0 ? "#e3eeee" : "#c0d9d9";
+    let $table = document.getElementById("vSubTable");
+    if ($table) {
+      $table.style.backgroundColor = color;
+    }
+  };
+
   render() {
     const { subArray, container } = this.props;
     const { containerHeight, containerWidth } = container;
     //table背景色 无内容时为银色 有内容和root背景一样
-    tableBackGroundColor(subArray);
+    this.tableBackGroundColor(subArray);
     return (
       <TableWrapper>
         <Table
+          id="vSubTable"
           ref={this.$tableRef}
           headerHeight={35}
           width={containerWidth / 2}
