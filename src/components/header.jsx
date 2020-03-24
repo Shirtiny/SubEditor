@@ -4,6 +4,7 @@ import guideService from "../services/guideService";
 import progressor from "../utils/progressor";
 import notifier from "../utils/notifier";
 import subService from "../services/subService";
+import logger from "../utils/logger";
 
 const HeaderWrap = styled.header`
   height: 50px;
@@ -202,7 +203,7 @@ class Header extends Component {
       updateOneState({ subArray });
       //释放url资源
       URL.revokeObjectURL(subUrl);
-      console.log("释放资源：", subUrl);
+      logger.clog("释放资源：", subUrl);
     } catch (e) {
       notifier.notify(`<Header>${e.message}`, "top_center", "warning");
     }
@@ -212,9 +213,9 @@ class Header extends Component {
   handleVideoFile = e => {
     const file = e.currentTarget.files[0];
     const $video = document.createElement("video");
-    console.log("创建元素：", $video, $video.canPlayType(file.type));
+    logger.clog("创建元素：", $video, $video.canPlayType(file.type));
     const videoUrl = URL.createObjectURL(file);
-    console.log("视频url", videoUrl);
+    logger.clog("视频url", videoUrl);
     const { updateOneState } = this.props;
     updateOneState({ videoUrl });
     //释放资源

@@ -4,6 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import SubTable from "./subTable";
 import VideoPlayer from "./videoPlayer";
 import Timeline from "./timeline";
+import logger from "../utils/logger";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -79,7 +80,7 @@ class SubEditor extends Component {
   componentWillUnmount() {
     //移除添加的事件监听 不然页面切换多了会可能卡顿 ??
     // window.removeEventListener("resize", this.resizeContainer);
-    // console.log("移除resize事件监听");
+    // logger.clog("移除resize事件监听");
   }
 
   //调整container的宽高
@@ -87,7 +88,7 @@ class SubEditor extends Component {
     //减去导航栏的50 底部时间轴的150
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
-    console.log("更新container的宽高", containerWidth, containerHeight);
+    logger.clog("更新container的宽高", containerWidth, containerHeight);
     this.setState({ container: { containerHeight, containerWidth } });
   };
 
@@ -105,18 +106,29 @@ class SubEditor extends Component {
     const timeOutResize = debounce(this.resizeContainer, 500);
     //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
     window.addEventListener("resize", timeOutResize);
-    console.log("添加resize事件监听");
+    logger.clog("添加resize事件监听");
   };
 
+  //更新一个属性 供子组件回调
   updateOneState = stateObject => {
     this.setState(stateObject);
-    console.log("更新state：", stateObject);
+    logger.clog("更新state：", stateObject);
+  };
+
+  //初始化字幕表
+  initSubTable = () => {};
+
+  //删除一行字幕
+  handleRemove = sub => {
+    const subArray = [...this.state.subArray];
+    logger.clog("删除", sub, subArray.indexOf(sub));
   };
 
   render() {
     const props = {
       ...this.state,
-      updateOneState: this.updateOneState
+      updateOneState: this.updateOneState,
+      onRemove: this.handleRemove
     };
 
     return (

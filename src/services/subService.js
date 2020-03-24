@@ -1,5 +1,6 @@
 import Sub from "../model/sub";
 import timeFormatter from "../utils/timeFormatter";
+import logger from "../utils/logger";
 
 //PromiseExecutor
 function readAsTextPromiseExecutor(resolve, reject, file) {
@@ -23,7 +24,7 @@ export async function readSubFileAsText(subFile) {
       readAsTextPromiseExecutor(resolve, reject, subFile)
     );
   } catch (e) {
-    console.log("字幕文件读取失败；", e);
+    logger.clog("字幕文件读取失败；", e);
     e.message = "字幕文件读取失败；";
     throw e;
   }
@@ -63,16 +64,16 @@ export async function createSubArray(subUrl) {
       analyseSubPE(resolve, reject, subUrl)
     );
   } catch (e) {
-    console.log("字幕装载失败：", e);
+    logger.clog("字幕装载失败：", e)
     e.message = "字幕装载失败";
     throw e;
   }
   const VTTCues = Array.from(subCues || {});
-  console.log("得到VTTCues数组：", VTTCues);
+  logger.clog("得到VTTCues数组：", VTTCues);
   const subArray = VTTCues.map(c => {
     return new Sub(c.startTime, c.endTime, c.text);
   });
-  console.log("得到字幕数组：", subArray);
+  logger.clog("得到字幕数组：", subArray)
   return subArray;
 }
 
@@ -81,7 +82,7 @@ export function createVttSubBlobUrl(vttStr) {
   const vttBlob = new Blob([vttStr], {
     type: "text/vtt"
   });
-  console.log("vtt字幕Blob对象", vttBlob);
+  logger.clog("vtt字幕Blob对象", vttBlob);
   return URL.createObjectURL(vttBlob);
 }
 
