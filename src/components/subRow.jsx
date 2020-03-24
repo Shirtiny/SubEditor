@@ -4,6 +4,7 @@ import styled from "styled-components";
 const RowWrap = styled.div`
   background-color: #f2f2f2;
   // border-bottom: 1px solid rgb(36, 41, 45);
+  min-width: 650px;
   transition: all 0.2s ease;
 
   &.odd {

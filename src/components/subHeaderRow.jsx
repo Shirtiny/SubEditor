@@ -4,6 +4,7 @@ import styled from "styled-components";
 const HeaderRowWrap = styled.div`
   background: #c0d9d9;
   display: flex;
+  min-width: 650px;
 
   .rowT {
     padding: 10px 5px;

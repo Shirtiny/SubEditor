@@ -1,4 +1,5 @@
 {
   "mode": "dev",
-  "log": "on"
+  "log": "on",
+  "sub_storage_key": "Subs"
 }

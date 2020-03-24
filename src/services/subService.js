@@ -1,9 +1,13 @@
 import Sub from "../model/sub";
 import timeFormatter from "../utils/timeFormatter";
 import logger from "../utils/logger";
+import config from "../config/config.json";
 
-//PromiseExecutor
-function readAsTextPromiseExecutor(resolve, reject, file) {
+//sub数组 存在localstorage的key
+const subArrayKey = config.sub_storage_key || "DefaultSubs";
+
+//PromiseExecutor 将字幕文件读取为字符串
+function readAsTextPE(resolve, reject, file) {
   const reader = new FileReader();
   reader.readAsText(file);
   //出错时触发
@@ -17,11 +21,12 @@ function readAsTextPromiseExecutor(resolve, reject, file) {
   };
 }
 
+//将字幕文件读取为字符串
 export async function readSubFileAsText(subFile) {
   let text = "";
   try {
     text = await new Promise((resolve, reject) =>
-      readAsTextPromiseExecutor(resolve, reject, subFile)
+      readAsTextPE(resolve, reject, subFile)
     );
   } catch (e) {
     logger.clog("字幕文件读取失败；", e);
@@ -64,7 +69,7 @@ export async function createSubArray(subUrl) {
       analyseSubPE(resolve, reject, subUrl)
     );
   } catch (e) {
-    logger.clog("字幕装载失败：", e)
+    logger.clog("字幕装载失败：", e);
     e.message = "字幕装载失败";
     throw e;
   }
@@ -73,7 +78,7 @@ export async function createSubArray(subUrl) {
   const subArray = VTTCues.map(c => {
     return new Sub(c.startTime, c.endTime, c.text);
   });
-  logger.clog("得到字幕数组：", subArray)
+  logger.clog("得到字幕数组：", subArray);
   return subArray;
 }
 
@@ -86,10 +91,63 @@ export function createVttSubBlobUrl(vttStr) {
   return URL.createObjectURL(vttBlob);
 }
 
+//将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
+export function mapSubToDbModel(sub) {
+  return {
+    start: sub.start,
+    startTime: sub.startTime,
+    end: sub.end,
+    endTime: sub.endTime,
+    length: sub.length,
+    content: sub.content
+  };
+}
+
+//PromiseExecutor 将字幕数组存入localStorage
+function storageSubsPE(resolve, reject, subArray) {
+  try {
+    const subs = subArray.map(sub => mapSubToDbModel(sub));
+    const json = JSON.stringify(subs);
+    localStorage.setItem(subArrayKey, json);
+    resolve(json);
+  } catch (e) {
+    logger.clog("subs存入local时出错", e);
+    reject(e);
+  }
+}
+
+//把sub数组存入localstorage
+export function saveSubArray(subArray) {
+  //将sub对象的秒数转为time时间轴类型 并存入localStorage
+  return new Promise((resolve, reject) =>
+    storageSubsPE(resolve, reject, subArray)
+  );
+}
+
+//PromiseExecutor 从localStorage中读取sub数组 可能会解析出错以及得到null 这里对null返回空数组
+function getParseSubArrayPE(resolve, reject) {
+  const subsJson = localStorage.getItem(subArrayKey);
+  try {
+    const subArray = JSON.parse(subsJson);
+    resolve(subArray || []);
+  } catch (e) {
+    logger.clog("读取local后，Json解析出错", e);
+    reject(e);
+  }
+}
+
+//从localStorage中读取sub数组
+export function getSubArray() {
+  return new Promise((resolve, reject) => getParseSubArrayPE(resolve, reject));
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
-  createVttSubBlobUrl
+  createVttSubBlobUrl,
+  mapSubToDbModel,
+  saveSubArray,
+  getSubArray
 };
 
 export default subService;

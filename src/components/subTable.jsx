@@ -16,6 +16,11 @@ const TableWrapper = styled.div`
       outline: none;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
       border-radius: 0.5rem;
+      min-width: 650px;
+
+      .ReactVirtualized__Grid__innerScrollContainer {
+        min-width: 650px;
+      }
     }
 
     .input,

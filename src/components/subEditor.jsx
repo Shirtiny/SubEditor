@@ -5,6 +5,8 @@ import SubTable from "./subTable";
 import VideoPlayer from "./videoPlayer";
 import Timeline from "./timeline";
 import logger from "../utils/logger";
+import subService from "../services/subService";
+import notifier from "../utils/notifier";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -74,6 +76,8 @@ class SubEditor extends Component {
     this.resizeContainer();
     //添加resize的事件监听
     this.addResizeListener();
+    //初始化字幕表
+    this.initSubTable();
   }
 
   //卸载组件前
@@ -102,8 +106,8 @@ class SubEditor extends Component {
         timeout = setTimeout(func, wait);
       };
     }
-    //500ms内只执行一次的调整
-    const timeOutResize = debounce(this.resizeContainer, 500);
+    //300ms内只执行一次的调整
+    const timeOutResize = debounce(this.resizeContainer, 300);
     //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
     window.addEventListener("resize", timeOutResize);
     logger.clog("添加resize事件监听");
@@ -116,18 +120,36 @@ class SubEditor extends Component {
   };
 
   //初始化字幕表
-  initSubTable = () => {};
+  initSubTable = async () => {
+    try {
+      const subArray = await subService.getSubArray();
+      logger.clog("初始化字幕", subArray);
+      this.setState({ subArray });
+    } catch (e) {
+      notifier.notify("读取字幕失败，请尝试清除缓存", "top_center", "info");
+    }
+  };
+
+  //存储字幕数组到本地
+  storageSubs = subArray => {
+    subService.saveSubArray(subArray);
+  };
 
   //删除一行字幕
   handleRemove = sub => {
     const subArray = [...this.state.subArray];
-    logger.clog("删除", sub, subArray.indexOf(sub));
+    const index = subArray.indexOf(sub);
+    subArray.splice(index, 1);
+    //更新state 以及回调函数 回调函数里的this.state不是更新后的state？？？
+    this.setState({ subArray }, this.storageSubs(subArray));
+    logger.clog("删除", sub, index);
   };
 
   render() {
     const props = {
       ...this.state,
       updateOneState: this.updateOneState,
+      storageSubs: this.storageSubs,
       onRemove: this.handleRemove
     };
 

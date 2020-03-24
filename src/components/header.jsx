@@ -188,7 +188,7 @@ class Header extends Component {
   handleSubFile = async e => {
     progressor.start();
     const file = e.currentTarget.files[0];
-    const { updateOneState } = this.props;
+    const { updateOneState, storageSubs } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
       //开一个预览字幕的提示
@@ -200,6 +200,7 @@ class Header extends Component {
       updateOneState({ subUrl });
       //从url中读取字幕数组
       const subArray = await subService.createSubArray(subUrl);
+      storageSubs(subArray);
       updateOneState({ subArray });
       //释放url资源
       URL.revokeObjectURL(subUrl);
@@ -244,7 +245,7 @@ class Header extends Component {
                 name="file"
                 onChange={this.handleSubFile}
               />
-              <span>添加字幕</span>
+              <span>打开字幕</span>
             </BtnYbutton>
             <BtnYbutton>
               <i className="fa fa-play-circle" aria-hidden="true"></i>
