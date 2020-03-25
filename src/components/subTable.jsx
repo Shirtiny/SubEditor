@@ -3,6 +3,8 @@ import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
 import SubHeaderRow from "./subHeaderRow";
+import subService from "../services/subService";
+import logger from "../utils/logger";
 
 const TableWrapper = styled.div`
   flex: 1;
@@ -42,27 +44,45 @@ const TableWrapper = styled.div`
       margin: 0;
     }
   }
-
-  .edit {
-    display: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  .editing {
-    .noedit {
-      display: none;
-    }
-
-    .edit {
-      display: block;
-    }
-  }
 `;
 
 class SubTable extends Component {
   //没用到
   $tableRef = React.createRef();
+
+  state = {
+    //当前正在编辑的字幕信息
+    editingSub: {
+      start: 0,
+      startTime: "",
+      end: 0,
+      endTime: "",
+      length: 0,
+      content: ""
+    }
+  };
+
+  //在编辑时 回显表单数据
+  handleRowEdit = sub => {
+    const { onEdit } = this.props;
+    const editingSub = subService.mapSubToFullModel(sub);
+    this.setState({ editingSub }, () => {
+      logger.clog("表单回显：", this.state.editingSub);
+    });
+    onEdit(sub);
+  };
+
+  handleRowCommit = sub => {
+    const { onCommit } = this.props;
+    logger.clog("表单提交：", sub);
+    onCommit(sub);
+  };
+
+  handleRowRemove = sub => {
+    const { onRemove } = this.props;
+    logger.clog("删除一行：", sub);
+    onRemove(sub);
+  };
 
   //改变table的背景色 ，ps： table被header 和 grid覆盖
   tableBackGroundColor = subArray => {
@@ -74,7 +94,7 @@ class SubTable extends Component {
   };
 
   render() {
-    const { subArray, container, onRemove } = this.props;
+    const { subArray, container } = this.props;
     const { containerHeight, containerWidth } = container;
     //table背景色 无内容时为银色 有内容和root背景一样
     this.tableBackGroundColor(subArray);
@@ -91,7 +111,14 @@ class SubTable extends Component {
           rowCount={subArray.length}
           rowGetter={({ index }) => subArray[index]}
           headerRowRenderer={() => <SubHeaderRow />}
-          rowRenderer={rowProps => <SubRow {...rowProps} onRemove={onRemove} />}
+          rowRenderer={rowProps => (
+            <SubRow
+              {...rowProps}
+              onRowRemove={this.handleRowRemove}
+              onRowEdit={this.handleRowEdit}
+              onRowCommit={this.handleRowCommit}
+            />
+          )}
         ></Table>
       </TableWrapper>
     );

@@ -67,7 +67,9 @@ class SubEditor extends Component {
     container: {
       containerHeight: 10,
       containerWidth: 10
-    }
+    },
+    //当前选中的字幕
+
   };
 
   //组件装载并渲染完成后
@@ -136,13 +138,34 @@ class SubEditor extends Component {
   };
 
   //删除一行字幕
-  handleRemove = sub => {
+  handleSubRemove = sub => {
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
     subArray.splice(index, 1);
-    //更新state 以及回调函数 回调函数里的this.state不是更新后的state？？？
-    this.setState({ subArray }, this.storageSubs(subArray));
+    //更新state 以及回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
+    this.setState({ subArray }, () => {
+      this.storageSubs(this.state.subArray);
+    });
     logger.clog("删除", sub, index);
+  };
+
+  //编辑时
+  handleSubEdit = sub => {
+    const subArray = [...this.state.subArray];
+    //将数组内每个sub的editing重置
+    subArray.map(sub => (sub.editing = false));
+    const index = subArray.indexOf(sub);
+    subArray[index].editing = true;
+    this.setState({ subArray });
+    logger.clog("handleEdit", sub, index);
+  };
+
+  //提交时
+  handleSubCommit = sub => {
+    const subArray = [...this.state.subArray];
+    const index = subArray.indexOf(sub);
+    subArray[index].editing = false;
+    this.setState({ subArray });
   };
 
   render() {
@@ -150,7 +173,9 @@ class SubEditor extends Component {
       ...this.state,
       updateOneState: this.updateOneState,
       storageSubs: this.storageSubs,
-      onRemove: this.handleRemove
+      onRemove: this.handleSubRemove,
+      onEdit: this.handleSubEdit,
+      onCommit: this.handleSubCommit
     };
 
     return (

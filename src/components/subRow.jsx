@@ -33,6 +33,23 @@ const RowWrap = styled.div`
     font-size: 14px;
   }
 
+  &.onEditing {
+    //编辑时返回隐藏 非编辑状态返回显示
+    .display_onEditing {
+      display: block;
+    }
+    .hidden_onEditing {
+      display: none;
+    }
+  }
+
+  .editing_default_hidden {
+    //默认隐藏
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+
   .operation {
     display: flex;
     justify-content: center;
@@ -50,29 +67,61 @@ const RowWrap = styled.div`
   }
 `;
 
-const SubRow = ({ index, style, className, rowData: sub, onRemove }) => {
+const SubRow = ({
+  index,
+  style,
+  className,
+  rowData: sub,
+  onRowRemove,
+  onRowEdit,
+  onRowCommit
+}) => {
+  const hiddenOnEditing = "hidden_onEditing";
+  const displayOnEditing = ["editing_default_hidden", "display_onEditing"].join(
+    " "
+  );
   return (
     <RowWrap
       key={index}
       style={style}
-      className={[className, index % 2 ? "odd" : ""].join(" ")}
+      className={[
+        className,
+        index % 2 ? "odd" : "",
+        sub.editing ? "onEditing" : ""
+      ].join(" ")}
     >
+      {/* 操作按钮 */}
       <div className="rowT operation" style={{ width: 90 }}>
-        <i className="fa fa-pencil"></i>
-        <i className="fa fa-times" onClick={() => onRemove(sub)}></i>
+        <i
+          onClick={() => onRowEdit(sub)}
+          className={`fa fa-pencil ${hiddenOnEditing}`}
+        ></i>
+        <i
+          onClick={() => onRowCommit(sub)}
+          className={`fa fa-check-circle-o ${displayOnEditing}`}
+        ></i>
+        <i className="fa fa-times" onClick={() => onRowRemove(sub)}></i>
       </div>
+      {/* 开始时间 */}
       <div className="rowT" style={{ width: 100 }}>
-        {sub.startTime}
+        <span className={`${hiddenOnEditing}`}>{sub.startTime}</span>
+        <input className={`${displayOnEditing}`} type="text" />
       </div>
+      {/* 结束时间 */}
       <div className="rowT" style={{ width: 100 }}>
-        {sub.endTime}
+        <span className={`${hiddenOnEditing}`}>{sub.endTime}</span>
+        <input className={`${displayOnEditing}`} type="text"/>
       </div>
+      {/* 时长 */}
       <div className="rowT" style={{ width: 100 }}>
         {sub.length}
       </div>
+      {/* 文本内容 */}
       <div className="rowT" style={{ flex: 1 }}>
-        {sub.content}
+        <span className={`${hiddenOnEditing}`}>{sub.content}</span>
+        <input className={`${displayOnEditing}`} type="text"/>
       </div>
+      {/* 序号 */}
       <div className="rowT" style={{ width: 50 }}>
         {index}
       </div>

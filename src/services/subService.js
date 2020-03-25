@@ -92,7 +92,7 @@ export function createVttSubBlobUrl(vttStr) {
 }
 
 //将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
-export function mapSubToDbModel(sub) {
+export function mapSubToFullModel(sub) {
   return {
     start: sub.start,
     startTime: sub.startTime,
@@ -106,7 +106,7 @@ export function mapSubToDbModel(sub) {
 //PromiseExecutor 将字幕数组存入localStorage
 function storageSubsPE(resolve, reject, subArray) {
   try {
-    const subs = subArray.map(sub => mapSubToDbModel(sub));
+    const subs = subArray.map(sub => mapSubToFullModel(sub));
     const json = JSON.stringify(subs);
     localStorage.setItem(subArrayKey, json);
     resolve(json);
@@ -145,7 +145,7 @@ const subService = {
   readSubFileAsText,
   createSubArray,
   createVttSubBlobUrl,
-  mapSubToDbModel,
+  mapSubToFullModel,
   saveSubArray,
   getSubArray
 };

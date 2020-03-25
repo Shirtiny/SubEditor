@@ -7,6 +7,7 @@ class Sub {
     this.start = start;
     this.end = end;
     this.content = content;
+    this.editing = false;
   }
 
   get startTime() {
