@@ -9,6 +9,7 @@
     "bootstrap": "^4.4.1",
     "duration-time-conversion": "^1.0.1",
     "font-awesome": "^4.7.0",
+    "joi-browser": "^13.4.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "react": "^16.13.0",

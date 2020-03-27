@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SubRow from "./subRow";
 import SubHeaderRow from "./subHeaderRow";
 import subService from "../services/subService";
+import validateService from "../services/validateService";
 import logger from "../utils/logger";
 
 const TableWrapper = styled.div`
@@ -59,7 +60,30 @@ class SubTable extends Component {
       endTime: "",
       length: 0,
       content: ""
-    }
+    },
+    errors: {}
+  };
+
+  //校验规则
+  schema = validateService.getEditingSubSchema();
+
+  //全表单校验
+  validate = () => {
+    //执行校验
+    const result = validateService.validate(this.state.editingSub, this.schema);
+    logger.clog("editingSub校验结果，出现的错误：", result);
+    //无错误 暂时返回true 表示通过校验
+    if (!result) return true;
+    //有错误 则给state的errors对象赋值 明天做
+  };
+
+  //得到input的值 更新state
+  handleInputValue = (name, value) => {
+    const editingSub = { ...this.state.editingSub };
+    editingSub[name] = value;
+    this.setState({ editingSub }, () => {
+      logger.clog("更新input：", name, value, this.state.editingSub);
+    });
   };
 
   //在编辑时 回显表单数据
@@ -72,8 +96,11 @@ class SubTable extends Component {
     onEdit(sub);
   };
 
+  //提交前
   handleRowCommit = sub => {
     const { onCommit } = this.props;
+    //校验全表单数据
+    this.validate();
     logger.clog("表单提交：", sub);
     onCommit(sub);
   };
@@ -117,6 +144,8 @@ class SubTable extends Component {
               onRowRemove={this.handleRowRemove}
               onRowEdit={this.handleRowEdit}
               onRowCommit={this.handleRowCommit}
+              onInputValueChange={this.handleInputValue}
+              {...this.state}
             />
           )}
         ></Table>

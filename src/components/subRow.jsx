@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Input from "./common/input";
 
 const RowWrap = styled.div`
   background-color: #f2f2f2;
@@ -74,7 +75,9 @@ const SubRow = ({
   rowData: sub,
   onRowRemove,
   onRowEdit,
-  onRowCommit
+  onRowCommit,
+  editingSub,
+  onInputValueChange
 }) => {
   const hiddenOnEditing = "hidden_onEditing";
   const displayOnEditing = ["editing_default_hidden", "display_onEditing"].join(
@@ -105,21 +108,40 @@ const SubRow = ({
       {/* 开始时间 */}
       <div className="rowT" style={{ width: 100 }}>
         <span className={`${hiddenOnEditing}`}>{sub.startTime}</span>
-        <input className={`${displayOnEditing}`} type="text" />
+        <Input
+          className={[displayOnEditing]}
+          type="text"
+          name="startTime"
+          value={editingSub.startTime}
+          onChange={onInputValueChange}
+        />
       </div>
       {/* 结束时间 */}
       <div className="rowT" style={{ width: 100 }}>
         <span className={`${hiddenOnEditing}`}>{sub.endTime}</span>
-        <input className={`${displayOnEditing}`} type="text"/>
+        <Input
+          className={[displayOnEditing]}
+          type="text"
+          name="endTime"
+          value={editingSub.endTime}
+          onChange={onInputValueChange}
+        />
       </div>
       {/* 时长 */}
       <div className="rowT" style={{ width: 100 }}>
-        {sub.length}
+        <span className={`${hiddenOnEditing}`}>{sub.length}</span>
+        <span className={`${displayOnEditing}`}>{sub.length}</span>
       </div>
       {/* 文本内容 */}
       <div className="rowT" style={{ flex: 1 }}>
         <span className={`${hiddenOnEditing}`}>{sub.content}</span>
-        <input className={`${displayOnEditing}`} type="text"/>
+        <Input
+          className={[displayOnEditing]}
+          type="text"
+          name="content"
+          value={editingSub.content}
+          onChange={onInputValueChange}
+        />
       </div>
       {/* 序号 */}
       <div className="rowT" style={{ width: 50 }}>
