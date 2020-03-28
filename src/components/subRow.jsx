@@ -76,7 +76,9 @@ const SubRow = ({
   onRowRemove,
   onRowEdit,
   onRowCommit,
+  onRowCancel,
   editingSub,
+  errors,
   onInputValueChange
 }) => {
   const hiddenOnEditing = "hidden_onEditing";
@@ -98,12 +100,18 @@ const SubRow = ({
         <i
           onClick={() => onRowEdit(sub)}
           className={`fa fa-pencil ${hiddenOnEditing}`}
+          title="编辑"
         ></i>
         <i
           onClick={() => onRowCommit(sub)}
           className={`fa fa-check-circle-o ${displayOnEditing}`}
+          title="保存"
         ></i>
-        <i className="fa fa-times" onClick={() => onRowRemove(sub)}></i>
+        <i
+          className="fa fa-times"
+          onClick={() => onRowRemove(sub)}
+          title="删除"
+        ></i>
       </div>
       {/* 开始时间 */}
       <div className="rowT" style={{ width: 100 }}>
@@ -114,6 +122,7 @@ const SubRow = ({
           name="startTime"
           value={editingSub.startTime}
           onChange={onInputValueChange}
+          errors={errors}
         />
       </div>
       {/* 结束时间 */}
@@ -125,6 +134,7 @@ const SubRow = ({
           name="endTime"
           value={editingSub.endTime}
           onChange={onInputValueChange}
+          errors={errors}
         />
       </div>
       {/* 时长 */}
@@ -141,11 +151,17 @@ const SubRow = ({
           name="content"
           value={editingSub.content}
           onChange={onInputValueChange}
+          errors={errors}
         />
       </div>
-      {/* 序号 */}
-      <div className="rowT" style={{ width: 50 }}>
-        {index}
+      {/* 序号 ， 取消按钮*/}
+      <div className="rowT operation" style={{ width: 50 }}>
+        <span className={`${hiddenOnEditing}`}>{index}</span>
+        <i
+          onClick={() => onRowCancel(sub)}
+          className={`fa fa-reply ${displayOnEditing}`}
+          title="取消编辑"
+        ></i>
       </div>
     </RowWrap>
   );

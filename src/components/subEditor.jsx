@@ -162,11 +162,22 @@ class SubEditor extends Component {
 
   //提交时
   handleSubCommit = sub => {
+    //取消编辑状态
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
     subArray[index].editing = false;
     this.setState({ subArray });
+    //提交 。。。
   };
+
+  //取消时
+  handleSubCancel = sub => {
+    //取消编辑状态
+    const subArray = [...this.state.subArray];
+    const index = subArray.indexOf(sub);
+    subArray[index].editing = false;
+    this.setState({ subArray });
+  }
 
   render() {
     const props = {
@@ -175,7 +186,8 @@ class SubEditor extends Component {
       storageSubs: this.storageSubs,
       onRemove: this.handleSubRemove,
       onEdit: this.handleSubEdit,
-      onCommit: this.handleSubCommit
+      onCommit: this.handleSubCommit,
+      onCancel: this.handleSubCancel
     };
 
     return (

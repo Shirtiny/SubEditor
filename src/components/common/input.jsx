@@ -30,11 +30,20 @@ const InputYinput = styled.input`
   }
 `;
 
-const Input = ({ className, type, name, value, onChange, disabled, style }) => {
+const Input = ({
+  className,
+  type,
+  name,
+  value,
+  onChange,
+  disabled,
+  style,
+  errors
+}) => {
   return (
     <InputYinput
       disabled={disabled}
-      className={[...className, "input_success"]}
+      className={[...className, errors[name] ? "input_error" : "input_success"]}
       type={type}
       value={value}
       onChange={event => onChange(name, event.currentTarget.value)}

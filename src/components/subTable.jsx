@@ -6,6 +6,8 @@ import SubHeaderRow from "./subHeaderRow";
 import subService from "../services/subService";
 import validateService from "../services/validateService";
 import logger from "../utils/logger";
+import notifier from "../utils/notifier";
+import BootstrapToast from "./common/bootstrapToast";
 
 const TableWrapper = styled.div`
   flex: 1;
@@ -65,16 +67,36 @@ class SubTable extends Component {
   };
 
   //校验规则
-  schema = validateService.getEditingSubSchema();
+  schema = {};
+
+  //错误信息模版
+  errorSchema = {};
+
+  componentDidMount() {
+    //初始化校验规则 、 错误信息模版 、变量名
+    this.schema = validateService.getEditingSubSchema();
+    this.errorSchema = validateService.getEditingErrorSchema();
+  }
 
   //全表单校验
   validate = () => {
     //执行校验
-    const result = validateService.validate(this.state.editingSub, this.schema);
-    logger.clog("editingSub校验结果，出现的错误：", result);
-    //无错误 暂时返回true 表示通过校验
-    if (!result) return true;
-    //有错误 则给state的errors对象赋值 明天做
+    const errorPaths = validateService.validate(
+      this.state.editingSub,
+      this.schema
+    );
+    //无错误 返回false 表示通过校验 无错误对象
+    if (!errorPaths) {
+      //更新state为空
+      this.setState({ errors: {} });
+      return false;
+    }
+    let errors = {};
+    errorPaths.map(path => (errors[path] = this.errorSchema[path]));
+    //更新state
+    this.setState({ errors });
+    //返回错误对象
+    return errors;
   };
 
   //得到input的值 更新state
@@ -82,15 +104,17 @@ class SubTable extends Component {
     const editingSub = { ...this.state.editingSub };
     editingSub[name] = value;
     this.setState({ editingSub }, () => {
-      logger.clog("更新input：", name, value, this.state.editingSub);
+      // logger.clog("更新input：", name, value, this.state.editingSub);
     });
   };
 
-  //在编辑时 回显表单数据
+  //在编辑时 回显表单数据 校验数据以更新errors
   handleRowEdit = sub => {
     const { onEdit } = this.props;
     const editingSub = subService.mapSubToFullModel(sub);
     this.setState({ editingSub }, () => {
+      //校验数据 更新errors
+      this.validate();
       logger.clog("表单回显：", this.state.editingSub);
     });
     onEdit(sub);
@@ -100,8 +124,21 @@ class SubTable extends Component {
   handleRowCommit = sub => {
     const { onCommit } = this.props;
     //校验全表单数据
-    this.validate();
-    logger.clog("表单提交：", sub);
+    const errors = this.validate();
+    //有错误 则不提交
+    if (errors) {
+      const errorMessages = validateService.errors2messages(errors);
+      //打出提示
+      notifier.notify(
+        <BootstrapToast
+          head="请检查输入格式"
+          dataArray={errorMessages}
+          type="warning"
+        />,
+        "top_left"
+      );
+      return;
+    }
     onCommit(sub);
   };
 
@@ -109,6 +146,13 @@ class SubTable extends Component {
     const { onRemove } = this.props;
     logger.clog("删除一行：", sub);
     onRemove(sub);
+  };
+
+  //取消编辑
+  handleRowCancel = sub => {
+    const { onCancel } = this.props;
+    logger.clog("取消编辑：", sub);
+    onCancel(sub);
   };
 
   //改变table的背景色 ，ps： table被header 和 grid覆盖
@@ -144,6 +188,7 @@ class SubTable extends Component {
               onRowRemove={this.handleRowRemove}
               onRowEdit={this.handleRowEdit}
               onRowCommit={this.handleRowCommit}
+              onRowCancel={this.handleRowCancel}
               onInputValueChange={this.handleInputValue}
               {...this.state}
             />

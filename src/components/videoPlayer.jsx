@@ -10,7 +10,11 @@ const VideoWrapper = styled.div`
 class VideoPlayer extends Component {
   state = {};
   render() {
-    return <VideoWrapper>VideoPlayer</VideoWrapper>;
+    return (
+      <VideoWrapper>
+        VideoPlayer
+      </VideoWrapper>
+    );
   }
 }
 
