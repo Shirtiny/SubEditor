@@ -68,15 +68,20 @@ export function getEditingErrorSchema() {
   };
 }
 
+const defaultOption = {
+  //配置项 关闭提前中断 收集所有错误
+  abortEarly: false,
+  //允许对象拥有其他的未知属性
+  allowUnknown: true,
+  //忽略具有函数值的未知键
+  skipFunctions: true
+};
+
+//全属性校验
 export function validate(obj, schema, config) {
   // https://www.jianshu.com/p/e6e277c1fda2
   const option = {
-    //配置项 关闭提前中断 收集所有错误
-    abortEarly: false,
-    //允许对象拥有其他的未知属性
-    allowUnknown: true,
-    //忽略具有函数值的未知键
-    skipFunctions: true,
+    ...defaultOption,
     ...config
   };
   const result = Joi.validate(obj, schema, option).error;
@@ -90,13 +95,29 @@ export function validate(obj, schema, config) {
   return _.uniq(errorPaths);
 }
 
+//单属性校验
+export function validateProperty(name, value, sigleSchema, config) {
+  const obj = { [name]: value };
+  const option = {
+    ...defaultOption,
+    abortEarly: true,
+    ...config
+  };
+  const result = Joi.validate(obj, sigleSchema, option).error;
+  //有错误 则返回true
+  return result ? true : false;
+}
+
 //将errors对象 转为errorMessages 可读的数组
 export function errors2messages(errors) {
-  if (!errors) return;
+  if (!errors) return [];
   const keys = Object.keys(errors);
   const errorMessages = keys.map(key => {
     return labelSchema[key] + ": " + errors[key];
   });
+  if (errorMessages.length === 0) {
+    errorMessages.push(" ");
+  }
   //返回消息数组
   return errorMessages;
 }
@@ -105,6 +126,7 @@ const validateService = {
   getEditingSubSchema,
   getEditingErrorSchema,
   validate,
+  validateProperty,
   errors2messages
 };
 

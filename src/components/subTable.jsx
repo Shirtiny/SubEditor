@@ -99,6 +99,33 @@ class SubTable extends Component {
     return errors;
   };
 
+  //单属性校验
+  validateProperty = (name, value) => {
+    const schema = {
+      [name]: this.schema[name]
+    };
+    // 校验无错返回false 有错返回true
+    const flag = validateService.validateProperty(name, value, schema);
+    //拿到原errors的值
+    let errors = { ...this.state.errors };
+    // 有错  添加或修改errors的属性 返回新建errors, 无错 删除errors的属性 返回false
+    if (flag) {
+      errors[name] = this.errorSchema[name];
+      //更新 state
+      this.setState({ errors });
+      //返回错误对象
+      let error = { [name]: this.errorSchema[name] };
+      return error;
+    } else {
+      //无错 则清掉原state里errors对象的相应属性
+      delete errors[name];
+      //更新 state
+      this.setState({ errors });
+      //返回false
+      return false;
+    }
+  };
+
   //得到input的值 更新state
   handleInputValue = (name, value) => {
     const editingSub = { ...this.state.editingSub };
@@ -106,6 +133,11 @@ class SubTable extends Component {
     this.setState({ editingSub }, () => {
       // logger.clog("更新input：", name, value, this.state.editingSub);
     });
+    const error = this.validateProperty(name, value);
+    if (error) {
+      let errorMessage = validateService.errors2messages(error);
+      notifier.notify(errorMessage.length > 0 && errorMessage[0], "top_left");
+    }
   };
 
   //在编辑时 回显表单数据 校验数据以更新errors
