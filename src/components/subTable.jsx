@@ -157,8 +157,18 @@ class SubTable extends Component {
 
   // 单属性校验提示
   toast_validateProperty = (name, errorMessage) => {
-    //如果提示没有在工作
-    if (!notifier.isActive(this.toastId_validatePropertys[name])) {
+    //把除了自己以外的单属性提示关闭
+    //先得到自己的id
+    const currentId = this.toastId_validatePropertys[name];
+    //得到对象内所有属性的值 返回数组
+    const ids = Object.values(this.toastId_validatePropertys);
+    //把currentId从 ids数组中删除
+    const index = ids.indexOf(currentId);
+    ids.splice(index, 1);
+    //关闭 ids数组的所有值
+    ids.map(id => notifier.done(id));
+    //当 currentId 没有在工作时 弹出新的提示
+    if (!notifier.isActive(currentId)) {
       this.toastId_validatePropertys[name] = notifier.notify(
         errorMessage.length > 0 && errorMessage[0],
         "bottom_left",

@@ -95,14 +95,14 @@ export function createVttSubBlobUrl(vttStr) {
 //规范化 将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
 export function mapSubToFullModel(sub) {
   //小数点后补零 没有小数点则不补
-  sub.startTime = formateTime(sub.startTime);
-  sub.endTime = formateTime(sub.endTime);
+  const fStartTime = formateTime(sub.startTime);
+  const fEndTime = formateTime(sub.endTime);
   return {
-    start: timeFormatter.time2Number(sub.startTime),
-    startTime: sub.startTime,
-    end: timeFormatter.time2Number(sub.endTime),
-    endTime: sub.endTime,
-    length: timeFormatter.getTimeLength(sub.startTime, sub.endTime),
+    start: timeFormatter.time2Number(fStartTime),
+    startTime: fStartTime,
+    end: timeFormatter.time2Number(fEndTime),
+    endTime: fEndTime,
+    length: timeFormatter.getTimeLength(fStartTime, fEndTime),
     content: sub.content
   };
 }
