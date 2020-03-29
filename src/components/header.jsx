@@ -223,7 +223,11 @@ class Header extends Component {
     // URL.revokeObjectURL(videoUrl);
   };
 
-  handleSubClear = () => {};
+  //清空字幕
+  handleSubClean = () => {
+    const { onClean } = this.props;
+    onClean();
+  };
 
   render() {
     return (
@@ -261,7 +265,7 @@ class Header extends Component {
               <i className="fa fa-cloud-download" aria-hidden="true"></i>
               <span>下载字幕</span>
             </BtnYbutton>
-            <BtnYbuttonDanger onClick={this.handleSubClear}>
+            <BtnYbuttonDanger onClick={this.handleSubClean}>
               <i className="fa fa-trash" aria-hidden="true"></i>
               <span>清空字幕</span>
             </BtnYbuttonDanger>

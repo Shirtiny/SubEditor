@@ -2,6 +2,7 @@ import Sub from "../model/sub";
 import timeFormatter from "../utils/timeFormatter";
 import logger from "../utils/logger";
 import config from "../config/config.json";
+import validateService from "./validateService";
 
 //sub数组 存在localstorage的key
 const subArrayKey = config.sub_storage_key || "DefaultSubs";
@@ -93,6 +94,9 @@ export function createVttSubBlobUrl(vttStr) {
 
 //规范化 将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
 export function mapSubToFullModel(sub) {
+  //小数点后补零 没有小数点则不补
+  sub.startTime = formateTime(sub.startTime);
+  sub.endTime = formateTime(sub.endTime);
   return {
     start: timeFormatter.time2Number(sub.startTime),
     startTime: sub.startTime,
@@ -124,6 +128,11 @@ export function saveSubArray(subArray) {
   );
 }
 
+//把sub数组从localstorage中删除
+export function cleanSubArray() {
+  localStorage.removeItem(subArrayKey);
+}
+
 //PromiseExecutor 从localStorage中读取sub数组 可能会解析出错以及得到null 这里对null返回空数组
 function getParseSubArrayPE(resolve, reject) {
   const subsJson = localStorage.getItem(subArrayKey);
@@ -141,9 +150,43 @@ export function getSubArray() {
   return new Promise((resolve, reject) => getParseSubArrayPE(resolve, reject));
 }
 
+//处理开始时间 和 结束时间的 格式， 需要一个已经受过输入校验的time
+function formateTime(validatedTime) {
+  //针对开始和结束时间 小数点后补零 正则表达式捕获
+  const timeRegx = /^(\d+:[0-5][0-9]:[0-5][0-9])(\.[0-9]{1,3})?$/;
+  const found = validatedTime.match(timeRegx);
+  //有小数点
+  if (found && found[2]) {
+    let str = found[2];
+    while (str.length < 4) {
+      str += "0";
+    }
+    return found[1] + str;
+  }
+  //无小数点
+  if (found && found[1]) {
+    return found[1];
+  }
+  //未找到 说明time不符合规范 暂时这么处理
+  return "00:00:00";
+}
+
 //得到字幕的时间长度
 export function getSubLength(sub) {
-  return timeFormatter.getTimeLength(sub.startTime, sub.endTime);
+  //需要先校验startTime和endTime的格式是否正确
+  const schema = {
+    startTime: validateService.schema["startTime"],
+    endTime: validateService.schema["endTime"]
+  };
+  const error = validateService.validate(sub, schema, { abortEarly: true });
+  if (error) {
+    return sub.length;
+  } else {
+    return timeFormatter.getTimeLength(
+      formateTime(sub.startTime),
+      formateTime(sub.endTime)
+    );
+  }
 }
 
 const subService = {
@@ -152,6 +195,7 @@ const subService = {
   createVttSubBlobUrl,
   mapSubToFullModel,
   saveSubArray,
+  cleanSubArray,
   getSubArray,
   getSubLength
 };

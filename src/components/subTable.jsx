@@ -7,7 +7,6 @@ import subService from "../services/subService";
 import validateService from "../services/validateService";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
-import BootstrapToast from "./common/bootstrapToast";
 
 const TableWrapper = styled.div`
   flex: 1;
@@ -118,20 +117,15 @@ class SubTable extends Component {
 
   //全校验提示
   toast_validate = errorMessages => {
-    //如果提示没有在工作
-    if (!notifier.isActive(this.toastId_validate)) {
-      this.toastId_validate = notifier.notify(
-        <BootstrapToast
-          head="请检查输入格式"
-          dataArray={errorMessages}
-          type="warning"
-        />,
-        "top_left",
-        "default",
-        { autoClose: 10000 },
-        "zoom"
-      );
-    }
+    //关闭之前的提示
+    notifier.done(this.toastId_validate);
+    this.toastId_validate = notifier.bootstrapToast(
+      errorMessages,
+      "warning",
+      "top_left",
+      { autoClose: 10000 },
+      "flip"
+    );
   };
 
   //单属性校验
@@ -226,8 +220,8 @@ class SubTable extends Component {
     } else {
       //无错 则关闭提示
       notifier.done(this.toast_validate);
-      //提交 传入原sub 和 填写的sub
-      onCommit(sub, this.state.editingSub);
+      //提交 传入原sub 和 填写的sub， 传值前将填写的sub格式化
+      onCommit(sub, subService.mapSubToFullModel(this.state.editingSub));
     }
   };
 

@@ -1,5 +1,7 @@
+import React from "react";
 import { toast } from "react-toastify";
 import { Slide, Zoom, Flip, Bounce } from "react-toastify";
+import BootstrapToast from "../components/common/bootstrapToast";
 
 export const transitions = {
   slide: Slide,
@@ -27,6 +29,23 @@ export function notify(
   return toast(content, toastConfig);
 }
 
+//bootstrap样式的toast 需要一个字符串数组
+export function bootstrapToast(
+  strArray,
+  type = "warning",
+  position = "top_left",
+  config,
+  transition = "zoom"
+) {
+  return notify(
+    <BootstrapToast head="请检查输入格式" dataArray={strArray} type={type} />,
+    position,
+    "default",
+    config,
+    transition
+  );
+}
+
 //对应id的toast正在工作 则返回true 否则返回false
 export function isActive(toastId) {
   return toast.isActive(toastId);
@@ -39,6 +58,7 @@ export function done(toastId) {
 
 const notifier = {
   notify,
+  bootstrapToast,
   isActive,
   done
 };

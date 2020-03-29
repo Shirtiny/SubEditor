@@ -34,13 +34,13 @@ const HeaderRowWrap = styled.div`
       margin-right: 5px;
     }
 
-    &:hover {
-      color: #fff;
-      background-color: #43d7d7;
-      span {
-        display: block;
-      }
-    }
+    // &:hover {
+    //   color: #fff;
+    //   background-color: #43d7d7;
+    //   span {
+    //     display: block;
+    //   }
+    // }
   }
 `;
 

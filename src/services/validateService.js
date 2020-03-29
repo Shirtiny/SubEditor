@@ -2,10 +2,10 @@ import Joi from "joi-browser";
 import _ from "lodash";
 import logger from "../utils/logger";
 
-// 00:00:29.320
+// 00:00:29 或 00:00:29.320
 const timeRegx = /^\d+:[0-5][0-9]:[0-5][0-9](\.[0-9]{1,3})?$/;
 
-const schema = {
+export const schema = {
   startTime: Joi.string()
     .regex(timeRegx)
     .required()
@@ -123,6 +123,7 @@ export function errors2messages(errors) {
 }
 
 const validateService = {
+  schema,
   getEditingSubSchema,
   getEditingErrorSchema,
   validate,

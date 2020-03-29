@@ -136,6 +136,12 @@ class SubEditor extends Component {
     subService.saveSubArray(subArray);
   };
 
+  //清空存储里的字幕
+  cleanStorageSubs = () => {
+    subService.cleanSubArray();
+    logger.clog("清空存储的字幕");
+  };
+
   //删除一行字幕
   handleSubRemove = sub => {
     const subArray = [...this.state.subArray];
@@ -185,11 +191,25 @@ class SubEditor extends Component {
     logger.clog("提交：", sub, editingSub, subArray);
   };
 
+  //清空字幕 删除存储的字幕 清空内存里的字幕
+  handleSubClean = () => {
+    //确认框
+    const isConfirm = window.confirm('是否要删除所有字幕？');
+    if (isConfirm) {
+      //从存储中移除
+      this.cleanStorageSubs();
+      //重置为空数组
+      this.setState({ subArray: [] });
+    }
+  };
+
   render() {
     const props = {
       ...this.state,
       updateOneState: this.updateOneState,
       storageSubs: this.storageSubs,
+      cleanStorageSubs: this.cleanStorageSubs,
+      onClean: this.handleSubClean,
       onRemove: this.handleSubRemove,
       onEdit: this.handleSubEdit,
       onCommit: this.handleSubCommit,
