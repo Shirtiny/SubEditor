@@ -67,9 +67,8 @@ class SubEditor extends Component {
     container: {
       containerHeight: 10,
       containerWidth: 10
-    },
+    }
     //当前选中的字幕
-
   };
 
   //组件装载并渲染完成后
@@ -160,16 +159,6 @@ class SubEditor extends Component {
     logger.clog("handleEdit", sub, index);
   };
 
-  //提交时
-  handleSubCommit = sub => {
-    //取消编辑状态
-    const subArray = [...this.state.subArray];
-    const index = subArray.indexOf(sub);
-    subArray[index].editing = false;
-    this.setState({ subArray });
-    //提交 。。。
-  };
-
   //取消时
   handleSubCancel = sub => {
     //取消编辑状态
@@ -177,7 +166,24 @@ class SubEditor extends Component {
     const index = subArray.indexOf(sub);
     subArray[index].editing = false;
     this.setState({ subArray });
-  }
+  };
+
+  //提交时
+  handleSubCommit = (sub, editingSub) => {
+    const subArray = [...this.state.subArray];
+    //找到原sub的index
+    const index = subArray.indexOf(sub);
+    //覆盖原来的sub
+    subArray[index] = editingSub;
+    //取消编辑状态
+    subArray[index].editing = false;
+    //提交
+    //更新state 以及回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
+    this.setState({ subArray }, () => {
+      this.storageSubs(this.state.subArray);
+    });
+    logger.clog("提交：", sub, editingSub, subArray);
+  };
 
   render() {
     const props = {

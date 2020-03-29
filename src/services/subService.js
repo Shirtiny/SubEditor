@@ -91,14 +91,14 @@ export function createVttSubBlobUrl(vttStr) {
   return URL.createObjectURL(vttBlob);
 }
 
-//将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
+//规范化 将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
 export function mapSubToFullModel(sub) {
   return {
     start: timeFormatter.time2Number(sub.startTime),
     startTime: sub.startTime,
     end: timeFormatter.time2Number(sub.endTime),
     endTime: sub.endTime,
-    length: timeFormatter.getTimeLength(sub.startTime,sub.endTime),
+    length: timeFormatter.getTimeLength(sub.startTime, sub.endTime),
     content: sub.content
   };
 }
@@ -141,13 +141,19 @@ export function getSubArray() {
   return new Promise((resolve, reject) => getParseSubArrayPE(resolve, reject));
 }
 
+//得到字幕的时间长度
+export function getSubLength(sub) {
+  return timeFormatter.getTimeLength(sub.startTime, sub.endTime);
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
   createVttSubBlobUrl,
   mapSubToFullModel,
   saveSubArray,
-  getSubArray
+  getSubArray,
+  getSubLength
 };
 
 export default subService;

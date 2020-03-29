@@ -155,7 +155,7 @@ const SubRow = ({
       {/* 时长 */}
       <div className="rowT" style={{ width: 100 }}>
         <span className={`${hiddenOnEditing}`}>{sub.length}</span>
-        <span className={`${displayOnEditing}`}>{sub.length}</span>
+        <span className={`${displayOnEditing}`}>{editingSub.length}</span>
       </div>
       {/* 文本内容 */}
       <div className="rowT" style={{ flex: 1 }}>

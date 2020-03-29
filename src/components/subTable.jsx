@@ -95,18 +95,25 @@ class SubTable extends Component {
       this.state.editingSub,
       this.schema
     );
+    //定义错误对象
+    let errors = {};
+    //如果数据格式的校验有错误
+    if (errorPaths) {
+      errorPaths.map(path => (errors[path] = this.errorSchema[path]));
+    }
+    //特殊校验
+    // ...
     //无错误 返回false 表示通过校验 无错误对象
-    if (!errorPaths) {
+    if (Object.keys(errors).length === 0) {
       //更新state为空
       this.setState({ errors: {} });
       return false;
+    } else {
+      //更新state
+      this.setState({ errors });
+      //返回错误对象
+      return errors;
     }
-    let errors = {};
-    errorPaths.map(path => (errors[path] = this.errorSchema[path]));
-    //更新state
-    this.setState({ errors });
-    //返回错误对象
-    return errors;
   };
 
   //全校验提示
@@ -171,13 +178,11 @@ class SubTable extends Component {
     }
   };
 
-  //得到input的值 更新state
+  //得到input的值 更新state.editingSub
   handleInputValue = (name, value) => {
     const editingSub = { ...this.state.editingSub };
     editingSub[name] = value;
-    this.setState({ editingSub }, () => {
-      // logger.clog("更新input：", name, value, this.state.editingSub);
-    });
+    //单属性错误校验
     const error = this.validateProperty(name, value);
     //有错 则提示
     if (error) {
@@ -186,7 +191,13 @@ class SubTable extends Component {
     } else {
       //无错 则关闭提示
       notifier.done(this.toastId_validatePropertys[name]);
+      //更新长度
+      editingSub.length = subService.getSubLength(editingSub);
     }
+    //更新state
+    this.setState({ editingSub }, () => {
+      // logger.clog("更新input：", name, value, this.state.editingSub);
+    });
   };
 
   //在编辑时 回显表单数据 校验数据以更新errors
@@ -215,8 +226,8 @@ class SubTable extends Component {
     } else {
       //无错 则关闭提示
       notifier.done(this.toast_validate);
-      //提交
-      onCommit(sub);
+      //提交 传入原sub 和 填写的sub
+      onCommit(sub, this.state.editingSub);
     }
   };
 

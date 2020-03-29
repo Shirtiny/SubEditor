@@ -23,7 +23,7 @@ const schema = {
     .label("文本内容"),
   start: Joi.number(),
   end: Joi.number(),
-  length: Joi.number()
+  length: Joi.number().greater(0)
 };
 
 //错误提示 模版
@@ -33,7 +33,7 @@ const errorSchema = {
   content: "需要在1-100个字符之间，不能为空",
   start: "必须为数字",
   end: "必须为数字",
-  length: "必须为数字"
+  length: "不能为负值或0，开始时间要大于结束时间"
 };
 
 //全局 变量 和 变量名 的对应
