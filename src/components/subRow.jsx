@@ -8,6 +8,13 @@ const RowWrap = styled.div`
   min-width: 650px;
   transition: all 0.2s ease;
 
+  //取消浏览器的双击选中
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
+
   &.odd {
     background-color: #fff;
   }
@@ -35,6 +42,8 @@ const RowWrap = styled.div`
   }
 
   &.onEditing {
+    background-color: #66cccc;
+
     //编辑时返回隐藏 非编辑状态返回显示
     .display_onEditing {
       display: block;
@@ -62,7 +71,8 @@ const RowWrap = styled.div`
       &: hover {
         //图标粗些
         font-weight: 600;
-        color: #ccc;
+        // color: #ccc;
+        color: #82a8b7;
       }
     }
   }
@@ -85,6 +95,10 @@ const SubRow = ({
   const displayOnEditing = ["editing_default_hidden", "display_onEditing"].join(
     " "
   );
+  //取消浏览器的双击选中 使用了css代替
+  // document.onselectstart = function() {
+  //   return false;
+  // };
   return (
     <RowWrap
       key={index}
@@ -94,6 +108,7 @@ const SubRow = ({
         index % 2 ? "odd" : "",
         sub.editing ? "onEditing" : ""
       ].join(" ")}
+      onDoubleClick={() => onRowEdit(sub)}
     >
       {/* 操作按钮 */}
       <div className="rowT operation" style={{ width: 90 }}>
