@@ -72,6 +72,16 @@ class SubTable extends Component {
   //错误信息模版
   errorSchema = {};
 
+  //toastId 全属性校验 提交时提示
+  toastId_validate = null;
+
+  //toastId 单属性校验 输入时提示
+  toastId_validatePropertys = {
+    startTime: null,
+    endTime: null,
+    content: null
+  };
+
   componentDidMount() {
     //初始化校验规则 、 错误信息模版 、变量名
     this.schema = validateService.getEditingSubSchema();
@@ -97,6 +107,24 @@ class SubTable extends Component {
     this.setState({ errors });
     //返回错误对象
     return errors;
+  };
+
+  //全校验提示
+  toast_validate = errorMessages => {
+    //如果提示没有在工作
+    if (!notifier.isActive(this.toastId_validate)) {
+      this.toastId_validate = notifier.notify(
+        <BootstrapToast
+          head="请检查输入格式"
+          dataArray={errorMessages}
+          type="warning"
+        />,
+        "top_left",
+        "default",
+        { autoClose: 10000 },
+        "zoom"
+      );
+    }
   };
 
   //单属性校验
@@ -126,6 +154,23 @@ class SubTable extends Component {
     }
   };
 
+  // 单属性校验提示
+  toast_validateProperty = (name, errorMessage) => {
+    //如果提示没有在工作
+    if (!notifier.isActive(this.toastId_validatePropertys[name])) {
+      this.toastId_validatePropertys[name] = notifier.notify(
+        errorMessage.length > 0 && errorMessage[0],
+        "bottom_left",
+        "default",
+        {
+          hideProgressBar: true,
+          autoClose: 5000
+        },
+        "flip"
+      );
+    }
+  };
+
   //得到input的值 更新state
   handleInputValue = (name, value) => {
     const editingSub = { ...this.state.editingSub };
@@ -134,9 +179,13 @@ class SubTable extends Component {
       // logger.clog("更新input：", name, value, this.state.editingSub);
     });
     const error = this.validateProperty(name, value);
+    //有错 则提示
     if (error) {
       let errorMessage = validateService.errors2messages(error);
-      notifier.notify(errorMessage.length > 0 && errorMessage[0], "top_left");
+      this.toast_validateProperty(name, errorMessage);
+    } else {
+      //无错 则关闭提示
+      notifier.done(this.toastId_validatePropertys[name]);
     }
   };
 
@@ -161,17 +210,14 @@ class SubTable extends Component {
     if (errors) {
       const errorMessages = validateService.errors2messages(errors);
       //打出提示
-      notifier.notify(
-        <BootstrapToast
-          head="请检查输入格式"
-          dataArray={errorMessages}
-          type="warning"
-        />,
-        "top_left"
-      );
+      this.toast_validate(errorMessages);
       return;
+    } else {
+      //无错 则关闭提示
+      notifier.done(this.toast_validate);
+      //提交
+      onCommit(sub);
     }
-    onCommit(sub);
   };
 
   handleRowRemove = sub => {

@@ -1,8 +1,11 @@
-/* 所有在top位置的提示 高度减少60 */
+/* 所有在top位置的toast提示 高度减少60 */
 div[class*="Toastify__toast-container--top"] {
   top: 60px;
 }
-
+/* 在顶部中央的toast提示 高度高一些 */
+.Toastify__toast-container--top-center {
+  top: 2px !important;
+}
 /* 在toast容器设置的类 */
 .toastContainerClass {
   padding: 4px;
