@@ -84,8 +84,8 @@ export async function createSubArray(subUrl) {
 }
 
 //创建vtt字幕的Blob对象 方便track分析 参数为vtt格式的字符串 返回该对象的url
-export function createVttSubBlobUrl(vttStr) {
-  const vttBlob = new Blob([vttStr], {
+export function createVttSubBlobUrl(vttText) {
+  const vttBlob = new Blob([vttText], {
     type: "text/vtt"
   });
   logger.clog("vtt字幕Blob对象", vttBlob);
@@ -189,6 +189,61 @@ export function getSubLength(sub) {
   }
 }
 
+//将字幕数组 转为 vtt格式的字符串， 即text文本
+export function mapSubArray2Text(subArray) {
+  // subArray的格式必须符合存储规范
+  const vttCueStrArray = subArray.map(
+    (sub, index) =>
+      `${index + 1}
+${sub.startTime} --> ${sub.endTime}
+${sub.content}
+`
+  );
+  const vttText = "WEBVTT\n\n" + vttCueStrArray.join("\n");
+  logger.clog(vttText);
+  return vttText;
+}
+
+//通过url 下载文件
+export function downloadFromUrl(url, fileName) {
+  //创建一个a标签
+  const aLink = document.createElement("a");
+  //设为不可见
+  aLink.style.display = "none";
+  //将a标签的href设为url
+  aLink.href = url;
+  //a标签的download属性 设置文件名 ，浏览器将自动检测正确的文件类型
+  aLink.download = fileName;
+  //放入body里
+  document.body.appendChild(aLink);
+  //点击a标签
+  aLink.click();
+  //从body中移除a标签
+  document.body.removeChild(aLink);
+}
+
+//下载编辑好的字幕文件 从存储中读取
+export async function downloadSubFile() {
+  try {
+    //从存储中拿到字幕数组
+    const subArray = await getSubArray();
+    //当读取到的subArray是null 或者为空数组时 返回false
+    if (!subArray || subArray.length === 0) return false;
+    //将数组转为vtt格式的字符串
+    const vttText = mapSubArray2Text(subArray);
+    //由字符串 转为vtt Blob文件对象 然后创建url
+    const url = createVttSubBlobUrl(vttText);
+    //设置文件名 通过url 下载字幕文件
+    downloadFromUrl(url, "字幕.vtt");
+    //返回true 表示下载事件响应成功
+    return true;
+  } catch (e) {
+    logger.clog("下载字幕出错：", e);
+    //下载失败 抛出异常
+    throw e;
+  }
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
@@ -197,7 +252,10 @@ const subService = {
   saveSubArray,
   cleanSubArray,
   getSubArray,
-  getSubLength
+  getSubLength,
+  mapSubArray2Text,
+  downloadFromUrl,
+  downloadSubFile
 };
 
 export default subService;

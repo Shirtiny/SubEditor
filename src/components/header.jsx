@@ -223,6 +223,12 @@ class Header extends Component {
     // URL.revokeObjectURL(videoUrl);
   };
 
+  //下载字幕
+  handleSubFileDownload = () => {
+    const { onDownload } = this.props;
+    onDownload();
+  };
+
   //清空字幕
   handleSubClean = () => {
     const { onClean } = this.props;
@@ -261,7 +267,7 @@ class Header extends Component {
               />
               <span>打开视频</span>
             </BtnYbutton>
-            <BtnYbutton>
+            <BtnYbutton onClick={this.handleSubFileDownload}>
               <i className="fa fa-cloud-download" aria-hidden="true"></i>
               <span>下载字幕</span>
             </BtnYbutton>

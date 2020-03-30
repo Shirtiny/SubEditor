@@ -191,10 +191,21 @@ class SubEditor extends Component {
     logger.clog("提交：", sub, editingSub, subArray);
   };
 
+  //下载字幕
+  handleSubDownload = async () => {
+    try {
+      const isSuccess = await subService.downloadSubFile();
+      logger.clog(isSuccess);
+      if (!isSuccess) notifier.notify("无字幕文件，请先制作您的字幕。");
+    } catch (e) {
+      notifier.notify("下载出错", "top_center", "warning");
+    }
+  };
+
   //清空字幕 删除存储的字幕 清空内存里的字幕
   handleSubClean = () => {
     //确认框
-    const isConfirm = window.confirm('是否要删除所有字幕？');
+    const isConfirm = window.confirm("是否要删除所有字幕？");
     if (isConfirm) {
       //从存储中移除
       this.cleanStorageSubs();
@@ -209,6 +220,7 @@ class SubEditor extends Component {
       updateOneState: this.updateOneState,
       storageSubs: this.storageSubs,
       cleanStorageSubs: this.cleanStorageSubs,
+      onDownload: this.handleSubDownload,
       onClean: this.handleSubClean,
       onRemove: this.handleSubRemove,
       onEdit: this.handleSubEdit,
