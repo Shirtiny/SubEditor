@@ -33,18 +33,22 @@ const HeaderRowWrap = styled.div`
     i {
       margin-right: 5px;
     }
+  }
 
-    // &:hover {
-    //   color: #fff;
-    //   background-color: #43d7d7;
-    //   span {
-    //     display: block;
-    //   }
-    // }
+  .switchButton {
+    cursor: pointer;
+    &:hover {
+      color: #fff;
+      background-color: #43d7d7;
+      span {
+        display: block;
+      }
+    }
   }
 `;
 
 const SubHeaderRow = props => {
+  const { displayIndex, onDisplayIndexSwitch } = props;
   return (
     <HeaderRowWrap>
       <div className="rowT" style={{ width: 100 }}>
@@ -76,7 +80,21 @@ const SubHeaderRow = props => {
         </span>
       </div>
       <div className="rowT" style={{ width: 50 }}>
-        <span className="buttonLike fa fa-sort-amount-asc"></span>
+        <div
+          className="buttonLike switchButton"
+          onClick={() => onDisplayIndexSwitch(!displayIndex)}
+        >
+          <span
+            style={{ display: displayIndex ? "block" : "none" }}
+            className=" fa fa-sort-amount-asc"
+            title="切换到插入"
+          ></span>
+          <span
+            style={{ display: displayIndex ? "none" : "block" }}
+            className=" fa fa-plus"
+            title="切换到序号"
+          ></span>
+        </div>
       </div>
     </HeaderRowWrap>
   );

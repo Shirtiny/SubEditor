@@ -62,7 +62,9 @@ class SubTable extends Component {
       length: 0,
       content: ""
     },
-    errors: {}
+    errors: {},
+    //是否显示index true：显示序号  false: 显示插入按钮
+    displayIndex: true
   };
 
   //校验规则
@@ -257,6 +259,12 @@ class SubTable extends Component {
     }
   };
 
+  //序号显示 的切换
+  handleDisplayIndexSwitch = boolean => {
+    const displayIndex = boolean ? true : false;
+    this.setState({ displayIndex });
+  };
+
   render() {
     const { subArray, container } = this.props;
     const { containerHeight, containerWidth } = container;
@@ -274,7 +282,7 @@ class SubTable extends Component {
           // scrollToIndex={currentIndex}
           rowCount={subArray.length}
           rowGetter={({ index }) => subArray[index]}
-          headerRowRenderer={() => <SubHeaderRow />}
+          headerRowRenderer={() => <SubHeaderRow {...this.state} onDisplayIndexSwitch={this.handleDisplayIndexSwitch}/>}
           rowRenderer={rowProps => (
             <SubRow
               {...rowProps}

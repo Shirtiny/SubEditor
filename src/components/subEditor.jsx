@@ -214,6 +214,8 @@ class SubEditor extends Component {
     }
   };
 
+  //增加一行字幕
+
   render() {
     const props = {
       ...this.state,
