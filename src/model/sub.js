@@ -1,25 +1,25 @@
-import timeFormatter from "../utils/timeFormatter";
+import subService from "../services/subService";
 
 class Sub {
   //start是秒数 如32秒 startTime是时间轴的形式 如 00:00:32
   constructor(start, end, content) {
     // number number string
-    this.start = start;
-    this.end = end;
+    this.start = Number(start.toFixed(3));
+    this.end = Number(end.toFixed(3));
     this.content = content;
     this.editing = false;
   }
 
   get startTime() {
-    return timeFormatter.number2Time(this.start);
+    return subService.toTime(this.start);
   }
 
   get endTime() {
-    return timeFormatter.number2Time(this.end);
+    return subService.toTime(this.end);
   }
 
   get length() {
-    return (this.end - this.start).toFixed(3);
+    return Number((this.end - this.start).toFixed(3));
   }
 }
 

@@ -45,16 +45,50 @@ const HeaderRowWrap = styled.div`
       }
     }
   }
+
+  .stayButton {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0px;
+    cursor: pointer;
+    span {
+      position: relative;
+      top: 4px;
+    }
+    transition: all 0.3s ease;
+    &:hover {
+      color: #fff;
+      background-color: #43d7d7;
+    }
+  }
 `;
 
 const SubHeaderRow = props => {
-  const { displayIndex, onDisplayIndexSwitch } = props;
+  const {
+    displayIndex,
+    onDisplayIndexSwitch,
+    subArrayLenIsZero,
+    onInsert
+  } = props;
   return (
     <HeaderRowWrap>
       <div className="rowT" style={{ width: 100 }}>
-        <span className="buttonLike">
-          <i className="fa fa-pencil-square-o" aria-hidden="true"></i>编辑
-        </span>
+        <div className="buttonLike">
+          <span style={{ display: subArrayLenIsZero ? "none" : "block" }}>
+            <i className="fa fa-pencil-square-o" aria-hidden="true"></i>编辑
+          </span>
+          <div
+            onClick={() => onInsert()}
+            className="stayButton"
+            style={{ display: subArrayLenIsZero ? "block" : "none" }}
+          >
+            <span>
+              <i className="fa fa-plus" aria-hidden="true"></i>新建
+            </span>
+          </div>
+        </div>
       </div>
       <div className="rowT" style={{ width: 100 }}>
         <span className="buttonLike">
@@ -87,11 +121,11 @@ const SubHeaderRow = props => {
           <span
             style={{ display: displayIndex ? "block" : "none" }}
             className=" fa fa-sort-amount-asc"
-            title="切换到插入"
+            title="切换到功能"
           ></span>
           <span
             style={{ display: displayIndex ? "none" : "block" }}
-            className=" fa fa-plus"
+            className=" fa fa-sliders"
             title="切换到序号"
           ></span>
         </div>

@@ -62,6 +62,16 @@ export function toTime(number) {
   return timeFormatter.number2Time(number);
 }
 
+//将时:分:秒 的时间轴格式 转为秒数
+export function toNumber(time) {
+  return Number(timeFormatter.time2Number(time));
+}
+
+//计算两个time的时长
+export function getTimeLength(startTime, endTime) {
+  return Number(timeFormatter.getTimeLength(startTime, endTime));
+}
+
 //创建字幕数组 参数是一个vtt字幕文件的url
 export async function createSubArray(subUrl) {
   let subCues = null;
@@ -98,11 +108,11 @@ export function mapSubToFullModel(sub) {
   const fStartTime = formateTime(sub.startTime);
   const fEndTime = formateTime(sub.endTime);
   return {
-    start: timeFormatter.time2Number(fStartTime),
+    start: toNumber(fStartTime),
     startTime: fStartTime,
-    end: timeFormatter.time2Number(fEndTime),
+    end: toNumber(fEndTime),
     endTime: fEndTime,
-    length: timeFormatter.getTimeLength(fStartTime, fEndTime),
+    length: getTimeLength(fStartTime, fEndTime),
     content: sub.content
   };
 }
@@ -182,10 +192,7 @@ export function getSubLength(sub) {
   if (error) {
     return sub.length;
   } else {
-    return timeFormatter.getTimeLength(
-      formateTime(sub.startTime),
-      formateTime(sub.endTime)
-    );
+    return getTimeLength(formateTime(sub.startTime), formateTime(sub.endTime));
   }
 }
 
@@ -244,6 +251,33 @@ export async function downloadSubFile() {
   }
 }
 
+//返回一个默认的初始字幕 给定开始和结束时间 时长根据条件变化
+export function getDefaultSub(startTime, endTime) {
+  logger.clog("插入参数：", startTime, endTime, typeof (startTime + endTime));
+  //默认文本
+  const defaultContent = "默认文本";
+  //默认的开始 结束 的秒数
+  let defaultStart = 0;
+  let defaultEnd = 0.001;
+  //当发现传入的两个参数都是Number时
+  if (typeof (startTime + endTime) === "number") {
+    defaultStart = Number(startTime.toFixed(3));
+    defaultEnd = Number(endTime.toFixed(3));
+    return new Sub(defaultStart, defaultEnd, defaultContent);
+  }
+  //不是number，则为字符串 校验传入的 时间轴类型
+  const startIsErr = validateService.validateTime(startTime);
+  const endIsErr = validateService.validateTime(endTime);
+  //如果通过校验
+  if (!startIsErr && !endIsErr) {
+    //格式化后 转为秒数
+    defaultStart = toNumber(formateTime(startTime));
+    defaultEnd = toNumber(formateTime(endTime));
+  }
+  //不是number 可能通过校验
+  return new Sub(defaultStart, defaultEnd, defaultContent);
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
@@ -255,7 +289,11 @@ const subService = {
   getSubLength,
   mapSubArray2Text,
   downloadFromUrl,
-  downloadSubFile
+  downloadSubFile,
+  getDefaultSub,
+  toTime,
+  toNumber,
+  getTimeLength
 };
 
 export default subService;

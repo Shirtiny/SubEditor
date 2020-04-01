@@ -69,13 +69,14 @@ const RowWrap = styled.div`
         width: 25px;
         cursor: pointer;
         font-size: 16px;
+        transition: color 0.2s ease;
         &: hover {
           //图标粗些
           font-weight: 600;
           // color: #ccc;
           color: #82a8b7;
           &.deleteIcon {
-            color: #e81d1d;
+            color: #f5f239;
           }
         }
       }
@@ -89,11 +90,11 @@ const RowWrap = styled.div`
     position: absolute;
     left: 0;
     bottom: 0px;
-    border-bottom: 0px solid #529393;
+    border-bottom: 0px dashed #529393;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    transition: color,border-color 0.3s ease-in;
+    transition: color, border-color 0.3s ease-in-out;
     &:hover {
       display: block;
       bottom: -5px;
@@ -128,6 +129,7 @@ const SubRow = ({
   onRowEdit,
   onRowCommit,
   onRowCancel,
+  onRowInsert,
   editingSub,
   errors,
   onInputValueChange,
@@ -213,7 +215,7 @@ const SubRow = ({
             errors={errors}
           />
         </div>
-        {/* 序号 ， 取消按钮*/}
+        {/* 序号 ， 取消按钮 ， 插入按钮*/}
         <div className="rowT operation" style={{ width: 50 }}>
           <span
             style={{ display: displayIndex ? "block" : "none" }}
@@ -230,7 +232,11 @@ const SubRow = ({
             className={`${hiddenOnEditing} lineBox `}
             style={{ display: displayIndex ? "none" : "block" }}
           >
-            <i className={`fa fa-plus-square  insertBtn`} title="插入字幕"></i>
+            <i
+              className={`fa fa-plus-square  insertBtn`}
+              title="插入字幕"
+              onClick={() => onRowInsert(sub)}
+            ></i>
           </div>
         </div>
       </div>

@@ -265,8 +265,14 @@ class SubTable extends Component {
     this.setState({ displayIndex });
   };
 
+  //插入
+  handleRowInsert = sub => {
+    const { onInsert } = this.props;
+    onInsert(sub);
+  };
+
   render() {
-    const { subArray, container } = this.props;
+    const { subArray, container, onInsert } = this.props;
     const { containerHeight, containerWidth } = container;
     //table背景色 无内容时为银色 有内容和root背景一样
     this.tableBackGroundColor(subArray);
@@ -282,7 +288,14 @@ class SubTable extends Component {
           // scrollToIndex={currentIndex}
           rowCount={subArray.length}
           rowGetter={({ index }) => subArray[index]}
-          headerRowRenderer={() => <SubHeaderRow {...this.state} onDisplayIndexSwitch={this.handleDisplayIndexSwitch}/>}
+          headerRowRenderer={() => (
+            <SubHeaderRow
+              {...this.state}
+              subArrayLenIsZero={subArray && subArray.length === 0}
+              onInsert={onInsert}
+              onDisplayIndexSwitch={this.handleDisplayIndexSwitch}
+            />
+          )}
           rowRenderer={rowProps => (
             <SubRow
               {...rowProps}
@@ -290,6 +303,7 @@ class SubTable extends Component {
               onRowEdit={this.handleRowEdit}
               onRowCommit={this.handleRowCommit}
               onRowCancel={this.handleRowCancel}
+              onRowInsert={this.handleRowInsert}
               onInputValueChange={this.handleInputValue}
               {...this.state}
             />

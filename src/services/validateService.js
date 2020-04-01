@@ -122,13 +122,22 @@ export function errors2messages(errors) {
   return errorMessages;
 }
 
+//校验time类型 00:00:29.320
+export function validateTime(time) {
+  //有错误返回true 无错误返回false
+  return validateProperty("startTime", time, {
+    startTime: schema["startTime"]
+  });
+}
+
 const validateService = {
   schema,
   getEditingSubSchema,
   getEditingErrorSchema,
   validate,
   validateProperty,
-  errors2messages
+  errors2messages,
+  validateTime
 };
 
 export default validateService;

@@ -191,6 +191,33 @@ class SubEditor extends Component {
     logger.clog("提交：", sub, editingSub, subArray);
   };
 
+  //插入默认字幕
+  handleSubInsert = sub => {
+    // 要对字幕排序
+    //起始时间 有参考的sub 就是 sub的结束时间 +0.001 ， 没有sub 就是0
+    let start = sub ? sub.end + 0.001 : 0;
+    //复制字幕数组
+    const subArray = [...this.state.subArray];
+    //如果sub为空 index为-1
+    let index = subArray.indexOf(sub);
+    //sub的下一个sub对象 next
+    const next = subArray[index + 1];
+    //结束时间 有next元素就是next元素的起始时间 -0.001 ， 没有next 就是起始时间+5
+    let end = next ? Math.abs(next.start - 0.001) : start + 5;
+    //判断得到的时长是否合理
+    if (Number((end - start).toFixed(3)) < 0.001) {
+      notifier.notify("空间不足，前后字幕相隔至少需要0.03秒");
+      return;
+    }
+    //根据开始和结束时间 获得一个默认字幕
+    const dSub = subService.getDefaultSub(Number(start), Number(end));
+    //将字幕插入到指定位置
+    subArray.splice(index + 1, 0, dSub);
+    //更新
+    this.setState({ subArray });
+    logger.clog("插入：", dSub);
+  };
+
   //下载字幕
   handleSubDownload = async () => {
     try {
@@ -227,7 +254,8 @@ class SubEditor extends Component {
       onRemove: this.handleSubRemove,
       onEdit: this.handleSubEdit,
       onCommit: this.handleSubCommit,
-      onCancel: this.handleSubCancel
+      onCancel: this.handleSubCancel,
+      onInsert: this.handleSubInsert
     };
 
     return (
