@@ -60,6 +60,7 @@ const Main = styled.div`
 
 class SubEditor extends Component {
   state = {
+    // https://sh-rep.oss-cn-hongkong.aliyuncs.com/mll.mp4   /friday.mp4
     videoUrl: "",
     subUrl: "",
     subArray: [],
@@ -67,8 +68,10 @@ class SubEditor extends Component {
     container: {
       containerHeight: 10,
       containerWidth: 10
-    }
+    },
     //当前选中的字幕
+    //播放器
+    player: null,
   };
 
   //组件装载并渲染完成后
@@ -263,7 +266,7 @@ class SubEditor extends Component {
         <GlobalStyle />
         <Header {...props} />
         <Main>
-          <VideoPlayer />
+          <VideoPlayer {...props}/>
           <SubTable {...props} />
         </Main>
         <Timeline />
