@@ -217,22 +217,8 @@ class Header extends Component {
     logger.clog("创建元素：", $video, $video.canPlayType(file.type));
     const videoUrl = URL.createObjectURL(file);
     logger.clog("视频url", videoUrl);
-    const { updateOneState, player } = this.props;
-
-    logger.clog(file.type, typeof file.type);
-    //video/x-flv video/mp4
-    const videoRegx = /^video\/(mp4|x-(flv))+$/;
-    const found = file.type.match(videoRegx);
-    logger.clog(found);
-    const videoType = found[2] ? found[2] + "Custom" : found[1];
-    logger.clog(videoType);
-    player.switchVideo({
-      url: videoUrl,
-      type: videoType
-    });
-    updateOneState({ videoUrl });
-    //释放资源
-    // URL.revokeObjectURL(videoUrl);
+    const { onSwitch } = this.props;
+    onSwitch(file.type, videoUrl);
   };
 
   //下载字幕

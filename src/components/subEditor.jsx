@@ -7,6 +7,7 @@ import Timeline from "./timeline";
 import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
+import videoService from "../services/videoService";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -71,7 +72,7 @@ class SubEditor extends Component {
     },
     //当前选中的字幕
     //播放器
-    player: null,
+    player: null
   };
 
   //组件装载并渲染完成后
@@ -244,7 +245,18 @@ class SubEditor extends Component {
     }
   };
 
-  //增加一行字幕
+  //切换视频
+  handleVideoSwitch = (fileType, videoUrl) => {
+    const videoType = videoService.createVideoType(fileType);
+    //释放前一个视频资源
+    URL.revokeObjectURL(this.state.videoUrl);
+    //更新视频url
+    this.setState({ videoUrl });
+    this.state.player.switchVideo({
+      url: videoUrl,
+      type: videoType
+    });
+  };
 
   render() {
     const props = {
@@ -258,7 +270,8 @@ class SubEditor extends Component {
       onEdit: this.handleSubEdit,
       onCommit: this.handleSubCommit,
       onCancel: this.handleSubCancel,
-      onInsert: this.handleSubInsert
+      onInsert: this.handleSubInsert,
+      onSwitch: this.handleVideoSwitch
     };
 
     return (
@@ -266,7 +279,7 @@ class SubEditor extends Component {
         <GlobalStyle />
         <Header {...props} />
         <Main>
-          <VideoPlayer {...props}/>
+          <VideoPlayer {...props} />
           <SubTable {...props} />
         </Main>
         <Timeline />

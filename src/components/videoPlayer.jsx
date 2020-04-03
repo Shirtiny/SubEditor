@@ -18,8 +18,16 @@ const VideoWrapper = styled.div`
     border-bottom: 1px solid rgb(10, 10, 10);
 
     .dplayer_DefaultSize {
-      width: 100%;
-      height: 100%;
+      width: 90%;
+      height: 90%;
+    }
+
+    .dplayer {
+      max-widtg: 100%;
+      max-height: 100%;
+      border: 4px solid #529393;
+      border-radius: 0.5em;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     }
   }
 `;
@@ -33,13 +41,26 @@ class VideoPlayer extends Component {
     updateOneState({ player });
   };
 
+  error = () => {
+    const div = document.getElementById("dplayer");
+    div.className += " dplayer_DefaultSize";
+  };
+
+  loadstart = () => {
+    const { player } = this.props;
+    //提示载入开始 不然会有加载失败的提示残留
+    player.notice("载入...", 1500, 0.8);
+  };
+
   render() {
     const { videoUrl } = this.props;
     return (
       <VideoWrapper>
         <div className="box">
           <DPlayer
+            id="dplayer"
             className={videoUrl ? "" : "dplayer_DefaultSize"}
+            style={{ resize: "both" }}
             options={{
               video: {
                 url: videoUrl,
@@ -60,6 +81,8 @@ class VideoPlayer extends Component {
               theme: "#ccc"
             }}
             onLoad={this.setArtPlayer}
+            onError={this.error}
+            onLoadstart={this.loadstart}
           />
         </div>
       </VideoWrapper>
