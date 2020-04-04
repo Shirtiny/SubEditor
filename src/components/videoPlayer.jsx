@@ -47,14 +47,17 @@ class VideoPlayer extends Component {
     div.className += " dplayer_DefaultSize";
   };
 
-  loadstart = () => {
-    const { player } = this.props;
-    //提示载入开始 不然会有加载失败的提示残留
-    player.notice("载入...", 1500, 0.8);
+  //视频可以播放
+  canPlay = () => {
+    const { player, onVideoCanPlay } = this.props;
+    //提示可播放 不然会有加载失败的提示残留
+    player.notice("√", 1500, 0.8);
+    //视频载入开始 将subArray 交给worker生成subUrl
+    onVideoCanPlay();
   };
 
   render() {
-    const { videoUrl, picUrl } = this.props;
+    const { videoUrl, picUrl, subUrl } = this.props;
     return (
       <VideoWrapper>
         <div className="box">
@@ -80,11 +83,19 @@ class VideoPlayer extends Component {
                   }
                 }
               },
-              theme: "#ccc"
+              subtitle: {
+                url: subUrl,
+                type: "webvtt",
+                fontSize: "25px",
+                bottom: "3%",
+                color: "#529393"
+              },
+              theme: "#ccc",
+              loop: true
             }}
             onLoad={this.setArtPlayer}
             onError={this.error}
-            onLoadstart={this.loadstart}
+            onCanplay={this.canPlay}
           />
         </div>
       </VideoWrapper>

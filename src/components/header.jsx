@@ -211,7 +211,9 @@ class Header extends Component {
     progressor.done();
   };
 
+  //拿到上传的视频
   handleVideoFile = e => {
+    progressor.start();
     const file = e.currentTarget.files[0];
     const $video = document.createElement("video");
     logger.clog("创建元素：", $video, $video.canPlayType(file.type));
@@ -219,6 +221,7 @@ class Header extends Component {
     logger.clog("视频url", videoUrl);
     const { onSwitch } = this.props;
     onSwitch(file.type, videoUrl);
+    progressor.done();
   };
 
   //下载字幕

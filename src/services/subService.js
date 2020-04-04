@@ -7,6 +7,21 @@ import validateService from "./validateService";
 //sub数组 存在localstorage的key
 const subArrayKey = config.sub_storage_key || "DefaultSubs";
 
+//将字幕的秒数 转为 时:分:秒 的时间轴格式
+export function toTime(number) {
+  return timeFormatter.number2Time(number);
+}
+
+//将时:分:秒 的时间轴格式 转为秒数
+export function toNumber(time) {
+  return Number(timeFormatter.time2Number(time));
+}
+
+//计算两个time的时长
+export function getTimeLength(startTime, endTime) {
+  return Number(timeFormatter.getTimeLength(startTime, endTime));
+}
+
 //PromiseExecutor 将字幕文件读取为字符串
 function readAsTextPE(resolve, reject, file) {
   const reader = new FileReader();
@@ -55,21 +70,6 @@ function analyseSubPE(resolve, reject, subUrl) {
     //返回cues对象
     resolve($track.track.cues);
   };
-}
-
-//将字幕的秒数 转为 时:分:秒 的时间轴格式
-export function toTime(number) {
-  return timeFormatter.number2Time(number);
-}
-
-//将时:分:秒 的时间轴格式 转为秒数
-export function toNumber(time) {
-  return Number(timeFormatter.time2Number(time));
-}
-
-//计算两个time的时长
-export function getTimeLength(startTime, endTime) {
-  return Number(timeFormatter.getTimeLength(startTime, endTime));
 }
 
 //创建字幕数组 参数是一个vtt字幕文件的url
@@ -278,6 +278,36 @@ export function getDefaultSub(startTime, endTime) {
   return new Sub(defaultStart, defaultEnd, defaultContent);
 }
 
+//把subArray加工成url的worker 的工作内容 封装为blob
+function getSubToUrlWorkBlob() {
+  const workContent = `this.addEventListener('message', function (e) {
+    console.log('收到消息: ' + e.data);
+    //转为文本
+    // subArray的格式必须符合存储规范
+    const subArray = e.data;
+    const vttCueStrArray = subArray.map(
+    (sub, index) =>
+      \`\${index + 1}
+\${sub.startTime} --> \${sub.endTime}
+\${sub.content}
+\`
+  );
+    const vttText = "WEBVTT\\n\\n" + vttCueStrArray.join("\\n");
+    const vttBlob = new Blob([vttText], {
+      type: "text/vtt"
+    });
+    const subUrl = URL.createObjectURL(vttBlob);
+    this.postMessage(subUrl);
+  }, false);`;
+  return new Blob([workContent]);
+}
+
+//创建一个worker （进程） ， 用于加工出subArray的 url
+export function createSubUrlWorker() {
+  const workBlob = getSubToUrlWorkBlob();
+  return new Worker(URL.createObjectURL(workBlob));
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
@@ -293,7 +323,8 @@ const subService = {
   getDefaultSub,
   toTime,
   toNumber,
-  getTimeLength
+  getTimeLength,
+  createSubUrlWorker
 };
 
 export default subService;

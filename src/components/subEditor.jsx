@@ -76,6 +76,8 @@ class SubEditor extends Component {
     player: null
   };
 
+  subUrlWorker = subService.createSubUrlWorker();
+
   //组件装载并渲染完成后
   componentDidMount() {
     //首次调整container的宽高
@@ -259,6 +261,23 @@ class SubEditor extends Component {
     });
   };
 
+  //视频载入后 播放器初始化后
+  handleVideoCanPlay = () => {
+    //通知worker 临时测试用 ， 正式使用worker时 需要在每次subArray改变后回调
+    this.subUrlWorker.postMessage(this.state.subArray);
+    //设置收到worker回复时的处理
+    this.subUrlWorker.onmessage = event => {
+      logger.clog(event.data);
+      const subUrl = event.data;
+      //没找到dbplayer切换字幕的函数
+      const track = this.state.player.video.firstElementChild;
+      track.src = subUrl;
+      logger.clog(track);
+
+      this.setState({ subUrl });
+    };
+  };
+
   render() {
     const props = {
       ...this.state,
@@ -272,7 +291,8 @@ class SubEditor extends Component {
       onCommit: this.handleSubCommit,
       onCancel: this.handleSubCancel,
       onInsert: this.handleSubInsert,
-      onSwitch: this.handleVideoSwitch
+      onSwitch: this.handleVideoSwitch,
+      onVideoCanPlay: this.handleVideoCanPlay
     };
 
     return (
