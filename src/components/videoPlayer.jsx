@@ -14,8 +14,9 @@ const VideoWrapper = styled.div`
     justify-content: center;
     align-items: center;
     height: 70%;
-    padding: 10px;
-    border-bottom: 1px solid rgb(10, 10, 10);
+    padding: 15px;
+    // border-bottom: 1px solid rgb(10, 10, 10);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
     .dplayer_DefaultSize {
       width: 90%;
@@ -23,7 +24,7 @@ const VideoWrapper = styled.div`
     }
 
     .dplayer {
-      max-widtg: 100%;
+      max-width: 100%;
       max-height: 100%;
       border: 4px solid #529393;
       border-radius: 0.5em;
@@ -53,17 +54,18 @@ class VideoPlayer extends Component {
   };
 
   render() {
-    const { videoUrl } = this.props;
+    const { videoUrl, picUrl } = this.props;
     return (
       <VideoWrapper>
         <div className="box">
           <DPlayer
             id="dplayer"
-            className={videoUrl ? "" : "dplayer_DefaultSize"}
+            className={picUrl ? "" : "dplayer_DefaultSize"}
             style={{ resize: "both" }}
             options={{
               video: {
                 url: videoUrl,
+                pic: picUrl,
                 customType: {
                   flvCustom: function(videoElement, player) {
                     logger.clog("支持flv");

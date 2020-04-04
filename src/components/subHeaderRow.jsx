@@ -18,7 +18,7 @@ const HeaderRowWrap = styled.div`
   .buttonLike {
     position: relative;
     background: #ffffff;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;

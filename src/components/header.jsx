@@ -12,7 +12,7 @@ const HeaderWrap = styled.header`
   justify-content: space-between;
   align-items: center;
   background-color: hsla(0, 0%, 100%, 0.8);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 
   .band {
     display: flex;

@@ -18,7 +18,7 @@ const TableWrapper = styled.div`
 
     .ReactVirtualized__Table__Grid {
       outline: none;
-      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
       border-radius: 0.5rem;
       min-width: 650px;
 

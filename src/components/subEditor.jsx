@@ -65,6 +65,7 @@ class SubEditor extends Component {
     videoUrl: "",
     subUrl: "",
     subArray: [],
+    picUrl: videoService.getDefaultPicUrl(),
     //容器 装着SubTab 和 VideoPlayer
     container: {
       containerHeight: 10,
