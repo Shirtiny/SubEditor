@@ -35,7 +35,7 @@ const VideoWrapper = styled.div`
 
 class VideoPlayer extends Component {
   //设置播放器
-  setArtPlayer = player => {
+  setArtPlayer = (player) => {
     const { updateOneState, videoUrl } = this.props;
     logger.clog("地址:", videoUrl);
     logger.clog("播放器", player);
@@ -43,7 +43,7 @@ class VideoPlayer extends Component {
   };
 
   error = () => {
-    const div = document.getElementById("dplayer");
+    const div = document.getElementById("player");
     div.className += " dplayer_DefaultSize";
   };
 
@@ -52,7 +52,7 @@ class VideoPlayer extends Component {
     const { player, onVideoCanPlay } = this.props;
     //提示可播放 不然会有加载失败的提示残留
     player.notice("√", 1500, 0.8);
-    //视频载入开始 将subArray 交给worker生成subUrl
+    //将subArray 交给worker生成subUrl
     onVideoCanPlay();
   };
 
@@ -60,9 +60,9 @@ class VideoPlayer extends Component {
     const { videoUrl, picUrl, subUrl } = this.props;
     return (
       <VideoWrapper>
-        <div className="box">
+        <div id="playerBox" className="box">
           <DPlayer
-            id="dplayer"
+            id="player"
             className={picUrl ? "" : "dplayer_DefaultSize"}
             style={{ resize: "both" }}
             options={{
@@ -70,28 +70,41 @@ class VideoPlayer extends Component {
                 url: videoUrl,
                 pic: picUrl,
                 customType: {
-                  flvCustom: function(videoElement, player) {
+                  flvCustom: function (videoElement, player) {
                     logger.clog("支持flv");
                     if (flvjs.isSupported()) {
-                      var flvPlayer = flvjs.createPlayer({
+                      const flvPlayer = flvjs.createPlayer({
                         type: "flv",
-                        url: videoElement.src
+                        url: videoElement.src,
                       });
                       flvPlayer.attachMediaElement(videoElement);
                       flvPlayer.load();
                     }
-                  }
-                }
+                  },
+                },
               },
               subtitle: {
                 url: subUrl,
                 type: "webvtt",
                 fontSize: "25px",
                 bottom: "3%",
-                color: "#529393"
+                color: "#529393",
               },
+              contextmenu: [
+                {
+                  text: "SubEditor",
+                  // link: "https://github.com/DIYgod/DPlayer",
+                },
+                {
+                  text: "等比例适应(以宽度为参考)",
+                  click: (player) => {
+                    const $playerContainer = document.getElementById("player");
+                    $playerContainer.style.height = "";
+                  },
+                },
+              ],
               theme: "#ccc",
-              loop: true
+              loop: true,
             }}
             onLoad={this.setArtPlayer}
             onError={this.error}

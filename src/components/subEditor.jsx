@@ -69,11 +69,11 @@ class SubEditor extends Component {
     //容器 装着SubTab 和 VideoPlayer
     container: {
       containerHeight: 10,
-      containerWidth: 10
+      containerWidth: 10,
     },
     //当前选中的字幕
     //播放器
-    player: null
+    player: null,
   };
 
   subUrlWorker = subService.createSubUrlWorker();
@@ -122,7 +122,7 @@ class SubEditor extends Component {
   };
 
   //更新一个属性 供子组件回调
-  updateOneState = stateObject => {
+  updateOneState = (stateObject) => {
     this.setState(stateObject);
     logger.clog("更新state：", stateObject);
   };
@@ -139,7 +139,7 @@ class SubEditor extends Component {
   };
 
   //存储字幕数组到本地
-  storageSubs = subArray => {
+  storageSubs = (subArray) => {
     subService.saveSubArray(subArray);
   };
 
@@ -150,7 +150,7 @@ class SubEditor extends Component {
   };
 
   //删除一行字幕
-  handleSubRemove = sub => {
+  handleSubRemove = (sub) => {
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
     subArray.splice(index, 1);
@@ -162,10 +162,10 @@ class SubEditor extends Component {
   };
 
   //编辑时
-  handleSubEdit = sub => {
+  handleSubEdit = (sub) => {
     const subArray = [...this.state.subArray];
     //将数组内每个sub的editing重置
-    subArray.map(sub => (sub.editing = false));
+    subArray.map((sub) => (sub.editing = false));
     const index = subArray.indexOf(sub);
     subArray[index].editing = true;
     this.setState({ subArray });
@@ -173,7 +173,7 @@ class SubEditor extends Component {
   };
 
   //取消时
-  handleSubCancel = sub => {
+  handleSubCancel = (sub) => {
     //取消编辑状态
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
@@ -199,7 +199,7 @@ class SubEditor extends Component {
   };
 
   //插入默认字幕
-  handleSubInsert = sub => {
+  handleSubInsert = (sub) => {
     // 要对字幕排序
     //起始时间 有参考的sub 就是 sub的结束时间 +0.001 ， 没有sub 就是0
     let start = sub ? sub.end + 0.001 : 0;
@@ -245,6 +245,8 @@ class SubEditor extends Component {
       this.cleanStorageSubs();
       //重置为空数组
       this.setState({ subArray: [] });
+      //释放这个字幕的url资源
+      URL.revokeObjectURL(this.state.subUrl);
     }
   };
 
@@ -257,23 +259,22 @@ class SubEditor extends Component {
     this.setState({ videoUrl });
     this.state.player.switchVideo({
       url: videoUrl,
-      type: videoType
+      type: videoType,
     });
   };
 
-  //视频载入后 播放器初始化后
+  //视频可播放时
   handleVideoCanPlay = () => {
     //通知worker 临时测试用 ， 正式使用worker时 需要在每次subArray改变后回调
     this.subUrlWorker.postMessage(this.state.subArray);
     //设置收到worker回复时的处理
-    this.subUrlWorker.onmessage = event => {
-      logger.clog(event.data);
+    this.subUrlWorker.onmessage = (event) => {
       const subUrl = event.data;
       //没找到dbplayer切换字幕的函数
+      logger.clog("找track", this.state.player.video);
       const track = this.state.player.video.firstElementChild;
       track.src = subUrl;
-      logger.clog(track);
-
+      //更新记录的字幕url
       this.setState({ subUrl });
     };
   };
@@ -292,7 +293,7 @@ class SubEditor extends Component {
       onCancel: this.handleSubCancel,
       onInsert: this.handleSubInsert,
       onSwitch: this.handleVideoSwitch,
-      onVideoCanPlay: this.handleVideoCanPlay
+      onVideoCanPlay: this.handleVideoCanPlay,
     };
 
     return (
