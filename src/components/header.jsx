@@ -185,26 +185,25 @@ const FileYinput = styled.input`
 class Header extends Component {
   state = {};
 
-  handleSubFile = async e => {
+  handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
-    const { updateOneState, storageSubs } = this.props;
+    const {updateSubArray, updateSubUrl } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
       //开一个预览字幕的提示
       notifier.notify(<p>{vttStr}</p>, "top_center", "default", {
         autoClose: false,
-        className: "textReader"
+        className: "textReader",
       });
       const subUrl = subService.createVttSubBlobUrl(vttStr);
-      updateOneState({ subUrl });
+      updateSubUrl(subUrl,true);
       //从url中读取字幕数组
       const subArray = await subService.createSubArray(subUrl);
-      storageSubs(subArray);
-      updateOneState({ subArray });
+      updateSubArray(subArray, true);
       //释放url资源
-      URL.revokeObjectURL(subUrl);
-      logger.clog("释放资源：", subUrl);
+      // URL.revokeObjectURL(subUrl);
+      // logger.clog("读入完成，释放url资源：", subUrl);
     } catch (e) {
       notifier.notify(`<Header>${e.message}`, "top_center", "warning");
     }
@@ -212,7 +211,7 @@ class Header extends Component {
   };
 
   //拿到上传的视频
-  handleVideoFile = e => {
+  handleVideoFile = (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
     const $video = document.createElement("video");

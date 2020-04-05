@@ -35,11 +35,11 @@ const VideoWrapper = styled.div`
 
 class VideoPlayer extends Component {
   //设置播放器
-  setArtPlayer = (player) => {
-    const { updateOneState, videoUrl } = this.props;
+  setPlayer = (player) => {
+    const { initPlayer, videoUrl } = this.props;
     logger.clog("地址:", videoUrl);
     logger.clog("播放器", player);
-    updateOneState({ player });
+    initPlayer(player);
   };
 
   error = () => {
@@ -106,7 +106,7 @@ class VideoPlayer extends Component {
               theme: "#ccc",
               loop: true,
             }}
-            onLoad={this.setArtPlayer}
+            onLoad={this.setPlayer}
             onError={this.error}
             onCanplay={this.canPlay}
           />

@@ -76,7 +76,8 @@ class SubEditor extends Component {
     player: null,
   };
 
-  subUrlWorker = subService.createSubUrlWorker();
+  //用来加工字幕url的worker
+  subUrlWorker = null;
 
   //组件装载并渲染完成后
   componentDidMount() {
@@ -86,6 +87,11 @@ class SubEditor extends Component {
     this.addResizeListener();
     //初始化字幕表
     this.initSubTable();
+    //设置 收到worker回复时的处理
+    this.subUrlWorker = subService.createSubUrlWorker((subUrl) => {
+      //拿到url后 更新并装载
+      this.updateSubUrl(subUrl, true);
+    });
   }
 
   //卸载组件前
@@ -127,14 +133,61 @@ class SubEditor extends Component {
     logger.clog("更新state：", stateObject);
   };
 
-  //初始化字幕表
-  initSubTable = async () => {
-    try {
-      const subArray = await subService.getSubArray();
-      logger.clog("初始化字幕", subArray);
-      this.setState({ subArray });
-    } catch (e) {
-      notifier.notify("读取字幕失败，请尝试清除缓存", "top_center", "info");
+  /**@description 更新字幕数组
+   * @param {array} subArray 字幕数组
+   * @param {boolean} willStorage 是否存储
+   */
+  updateSubArray = (subArray, willStorage = false) => {
+    this.setState({ subArray }, () => {
+      // 回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
+      //如果不需要存储的更新 则结束
+      if (!willStorage) return;
+      //存储字幕
+      this.storageSubs(this.state.subArray);
+      // 交给worker前 需要将字幕数组转为规范模式
+      this.subUrlWorker.postMessage(
+        this.state.subArray.map((sub) => subService.mapSubToFullModel(sub))
+      );
+    });
+  };
+
+  /**@description 更新字幕url
+   * @param {string} subUrl 字幕url
+   * @param {boolean} willLoadTrack 是否载入字幕给track
+   */
+  updateSubUrl = (subUrl, willLoadTrack = false) => {
+    //释放上一个url资源
+    URL.revokeObjectURL(this.state.subUrl);
+    logger.clog("释放：", this.state.subUrl);
+    this.setState({ subUrl }, () => {
+      //如果需要载入字幕
+      if (willLoadTrack) {
+        logger.clog("装载：", this.state.subUrl);
+        //装载字幕
+        this.loadTrack(this.state.subUrl);
+      }
+    });
+  };
+
+  //为播放器装载字幕
+  loadTrack = (subUrl) => {
+    //清除播放器中已经渲染的p标签字幕 只会渲染一行
+    this.cleanSubP();
+    if (!this.state.player || !this.state.player.video) return;
+    //没找到dbplayer切换字幕的函数
+    const track = this.state.player.video.firstElementChild;
+    track.default = true;
+    track.kind = "subtitles";
+    track.src = subUrl;
+  };
+
+  //清除播放器残留的字幕 已经被渲染在p标签里的字幕 只会渲染一行 也只有一行
+  cleanSubP = () => {
+    const subtitleDiv = document.getElementsByClassName("dplayer-subtitle")[0];
+    const p = subtitleDiv.firstChild;
+    if (p) {
+      subtitleDiv.removeChild(p);
+      logger.clog("清除字幕残留", p);
     }
   };
 
@@ -149,15 +202,28 @@ class SubEditor extends Component {
     logger.clog("清空存储的字幕");
   };
 
+  //初始化字幕表
+  initSubTable = async () => {
+    try {
+      const subArray = await subService.getSubArray();
+      logger.clog("从存储中，初始化字幕", subArray);
+      //不需要存储
+      this.updateSubArray(subArray);
+      const subUrl = subService.createSubArrayUrl(subArray);
+      //更新记录的字幕url 并载入字幕 这样就不需要在初始化数组的时候 再去存一遍了
+      this.updateSubUrl(subUrl, true);
+    } catch (e) {
+      notifier.notify("读取字幕失败，请尝试清除缓存", "top_center", "info");
+    }
+  };
+
   //删除一行字幕
   handleSubRemove = (sub) => {
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
     subArray.splice(index, 1);
-    //更新state 以及回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
-    this.setState({ subArray }, () => {
-      this.storageSubs(this.state.subArray);
-    });
+    //更新state 并存储 每次存储都会更新url
+    this.updateSubArray(subArray, true);
     logger.clog("删除", sub, index);
   };
 
@@ -168,7 +234,7 @@ class SubEditor extends Component {
     subArray.map((sub) => (sub.editing = false));
     const index = subArray.indexOf(sub);
     subArray[index].editing = true;
-    this.setState({ subArray });
+    this.updateSubArray(subArray);
     logger.clog("handleEdit", sub, index);
   };
 
@@ -178,7 +244,7 @@ class SubEditor extends Component {
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(sub);
     subArray[index].editing = false;
-    this.setState({ subArray });
+    this.updateSubArray(subArray);
   };
 
   //提交时
@@ -191,10 +257,8 @@ class SubEditor extends Component {
     //取消编辑状态
     subArray[index].editing = false;
     //提交
-    //更新state 以及回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
-    this.setState({ subArray }, () => {
-      this.storageSubs(this.state.subArray);
-    });
+    //更新state 并存储 如果存储 则会更新url
+    this.updateSubArray(subArray, true);
     logger.clog("提交：", sub, editingSub, subArray);
   };
 
@@ -221,7 +285,7 @@ class SubEditor extends Component {
     //将字幕插入到指定位置
     subArray.splice(index + 1, 0, dSub);
     //更新
-    this.setState({ subArray });
+    this.updateSubArray(subArray);
     logger.clog("插入：", dSub);
   };
 
@@ -243,11 +307,18 @@ class SubEditor extends Component {
     if (isConfirm) {
       //从存储中移除
       this.cleanStorageSubs();
+      //字幕url置空 并载入给track（每次更新 都会释放上一个url资源
+      this.updateSubUrl("", true);
       //重置为空数组
-      this.setState({ subArray: [] });
-      //释放这个字幕的url资源
-      URL.revokeObjectURL(this.state.subUrl);
+      const subArray = [];
+      this.updateSubArray(subArray);
     }
+  };
+
+  //初始化视频播放器对象
+  handlePlayerInit = (player) => {
+    logger.clog("初始化播放器");
+    this.setState({ player });
   };
 
   //切换视频
@@ -263,26 +334,17 @@ class SubEditor extends Component {
     });
   };
 
-  //视频可播放时
+  //视频可播放时 视频准备就绪后
   handleVideoCanPlay = () => {
-    //通知worker 临时测试用 ， 正式使用worker时 需要在每次subArray改变后回调
-    this.subUrlWorker.postMessage(this.state.subArray);
-    //设置收到worker回复时的处理
-    this.subUrlWorker.onmessage = (event) => {
-      const subUrl = event.data;
-      //没找到dbplayer切换字幕的函数
-      logger.clog("找track", this.state.player.video);
-      const track = this.state.player.video.firstElementChild;
-      track.src = subUrl;
-      //更新记录的字幕url
-      this.setState({ subUrl });
-    };
+    logger.clog("视频已经就绪");
   };
 
   render() {
     const props = {
       ...this.state,
       updateOneState: this.updateOneState,
+      updateSubArray: this.updateSubArray,
+      updateSubUrl: this.updateSubUrl,
       storageSubs: this.storageSubs,
       cleanStorageSubs: this.cleanStorageSubs,
       onDownload: this.handleSubDownload,
@@ -293,6 +355,7 @@ class SubEditor extends Component {
       onCancel: this.handleSubCancel,
       onInsert: this.handleSubInsert,
       onSwitch: this.handleVideoSwitch,
+      initPlayer: this.handlePlayerInit,
       onVideoCanPlay: this.handleVideoCanPlay,
     };
 

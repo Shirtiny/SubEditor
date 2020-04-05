@@ -27,7 +27,7 @@ function readAsTextPE(resolve, reject, file) {
   const reader = new FileReader();
   reader.readAsText(file);
   //出错时触发
-  reader.onerror = error => {
+  reader.onerror = (error) => {
     reject(error);
   };
   //读取完成时 成功或失败 触发
@@ -62,7 +62,7 @@ function analyseSubPE(resolve, reject, subUrl) {
   //这里需要执行很长时间
   $track.src = subUrl;
   //执行中出错
-  $track.onerror = error => {
+  $track.onerror = (error) => {
     reject(error);
   };
   //执行完成后 成功或失败
@@ -86,7 +86,7 @@ export async function createSubArray(subUrl) {
   }
   const VTTCues = Array.from(subCues || {});
   logger.clog("得到VTTCues数组：", VTTCues);
-  const subArray = VTTCues.map(c => {
+  const subArray = VTTCues.map((c) => {
     return new Sub(c.startTime, c.endTime, c.text);
   });
   logger.clog("得到字幕数组：", subArray);
@@ -96,7 +96,7 @@ export async function createSubArray(subUrl) {
 //创建vtt字幕的Blob对象 方便track分析 参数为vtt格式的字符串 返回该对象的url
 export function createVttSubBlobUrl(vttText) {
   const vttBlob = new Blob([vttText], {
-    type: "text/vtt"
+    type: "text/vtt",
   });
   logger.clog("vtt字幕Blob对象", vttBlob);
   return URL.createObjectURL(vttBlob);
@@ -113,14 +113,14 @@ export function mapSubToFullModel(sub) {
     end: toNumber(fEndTime),
     endTime: fEndTime,
     length: getTimeLength(fStartTime, fEndTime),
-    content: sub.content
+    content: sub.content,
   };
 }
 
 //PromiseExecutor 将字幕数组存入localStorage
 function storageSubsPE(resolve, reject, subArray) {
   try {
-    const subs = subArray.map(sub => mapSubToFullModel(sub));
+    const subs = subArray.map((sub) => mapSubToFullModel(sub));
     const json = JSON.stringify(subs);
     localStorage.setItem(subArrayKey, json);
     resolve(json);
@@ -186,7 +186,7 @@ export function getSubLength(sub) {
   //需要先校验startTime和endTime的格式是否正确
   const schema = {
     startTime: validateService.schema["startTime"],
-    endTime: validateService.schema["endTime"]
+    endTime: validateService.schema["endTime"],
   };
   const error = validateService.validate(sub, schema, { abortEarly: true });
   if (error) {
@@ -229,6 +229,15 @@ export function downloadFromUrl(url, fileName) {
   document.body.removeChild(aLink);
 }
 
+//加工出字幕数组的url
+export function createSubArrayUrl(subArray) {
+  if (!subArray || subArray.length === 0) return "";
+  //将数组转为vtt格式的字符串
+  const vttText = mapSubArray2Text(subArray);
+  //由字符串 转为vtt Blob文件对象 然后创建url
+  return createVttSubBlobUrl(vttText);
+}
+
 //下载编辑好的字幕文件 从存储中读取
 export async function downloadSubFile() {
   try {
@@ -236,10 +245,8 @@ export async function downloadSubFile() {
     const subArray = await getSubArray();
     //当读取到的subArray是null 或者为空数组时 返回false
     if (!subArray || subArray.length === 0) return false;
-    //将数组转为vtt格式的字符串
-    const vttText = mapSubArray2Text(subArray);
-    //由字符串 转为vtt Blob文件对象 然后创建url
-    const url = createVttSubBlobUrl(vttText);
+    //加工出字幕数组的url
+    const url = createSubArrayUrl(subArray);
     //设置文件名 通过url 下载字幕文件
     downloadFromUrl(url, "字幕.vtt");
     //返回true 表示下载事件响应成功
@@ -278,10 +285,10 @@ export function getDefaultSub(startTime, endTime) {
   return new Sub(defaultStart, defaultEnd, defaultContent);
 }
 
+// 交给worker前 需要将字幕数组转为规范模式
 //把subArray加工成url的worker 的工作内容 封装为blob
 function getSubToUrlWorkBlob() {
   const workContent = `this.addEventListener('message', function (e) {
-    console.log('收到消息: ' + e.data);
     //转为文本
     // subArray的格式必须符合存储规范
     const subArray = e.data;
@@ -303,9 +310,17 @@ function getSubToUrlWorkBlob() {
 }
 
 //创建一个worker （进程） ， 用于加工出subArray的 url
-export function createSubUrlWorker() {
+export function createSubUrlWorker(receiveUrl) {
   const workBlob = getSubToUrlWorkBlob();
-  return new Worker(URL.createObjectURL(workBlob));
+  const subUrlWorker = new Worker(URL.createObjectURL(workBlob));
+  //设置 收到worker回复时的处理
+  subUrlWorker.onmessage = (event) => {
+    //subUrlworker 回复的为最新的字幕url
+    const subUrl = event.data;
+    //接收worker回复的url
+    receiveUrl(subUrl);
+  };
+  return subUrlWorker;
 }
 
 const subService = {
@@ -318,13 +333,14 @@ const subService = {
   getSubArray,
   getSubLength,
   mapSubArray2Text,
+  createSubArrayUrl,
   downloadFromUrl,
   downloadSubFile,
   getDefaultSub,
   toTime,
   toNumber,
   getTimeLength,
-  createSubUrlWorker
+  createSubUrlWorker,
 };
 
 export default subService;
