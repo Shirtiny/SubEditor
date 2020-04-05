@@ -88,7 +88,7 @@ class VideoPlayer extends Component {
                 type: "webvtt",
                 fontSize: "25px",
                 bottom: "3%",
-                color: "#529393",
+                color: "rgb(37, 211, 211)"
               },
               contextmenu: [
                 {

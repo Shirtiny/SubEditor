@@ -27,6 +27,34 @@ const TableWrapper = styled.div`
       }
     }
 
+    .gridScrollWrap {
+      // fireFox
+      scrollbar-color: #6fd1d8 #fff;
+      // scrollbar-color: light;
+      scrollbar-width: thin;
+      // scrollbar-width: none;
+
+      //Safari and Chrome
+      ::-webkit-scrollbar {
+        // display: none;
+        width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
+      }
+      ::-webkit-scrollbar-thumb {
+        /*滚动条里面小方块*/
+        border-radius: 10px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        background: #6fd1d8;
+        height: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        /*滚动条里面轨道*/
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        background: #fff;
+      }
+    }
+
     .input,
     .textarea {
       border: none;
@@ -60,11 +88,11 @@ class SubTable extends Component {
       end: 0,
       endTime: "",
       length: 0,
-      content: ""
+      content: "",
     },
     errors: {},
     //是否显示index true：显示序号  false: 显示插入按钮
-    displayIndex: true
+    displayIndex: true,
   };
 
   //校验规则
@@ -80,13 +108,17 @@ class SubTable extends Component {
   toastId_validatePropertys = {
     startTime: null,
     endTime: null,
-    content: null
+    content: null,
   };
 
   componentDidMount() {
     //初始化校验规则 、 错误信息模版 、变量名
     this.schema = validateService.getEditingSubSchema();
     this.errorSchema = validateService.getEditingErrorSchema();
+  }
+
+  componentDidUpdate() {
+    this.scrollToButtom();
   }
 
   //全表单校验
@@ -100,7 +132,7 @@ class SubTable extends Component {
     let errors = {};
     //如果数据格式的校验有错误
     if (errorPaths) {
-      errorPaths.map(path => (errors[path] = this.errorSchema[path]));
+      errorPaths.map((path) => (errors[path] = this.errorSchema[path]));
     }
     //特殊校验
     // ...
@@ -118,7 +150,7 @@ class SubTable extends Component {
   };
 
   //全校验提示
-  toast_validate = errorMessages => {
+  toast_validate = (errorMessages) => {
     //关闭之前的提示
     notifier.done(this.toastId_validate);
     this.toastId_validate = notifier.bootstrapToast(
@@ -133,7 +165,7 @@ class SubTable extends Component {
   //单属性校验
   validateProperty = (name, value) => {
     const schema = {
-      [name]: this.schema[name]
+      [name]: this.schema[name],
     };
     // 校验无错返回false 有错返回true
     const flag = validateService.validateProperty(name, value, schema);
@@ -168,7 +200,7 @@ class SubTable extends Component {
     const index = ids.indexOf(currentId);
     ids.splice(index, 1);
     //关闭 ids数组的所有值
-    ids.map(id => notifier.done(id));
+    ids.map((id) => notifier.done(id));
     //当 currentId 没有在工作时 弹出新的提示
     if (!notifier.isActive(currentId)) {
       this.toastId_validatePropertys[name] = notifier.notify(
@@ -177,7 +209,7 @@ class SubTable extends Component {
         "default",
         {
           hideProgressBar: true,
-          autoClose: 5000
+          autoClose: 5000,
         },
         "flip"
       );
@@ -207,7 +239,7 @@ class SubTable extends Component {
   };
 
   //在编辑时 回显表单数据 校验数据以更新errors
-  handleRowEdit = sub => {
+  handleRowEdit = (sub) => {
     const { onEdit } = this.props;
     const editingSub = subService.mapSubToFullModel(sub);
     this.setState({ editingSub }, () => {
@@ -219,7 +251,7 @@ class SubTable extends Component {
   };
 
   //提交前
-  handleRowCommit = sub => {
+  handleRowCommit = (sub) => {
     const { onCommit } = this.props;
     //校验全表单数据
     const errors = this.validate();
@@ -237,21 +269,21 @@ class SubTable extends Component {
     }
   };
 
-  handleRowRemove = sub => {
+  handleRowRemove = (sub) => {
     const { onRemove } = this.props;
     logger.clog("删除一行：", sub);
     onRemove(sub);
   };
 
   //取消编辑
-  handleRowCancel = sub => {
+  handleRowCancel = (sub) => {
     const { onCancel } = this.props;
     logger.clog("取消编辑：", sub);
     onCancel(sub);
   };
 
   //改变table的背景色 ，ps： table被header 和 grid覆盖
-  tableBackGroundColor = subArray => {
+  tableBackGroundColor = (subArray) => {
     const color = subArray && subArray.length === 0 ? "#e3eeee" : "#c0d9d9";
     let $table = document.getElementById("vSubTable");
     if ($table) {
@@ -260,15 +292,37 @@ class SubTable extends Component {
   };
 
   //序号显示 的切换
-  handleDisplayIndexSwitch = boolean => {
+  handleDisplayIndexSwitch = (boolean) => {
     const displayIndex = boolean ? true : false;
     this.setState({ displayIndex });
   };
 
   //插入
-  handleRowInsert = sub => {
+  handleRowInsert = (sub) => {
     const { onInsert } = this.props;
     onInsert(sub);
+  };
+
+  //将grid的滚动条 滚到底部
+  scrollToButtom = () => {
+    //移动滚条到底部
+    const scrollWrap = document.getElementsByClassName("gridScrollWrap")[0];
+    let scrollTop = scrollWrap.scrollTop;
+    let scrollHeight = scrollWrap.scrollHeight;
+    let clientHeight = scrollWrap.clientHeight;
+    console.log(
+      "scrollHeight:",
+      scrollHeight,
+      ";scrollTop:",
+      scrollTop,
+      ";clientHeight:",
+      clientHeight,
+      ";scrollHeight - scrollTop - clientHeight:",
+      scrollHeight - scrollTop - clientHeight
+    );
+    //开始移动
+    scrollWrap.scrollTop =
+      scrollWrap.scrollTop + (scrollHeight - scrollTop - clientHeight);
   };
 
   render() {
@@ -284,6 +338,7 @@ class SubTable extends Component {
           headerHeight={35}
           width={containerWidth / 2}
           height={containerHeight}
+          gridClassName={"gridScrollWrap"}
           rowHeight={60}
           // scrollToIndex={currentIndex}
           rowCount={subArray.length}
@@ -296,7 +351,7 @@ class SubTable extends Component {
               onDisplayIndexSwitch={this.handleDisplayIndexSwitch}
             />
           )}
-          rowRenderer={rowProps => (
+          rowRenderer={(rowProps) => (
             <SubRow
               {...rowProps}
               onRowRemove={this.handleRowRemove}
