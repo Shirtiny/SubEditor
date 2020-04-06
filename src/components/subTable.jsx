@@ -29,7 +29,6 @@ const TableWrapper = styled.div`
 
     .gridScrollWrap {
       overflow: hidden !important;
-      transition: opacity 0.4s ease-in-out;
       :hover {
         overflow-y: scroll !important;
 

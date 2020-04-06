@@ -343,6 +343,16 @@ class SubEditor extends Component {
   //视频可播放时 视频准备就绪后
   handleVideoCanPlay = () => {
     logger.clog("视频已经就绪");
+    const isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > 0;
+    //如果是chrome 则把字幕改为透明 避免双字幕
+    if (isChrome) {
+      const subtitleDiv = document.getElementsByClassName(
+        "dplayer-subtitle"
+      )[0];
+      if (subtitleDiv) {
+        subtitleDiv.style.opacity = 0
+      }
+    }
   };
 
   render() {
