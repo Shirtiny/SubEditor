@@ -7,7 +7,7 @@ const RowWrap = styled.div`
     background-color: #f2f2f2;
     // border-bottom: 1px solid rgb(36, 41, 45);
     min-width: 650px;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
 
     //取消浏览器的双击选中
     -moz-user-select: none; /*火狐*/
@@ -114,9 +114,11 @@ const RowWrap = styled.div`
     bottom: 15px;
   }
 
-  #rowId div.lineBox_onHover:hover + .rowClasses {
-    // border: 3px solid #00b7ff;
-    border-bottom: 5px solid #00a1d6 !important;
+  //当scroll滚到当前row row的动画
+  .scrollToRowAnimation {
+    animation: scrollToRowAnimation 3s;
+    //播放次数无限制
+    // animation-iteration-count: infinite;
   }
 `;
 
@@ -133,7 +135,8 @@ const SubRow = ({
   editingSub,
   errors,
   onInputValueChange,
-  displayIndex
+  displayIndex,
+  scrollIndex,
 }) => {
   const hiddenOnEditing = "hidden_onEditing";
   const displayOnEditing = ["editing_default_hidden", "display_onEditing"].join(
@@ -152,7 +155,10 @@ const SubRow = ({
           className,
           "rowClasses",
           index % 2 ? "odd" : "",
-          sub.editing ? "onEditing" : ""
+          sub.editing ? "onEditing" : "",
+          scrollIndex !== 0 && scrollIndex === index
+            ? "scrollToRowAnimation"
+            : "",
         ].join(" ")}
         onDoubleClick={() => onRowEdit(sub)}
       >

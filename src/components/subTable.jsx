@@ -28,30 +28,36 @@ const TableWrapper = styled.div`
     }
 
     .gridScrollWrap {
-      // fireFox
-      scrollbar-color: #6fd1d8 #fff;
-      // scrollbar-color: light;
-      scrollbar-width: thin;
-      // scrollbar-width: none;
+      overflow: hidden !important;
+      transition: opacity 0.4s ease-in-out;
+      :hover {
+        overflow-y: scroll !important;
 
-      //Safari and Chrome
-      ::-webkit-scrollbar {
-        // display: none;
-        width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
-      }
-      ::-webkit-scrollbar-thumb {
-        /*滚动条里面小方块*/
-        border-radius: 10px;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-        background: #6fd1d8;
-        height: 10px;
-      }
+        // fireFox
+        scrollbar-color: #6fd1d8 #fff;
+        // scrollbar-color: light;
+        scrollbar-width: thin;
+        // scrollbar-width: none;
 
-      ::-webkit-scrollbar-track {
-        /*滚动条里面轨道*/
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-        background: #fff;
+        //Safari and Chrome
+        ::-webkit-scrollbar {
+          // display: none;
+          width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
+        }
+        ::-webkit-scrollbar-thumb {
+          /*滚动条里面小方块*/
+          border-radius: 10px;
+          box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+          background: #6fd1d8;
+          height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+          /*滚动条里面轨道*/
+          box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+          border-radius: 10px;
+          background: #fff;
+        }
       }
     }
 
@@ -118,7 +124,7 @@ class SubTable extends Component {
   }
 
   componentDidUpdate() {
-    this.scrollToButtom();
+    // this.scrollToButtom();
   }
 
   //全表单校验
@@ -305,12 +311,13 @@ class SubTable extends Component {
 
   //将grid的滚动条 滚到底部
   scrollToButtom = () => {
-    //移动滚条到底部
+    //移动滚条到底部 固定移动一格更好？
     const scrollWrap = document.getElementsByClassName("gridScrollWrap")[0];
     let scrollTop = scrollWrap.scrollTop;
     let scrollHeight = scrollWrap.scrollHeight;
     let clientHeight = scrollWrap.clientHeight;
     console.log(
+      scrollWrap,
       "scrollHeight:",
       scrollHeight,
       ";scrollTop:",
@@ -326,7 +333,7 @@ class SubTable extends Component {
   };
 
   render() {
-    const { subArray, container, onInsert } = this.props;
+    const { subArray, scrollIndex, container, onInsert } = this.props;
     const { containerHeight, containerWidth } = container;
     //table背景色 无内容时为银色 有内容和root背景一样
     this.tableBackGroundColor(subArray);
@@ -340,7 +347,7 @@ class SubTable extends Component {
           height={containerHeight}
           gridClassName={"gridScrollWrap"}
           rowHeight={60}
-          // scrollToIndex={currentIndex}
+          scrollToIndex={scrollIndex}
           rowCount={subArray.length}
           rowGetter={({ index }) => subArray[index]}
           headerRowRenderer={() => (
@@ -361,6 +368,7 @@ class SubTable extends Component {
               onRowInsert={this.handleRowInsert}
               onInputValueChange={this.handleInputValue}
               {...this.state}
+              scrollIndex={scrollIndex}
             />
           )}
         ></Table>

@@ -19,3 +19,13 @@ div[class*="Toastify__toast-container--top"] {
   resize: both;
   /* height: 350px; */
 }
+
+/* 动画  animation: scrollToRowAnimation 5s; */
+@keyframes scrollToRowAnimation {
+  0% {
+    background: #02c0ff;
+  }
+  25% {
+    background: #04e8e8;
+  }
+}

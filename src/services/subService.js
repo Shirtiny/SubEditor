@@ -89,8 +89,9 @@ export async function createSubArray(subUrl) {
   const subArray = VTTCues.map((c) => {
     return new Sub(c.startTime, c.endTime, c.text);
   });
-  logger.clog("得到字幕数组：", subArray);
-  return subArray;
+  const fullSubArray = subArray.map((sub) => mapSubToFullModel(sub));
+  logger.clog("得到字幕数组：", fullSubArray);
+  return fullSubArray;
 }
 
 //创建vtt字幕的Blob对象 方便track分析 参数为vtt格式的字符串 返回该对象的url
@@ -102,7 +103,7 @@ export function createVttSubBlobUrl(vttText) {
   return URL.createObjectURL(vttBlob);
 }
 
-//规范化 将sub对象的秒数转为time时间轴类型分别拿出来 映射成localstorage的存储模型
+//规范化 将sub对象的time时间轴类型转为秒数分别拿出来 映射成localstorage的存储模型
 export function mapSubToFullModel(sub) {
   //小数点后补零 没有小数点则不补
   const fStartTime = formateTime(sub.startTime);
@@ -323,6 +324,15 @@ export function createSubUrlWorker(receiveUrl) {
   return subUrlWorker;
 }
 
+//将字幕按照开始时间排序
+export function sortSubArray(subArray) {
+  const sortedArray = [...subArray];
+  sortedArray.sort((pre, next) => {
+    return pre.start - next.start;
+  });
+  return sortedArray;
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
@@ -341,6 +351,7 @@ const subService = {
   toNumber,
   getTimeLength,
   createSubUrlWorker,
+  sortSubArray,
 };
 
 export default subService;

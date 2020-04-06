@@ -71,7 +71,8 @@ class SubEditor extends Component {
       containerHeight: 10,
       containerWidth: 10,
     },
-    //当前选中的字幕
+    //字幕表滚动到的index
+    scrollIndex: 0,
     //播放器
     player: null,
   };
@@ -138,16 +139,18 @@ class SubEditor extends Component {
    * @param {boolean} willStorage 是否存储
    */
   updateSubArray = (subArray, willStorage = false) => {
-    this.setState({ subArray }, () => {
+    // 将字幕数组转为规范模式
+    subArray.map((sub) => subService.mapSubToFullModel(sub));
+    //排序
+    const sortedArray = subService.sortSubArray(subArray);
+    this.setState({ subArray: sortedArray }, () => {
       // 回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
       //如果不需要存储的更新 则结束
       if (!willStorage) return;
       //存储字幕
       this.storageSubs(this.state.subArray);
-      // 交给worker前 需要将字幕数组转为规范模式
-      this.subUrlWorker.postMessage(
-        this.state.subArray.map((sub) => subService.mapSubToFullModel(sub))
-      );
+      // 交给worker前 需要将字幕数组转为规范模式 前面已经转过了
+      this.subUrlWorker.postMessage(this.state.subArray);
     });
   };
 
@@ -286,6 +289,9 @@ class SubEditor extends Component {
     subArray.splice(index + 1, 0, dSub);
     //更新
     this.updateSubArray(subArray);
+    //将滚条滚到刚刚的位置
+    const scrollIndex = index + 1;
+    this.setState({ scrollIndex });
     logger.clog("插入：", dSub);
   };
 
