@@ -39,11 +39,11 @@ const Waveform = React.memo(
       wf = new WF({
         container: $waveform.current,
         mediaElement: player.video,
-        backgroundColor: "rgb(20, 23, 38)",
+        backgroundColor: "#529393",
         waveColor: "rgba(255, 255, 255, 0.1)",
-        progressColor: "rgba(255, 255, 255, 0.5)",
+        progressColor: "#c0d9d9 ",
         gridColor: "rgba(255, 255, 255, 0.05)",
-        rulerColor: "rgba(255, 255, 255, 0.5)",
+        rulerColor: "#fff",
       });
 
       wf.on("fileSize", setFileSize);
