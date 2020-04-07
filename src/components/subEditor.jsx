@@ -59,6 +59,7 @@ const Main = styled.div`
   flex: 1;
 `;
 
+//导航栏50px 底部时间轴150px
 class SubEditor extends Component {
   state = {
     // https://sh-rep.oss-cn-hongkong.aliyuncs.com/mll.mp4   /friday.mp4
@@ -374,7 +375,7 @@ class SubEditor extends Component {
       initPlayer: this.handlePlayerInit,
       onVideoCanPlay: this.handleVideoCanPlay,
     };
-
+    
     return (
       <React.Fragment>
         <GlobalStyle />
@@ -383,7 +384,7 @@ class SubEditor extends Component {
           <VideoPlayer {...props} />
           <SubTable {...props} />
         </Main>
-        <Timeline />
+        <Timeline {...props}/>
       </React.Fragment>
     );
   }

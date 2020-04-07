@@ -1,9 +1,13 @@
 import React from "react";
+import WaveTime from "./WaveTime";
+
 
 const Test = () => {
+ 
   return (
     <div className="container">
       <video
+        id="video"
         controls
         width="900px"
         src="http://localhost:2020/friday.mp4"
@@ -15,6 +19,7 @@ const Test = () => {
           src="http://localhost:2020/friday.vtt"
         />
       </video>
+      <WaveTime />
     </div>
   );
 };

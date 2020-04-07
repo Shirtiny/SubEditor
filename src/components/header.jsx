@@ -7,6 +7,7 @@ import subService from "../services/subService";
 import logger from "../utils/logger";
 
 const HeaderWrap = styled.header`
+  //导航栏固定50px
   height: 50px;
   display: flex;
   justify-content: space-between;

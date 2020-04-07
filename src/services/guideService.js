@@ -1,5 +1,5 @@
 const subEditorPath = "/";
-const trackTest = "/trackTest"
+const trackTest = "/test"
 
 const guideService = {
   subEditorPath,

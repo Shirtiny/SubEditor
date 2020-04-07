@@ -73,7 +73,8 @@ class VideoPlayer extends Component {
       logger.clog(player.video.currentTime);
       //如果视频没有暂停 下一帧继续调用frameWork
       if (!player.video.paused) {
-        window.requestAnimationFrame(frameWork);
+        //暂时停用
+        // window.requestAnimationFrame(frameWork);
       }
     }
     //作为启动
@@ -114,6 +115,7 @@ class VideoPlayer extends Component {
                       const flvPlayer = flvjs.createPlayer({
                         type: "flv",
                         url: videoElement.src,
+                        hasAudio: true,
                       });
                       flvPlayer.attachMediaElement(videoElement);
                       flvPlayer.load();
