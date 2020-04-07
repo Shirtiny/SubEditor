@@ -26,6 +26,9 @@ const VideoWrapper = styled.div`
     .dplayer {
       max-width: 100%;
       max-height: 100%;
+    }
+
+    .playerBorder {
       border: 4px solid #529393;
       border-radius: 0.5em;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -65,9 +68,30 @@ class VideoPlayer extends Component {
   //播放中
   playing = () => {
     const { player } = this.props;
-    setInterval(() => {
+    //1秒60帧 根据屏幕刷新虑有所变化，time为时间戳 ，每一帧的工作内容为：
+    function frameWork(time) {
       logger.clog(player.video.currentTime);
-    }, 100);
+      //如果视频没有暂停 下一帧继续调用frameWork
+      if (!player.video.paused) {
+        window.requestAnimationFrame(frameWork);
+      }
+    }
+    //作为启动
+    window.requestAnimationFrame(frameWork);
+  };
+
+  //全屏时
+  fullscreen = () => {
+    const $playerContainer = document.getElementById("player");
+    $playerContainer.classList.remove("playerBorder");
+    $playerContainer.style.resize = "";
+  };
+
+  //全屏取消时
+  fullscreenCancel = () => {
+    const $playerContainer = document.getElementById("player");
+    $playerContainer.classList.add("playerBorder");
+    $playerContainer.style.resize = "both";
   };
 
   render() {
@@ -77,7 +101,7 @@ class VideoPlayer extends Component {
         <div id="playerBox" className="box">
           <DPlayer
             id="player"
-            className={picUrl ? "" : "dplayer_DefaultSize"}
+            className={"playerBorder " + (picUrl ? "" : "dplayer_DefaultSize")}
             style={{ resize: "both" }}
             options={{
               video: {
@@ -144,6 +168,8 @@ class VideoPlayer extends Component {
             onError={this.error}
             onCanplay={this.canPlay}
             onPlaying={this.playing}
+            onFullscreen={this.fullscreen}
+            onFullscreenCancel={this.fullscreenCancel}
           />
         </div>
       </VideoWrapper>
