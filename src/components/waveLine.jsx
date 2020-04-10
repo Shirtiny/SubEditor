@@ -13,10 +13,10 @@ const LineWrapper = styled.div`
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 `;
 
-const WaveLine = () => {
+const WaveLine = ({currentTime}) => {
   return (
     <LineWrapper>
-      <ShWave duration={15} backgroundColor={"#529393"} currentTime={1000} throttleWait={100}/>
+      <ShWave duration={15} backgroundColor={"#529393"} currentTime={currentTime} throttleWait={100}/>
     </LineWrapper>
   );
 };

@@ -67,14 +67,14 @@ class VideoPlayer extends Component {
 
   //播放中
   playing = () => {
-    const { player } = this.props;
+    const { player, updateCurrentTime } = this.props;
     //1秒60帧 根据屏幕刷新虑有所变化，time为时间戳 ，每一帧的工作内容为：
     function frameWork(time) {
-      logger.clog(player.video.currentTime);
       //如果视频没有暂停 下一帧继续调用frameWork
       if (!player.video.paused) {
-        //暂时停用
-        // window.requestAnimationFrame(frameWork);
+        //更新当前时间
+        updateCurrentTime(player.video.currentTime);
+        window.requestAnimationFrame(frameWork);
       }
     }
     //作为启动

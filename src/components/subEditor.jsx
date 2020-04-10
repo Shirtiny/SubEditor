@@ -3,7 +3,7 @@ import Header from "./header";
 import styled, { createGlobalStyle } from "styled-components";
 import SubTable from "./subTable";
 import VideoPlayer from "./videoPlayer";
-import Timeline from "./timeline";
+// import Timeline from "./timeline";
 import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
@@ -77,6 +77,8 @@ class SubEditor extends Component {
     scrollIndex: 0,
     //播放器
     player: null,
+    //当前时间
+    currentTime: 0,
   };
 
   //用来加工字幕url的worker
@@ -352,9 +354,14 @@ class SubEditor extends Component {
         "dplayer-subtitle"
       )[0];
       if (subtitleDiv) {
-        subtitleDiv.style.opacity = 0
+        subtitleDiv.style.opacity = 0;
       }
     }
+  };
+
+  //更新当前时间
+  handleCurrentTime = (currentTime) => {
+    this.setState({ currentTime });
   };
 
   render() {
@@ -375,8 +382,9 @@ class SubEditor extends Component {
       onSwitch: this.handleVideoSwitch,
       initPlayer: this.handlePlayerInit,
       onVideoCanPlay: this.handleVideoCanPlay,
+      updateCurrentTime: this.handleCurrentTime
     };
-    
+
     return (
       <React.Fragment>
         <GlobalStyle />
@@ -386,7 +394,7 @@ class SubEditor extends Component {
           <SubTable {...props} />
         </Main>
         {/* <Timeline {...props}/> */}
-        <WaveLine {...props}/>
+        <WaveLine {...props} />
       </React.Fragment>
     );
   }
