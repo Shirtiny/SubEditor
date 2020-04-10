@@ -3,19 +3,21 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
+import { ShWave } from "shwave";
 import "./index.css";
 import "normalize.css";
 import "font-awesome/css/font-awesome.css";
 import "nprogress/nprogress.css";
 import "bootstrap/dist/css/bootstrap.css";
 //依赖jq
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-import 'react-virtualized/styles.css';
+import "bootstrap/dist/js/bootstrap.bundle.js";
+import "react-virtualized/styles.css";
 
-
+console.log(ShWave);
 
 ReactDOM.render(
   <BrowserRouter>
+    {/* <ShWave /> */}
     <App />
   </BrowserRouter>,
   document.getElementById("root")

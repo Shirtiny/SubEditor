@@ -8,6 +8,7 @@ import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
 import videoService from "../services/videoService";
+import WaveLine from "./waveLine";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -384,7 +385,8 @@ class SubEditor extends Component {
           <VideoPlayer {...props} />
           <SubTable {...props} />
         </Main>
-        <Timeline {...props}/>
+        {/* <Timeline {...props}/> */}
+        <WaveLine {...props}/>
       </React.Fragment>
     );
   }
