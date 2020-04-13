@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent  } from "react";
 import styled from "styled-components";
 import guideService from "../services/guideService";
 import progressor from "../utils/progressor";
@@ -77,7 +77,7 @@ const LogoYa = styled.a`
   font-weight: 400;
   color: #66cccc;
 
-  : hover {
+  :hover  {
     text-decoration: none;
     color: #66cccc;
   }
@@ -183,13 +183,12 @@ const FileYinput = styled.input`
   cursor: pointer;
 `;
 
-class Header extends Component {
-  state = {};
+class Header extends PureComponent  {
 
   handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
-    const {updateSubArray, updateSubUrl } = this.props;
+    const { updateSubArray, updateSubUrl } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
       //开一个预览字幕的提示
@@ -198,7 +197,7 @@ class Header extends Component {
         className: "textReader",
       });
       const subUrl = subService.createVttSubBlobUrl(vttStr);
-      updateSubUrl(subUrl,true);
+      updateSubUrl(subUrl, true);
       //从url中读取字幕数组
       const subArray = await subService.createSubArray(subUrl);
       updateSubArray(subArray, true);

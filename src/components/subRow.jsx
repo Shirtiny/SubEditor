@@ -69,7 +69,6 @@ const RowWrap = styled.div`
         width: 25px;
         cursor: pointer;
         font-size: 16px;
-        transition: color 0.2s ease;
         &: hover {
           //图标粗些
           font-weight: 600;

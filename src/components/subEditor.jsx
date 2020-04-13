@@ -60,6 +60,12 @@ const Main = styled.div`
   flex: 1;
 `;
 
+const requestAnimationFrameCom =
+  window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.msRequestAnimationFrame;
+
 //导航栏50px 底部时间轴150px
 class SubEditor extends Component {
   state = {
@@ -329,6 +335,15 @@ class SubEditor extends Component {
   handlePlayerInit = (player) => {
     logger.clog("初始化播放器");
     this.setState({ player });
+    //1秒60帧 根据屏幕刷新虑有所变化，time为时间戳 ，每一帧的工作内容为：
+    const frameWork = () => {
+      const { video } = player;
+      //更新当前时间
+      this.handleCurrentTime(video.currentTime);
+      requestAnimationFrameCom(frameWork);
+    };
+    //启动时间更新
+    requestAnimationFrameCom(frameWork);
   };
 
   //切换视频
@@ -359,14 +374,27 @@ class SubEditor extends Component {
     }
   };
 
-  //更新当前时间
+  //更新当前时间 如果和当前保存的当前时间相等 则不更新
   handleCurrentTime = (currentTime) => {
+    if (this.state.currentTime === currentTime) return;
     this.setState({ currentTime });
   };
 
+  //在视频播放时
+  handleVideoPlaying = () => {};
+
   render() {
-    const props = {
-      ...this.state,
+    const {
+      videoUrl,
+      subUrl,
+      subArray,
+      picUrl,
+      container,
+      scrollIndex,
+      player,
+      currentTime,
+    } = this.state;
+    const funcProps = {
       updateOneState: this.updateOneState,
       updateSubArray: this.updateSubArray,
       updateSubUrl: this.updateSubUrl,
@@ -382,19 +410,31 @@ class SubEditor extends Component {
       onSwitch: this.handleVideoSwitch,
       initPlayer: this.handlePlayerInit,
       onVideoCanPlay: this.handleVideoCanPlay,
-      updateCurrentTime: this.handleCurrentTime
+      updateCurrentTime: this.handleCurrentTime,
+      onVideoPlaying: this.handleVideoPlaying,
     };
 
     return (
       <React.Fragment>
         <GlobalStyle />
-        <Header {...props} />
+        <Header {...funcProps} />
         <Main>
-          <VideoPlayer {...props} />
-          <SubTable {...props} />
+          <VideoPlayer
+            {...funcProps}
+            picUrl={picUrl}
+            videoUrl={videoUrl}
+            subUrl={subUrl}
+            player={player}
+          />
+          <SubTable
+            {...funcProps}
+            container={container}
+            subArray={subArray}
+            scrollIndex={scrollIndex}
+          />
         </Main>
-        {/* <Timeline {...props}/> */}
-        <WaveLine {...props} />
+        {/* <Timeline {...funcProps}/> */}
+        <WaveLine {...funcProps} currentTime={currentTime} videoUrl={videoUrl}/>
       </React.Fragment>
     );
   }

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
@@ -81,7 +81,8 @@ const TableWrapper = styled.div`
   }
 `;
 
-class SubTable extends Component {
+//PureComponent要注意它是浅比较 https://react.docschina.org/docs/optimizing-performance.html
+class SubTable extends PureComponent  {
   //没用到
   $tableRef = React.createRef();
 
@@ -125,6 +126,11 @@ class SubTable extends Component {
   componentDidUpdate() {
     // this.scrollToButtom();
   }
+
+  //使用PureComponent 来代替手写shouldComponentUpdate
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return true;
+  // }
 
   //全表单校验
   validate = () => {

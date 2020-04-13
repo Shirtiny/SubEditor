@@ -43,11 +43,15 @@ const VideoWrapper = styled.div`
 `;
 
 class VideoPlayer extends Component {
+
+  //组件是否需要更新 可以使用PureComponent来代替手写shouldComponentUpdate 它会自动浅比较前后的props有没有变化 这里不需要，因为VideoPlayer的props并不需要变化
+  shouldComponentUpdate(nextProps, nextState) {
+    return false;
+  }
+
   //设置播放器
-  setPlayer = (player) => {
-    const { initPlayer, videoUrl } = this.props;
-    logger.clog("地址:", videoUrl);
-    logger.clog("播放器", player);
+  load = (player) => {
+    const { initPlayer } = this.props;
     initPlayer(player);
   };
 
@@ -67,18 +71,8 @@ class VideoPlayer extends Component {
 
   //播放中
   playing = () => {
-    const { player, updateCurrentTime } = this.props;
-    //1秒60帧 根据屏幕刷新虑有所变化，time为时间戳 ，每一帧的工作内容为：
-    function frameWork(time) {
-      //如果视频没有暂停 下一帧继续调用frameWork
-      if (!player.video.paused) {
-        //更新当前时间
-        updateCurrentTime(player.video.currentTime);
-        window.requestAnimationFrame(frameWork);
-      }
-    }
-    //作为启动
-    window.requestAnimationFrame(frameWork);
+    const { onVideoPlaying } = this.props;
+    onVideoPlaying();
   };
 
   //全屏时
@@ -166,7 +160,7 @@ class VideoPlayer extends Component {
               theme: "#ccc",
               loop: true,
             }}
-            onLoad={this.setPlayer}
+            onLoad={this.load}
             onError={this.error}
             onCanplay={this.canPlay}
             onPlaying={this.playing}
