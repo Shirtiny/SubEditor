@@ -383,6 +383,24 @@ class SubEditor extends Component {
   //在视频播放时
   handleVideoPlaying = () => {};
 
+  //底部waveLine左键单击时 url为空时 不会执行
+  handleWaveClick = (time, event) => {
+    const { player } = this.state;
+    if (!player) return;
+    //暂停视频 然后跳转到对应time
+    player.pause();
+    player.seek(time);
+  };
+
+  //底部waveLine右键单击时 url为空时 不会执行
+  handleWaveContextmenu = (time, event) => {
+    const { player } = this.state;
+    if (!player) return;
+    //播放视频 然后跳转到对应time
+    player.play();
+    player.seek(time);
+  };
+
   render() {
     const {
       videoUrl,
@@ -412,6 +430,8 @@ class SubEditor extends Component {
       onVideoCanPlay: this.handleVideoCanPlay,
       updateCurrentTime: this.handleCurrentTime,
       onVideoPlaying: this.handleVideoPlaying,
+      onWaveClick: this.handleWaveClick,
+      onWaveContextmenu: this.handleWaveContextmenu,
     };
 
     return (
@@ -434,7 +454,12 @@ class SubEditor extends Component {
           />
         </Main>
         {/* <Timeline {...funcProps}/> */}
-        <WaveLine {...funcProps} currentTime={currentTime} videoUrl={videoUrl}/>
+        <WaveLine
+          {...funcProps}
+          currentTime={currentTime}
+          videoUrl={videoUrl}
+          subArray={subArray}
+        />
       </React.Fragment>
     );
   }

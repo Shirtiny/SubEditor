@@ -28,6 +28,10 @@ const VideoWrapper = styled.div`
       max-height: 100%;
     }
 
+    .dplayer_disable {
+      pointer-events: none;
+    }
+
     .playerBorder {
       border: 4px solid #529393;
       border-radius: 0.5em;
@@ -43,7 +47,6 @@ const VideoWrapper = styled.div`
 `;
 
 class VideoPlayer extends Component {
-
   //组件是否需要更新 可以使用PureComponent来代替手写shouldComponentUpdate 它会自动浅比较前后的props有没有变化 这里不需要，因为VideoPlayer的props并不需要变化
   shouldComponentUpdate(nextProps, nextState) {
     return false;
@@ -56,8 +59,9 @@ class VideoPlayer extends Component {
   };
 
   error = () => {
-    const div = document.getElementById("player");
-    div.className += " dplayer_DefaultSize";
+    const $playerContainer = document.getElementById("player");
+    //错误时 将播放器设为默认大小  无法点击
+    $playerContainer.classList.add("dplayer_DefaultSize", "dplayer_disable");
   };
 
   //视频可以播放
@@ -67,6 +71,9 @@ class VideoPlayer extends Component {
     player.notice("√", 1500, 0.8);
     //将subArray 交给worker生成subUrl
     onVideoCanPlay();
+    const $playerContainer = document.getElementById("player");
+    //可以播放时 移除 无法点击
+    $playerContainer.classList.remove("dplayer_disable");
   };
 
   //播放中
@@ -96,7 +103,7 @@ class VideoPlayer extends Component {
         <div id="playerBox" className="box">
           <DPlayer
             id="player"
-            className={"playerBorder " + (picUrl ? "" : "dplayer_DefaultSize")}
+            className={"playerBorder dplayer_disable " + (picUrl ? "" : "dplayer_DefaultSize")}
             style={{ resize: "both" }}
             options={{
               video: {

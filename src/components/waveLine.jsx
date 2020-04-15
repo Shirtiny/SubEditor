@@ -13,7 +13,13 @@ const LineWrapper = styled.div`
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
 `;
 
-const WaveLine = ({ currentTime, videoUrl }) => {
+const WaveLine = ({
+  currentTime,
+  videoUrl,
+  onWaveClick,
+  onWaveContextmenu,
+  subArray
+}) => {
   return (
     <LineWrapper>
       <ShWave
@@ -25,6 +31,9 @@ const WaveLine = ({ currentTime, videoUrl }) => {
         waveColor={"#fbf8f86b"}
         alterWaveColor={"#57e3e3"}
         waveScale={0.8}
+        click={onWaveClick}
+        contextmenu={onWaveContextmenu}
+        subArray={subArray}
       />
     </LineWrapper>
   );

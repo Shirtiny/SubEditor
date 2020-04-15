@@ -17,14 +17,9 @@ export function getDefaultPicUrl() {
   return "/subEditor.png";
 }
 
-export function sleep(ms = 0) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const videoService = {
   createVideoType,
   getDefaultPicUrl,
-  sleep
 };
 
 export default videoService;
