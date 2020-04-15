@@ -1,5 +1,4 @@
 import React from "react";
-// import WaveTime from "./WaveTime";
 
 
 const Test = () => {
@@ -19,7 +18,6 @@ const Test = () => {
           src="http://localhost:2020/friday.vtt"
         />
       </video>
-      {/* <WaveTime /> */}
     </div>
   );
 };

@@ -8,8 +8,6 @@ import "normalize.css";
 import "font-awesome/css/font-awesome.css";
 import "nprogress/nprogress.css";
 import "bootstrap/dist/css/bootstrap.css";
-//依赖jq
-import "bootstrap/dist/js/bootstrap.bundle.js";
 import "react-virtualized/styles.css";
 
 ReactDOM.render(
