@@ -401,6 +401,25 @@ class SubEditor extends Component {
     player.seek(time);
   };
 
+  //当timeLine的字幕块移动时
+  handleSubMove = (originSub, translateSecond) => {
+    //这里是浅拷贝 数组内元素的引用并没有变化
+    const subArray = [...this.state.subArray];
+    const index = subArray.indexOf(originSub);
+    const sub = subArray[index];
+    const start = Number(Number(sub.start + translateSecond).toFixed(3));
+    const end = Number(Number(sub.end + translateSecond).toFixed(3));
+    //非法值 则不更新subArray
+    if (start < 0 || end <= 0) return;
+    //这里的拷贝是因为 如startTime可能为只读属性
+    const tempSub = { ...sub };
+    tempSub.startTime = subService.toTime(start);
+    tempSub.endTime = subService.toTime(end);
+    //这里返回了一个新的对象 改变了subArray[index]的内存地址 因为subTable使用的PureComponent是浅比较 所以必须要改数组内元素的内存地址
+    subArray[index] = subService.mapSubToFullModel(tempSub);
+    this.updateSubArray(subArray, true);
+  };
+
   render() {
     const {
       videoUrl,
@@ -432,6 +451,7 @@ class SubEditor extends Component {
       onVideoPlaying: this.handleVideoPlaying,
       onWaveClick: this.handleWaveClick,
       onWaveContextmenu: this.handleWaveContextmenu,
+      onSubMove: this.handleSubMove,
     };
 
     return (

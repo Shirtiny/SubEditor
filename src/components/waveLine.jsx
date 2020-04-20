@@ -18,7 +18,8 @@ const WaveLine = ({
   videoUrl,
   onWaveClick,
   onWaveContextmenu,
-  subArray
+  subArray,
+  onSubMove,
 }) => {
   return (
     <LineWrapper>
@@ -34,6 +35,7 @@ const WaveLine = ({
         click={onWaveClick}
         contextmenu={onWaveContextmenu}
         subArray={subArray}
+        onSubMove={onSubMove}
       />
     </LineWrapper>
   );
