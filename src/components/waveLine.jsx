@@ -20,6 +20,7 @@ const WaveLine = ({
   onWaveContextmenu,
   subArray,
   onSubMove,
+  onSubMoveError
 }) => {
   return (
     <LineWrapper>
@@ -36,6 +37,7 @@ const WaveLine = ({
         contextmenu={onWaveContextmenu}
         subArray={subArray}
         onSubMove={onSubMove}
+        onSubMoveError={onSubMoveError}
       />
     </LineWrapper>
   );

@@ -420,6 +420,33 @@ class SubEditor extends Component {
     this.updateSubArray(subArray, true);
   };
 
+  //字幕块移动的错误提示id
+  toastId_subMoveError = null;
+  //当字幕块移动有警告时
+  handleSubMoveError = () => {
+    if (!notifier.isActive(this.toastId_subMoveError)) {
+      this.toastId_subMoveError = notifier.notify(
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div>无效的位置，松开鼠标以修复</div>
+        </div>,
+        "bottom_left",
+        "warning",
+        {
+          hideProgressBar: true,
+          autoClose: 2000,
+          canClose: true,
+        },
+        "flip"
+      );
+    }
+  };
+
   render() {
     const {
       videoUrl,
@@ -452,6 +479,7 @@ class SubEditor extends Component {
       onWaveClick: this.handleWaveClick,
       onWaveContextmenu: this.handleWaveContextmenu,
       onSubMove: this.handleSubMove,
+      onSubMoveError: this.handleSubMoveError,
     };
 
     return (
