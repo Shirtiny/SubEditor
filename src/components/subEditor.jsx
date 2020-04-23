@@ -447,6 +447,31 @@ class SubEditor extends Component {
     }
   };
 
+  //字幕块resize 改变字幕长度时
+  handleSubResize = (originSub, translateSecond, type) => {
+    //这里是浅拷贝 数组内元素的引用并没有变化
+    const subArray = [...this.state.subArray];
+    const index = subArray.indexOf(originSub);
+    const sub = subArray[index];
+    //这里的拷贝是因为 如startTime可能为只读属性
+    const tempSub = { ...sub };
+    let start = null;
+    let end = 0;
+    if (type === "start") {
+      start = Number(Number(sub.start + translateSecond).toFixed(3));
+      //非法值 则不更新subArray
+      if (start === null || start < 0) return;
+      tempSub.startTime = subService.toTime(start);
+    } else {
+      end = Number(Number(sub.end + translateSecond).toFixed(3));
+      //非法值 则不更新subArray
+      if (end <= 0 || end <= sub.start) return;
+      tempSub.endTime = subService.toTime(end);
+    }
+    subArray[index] = subService.mapSubToFullModel(tempSub);
+    this.updateSubArray(subArray, true);
+  };
+
   render() {
     const {
       videoUrl,
@@ -480,6 +505,7 @@ class SubEditor extends Component {
       onWaveContextmenu: this.handleWaveContextmenu,
       onSubMove: this.handleSubMove,
       onSubMoveError: this.handleSubMoveError,
+      onSubResize: this.handleSubResize,
     };
 
     return (
