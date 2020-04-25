@@ -253,7 +253,12 @@ class SubEditor extends Component {
 
   //点击时
   handleSubClick = (sub) => {
-    console.log("点击字幕表：", sub);
+    if (!sub || !sub.start) return;
+    const player = this.state.player;
+    if (!player || !player.video) return;
+    const currentTime = sub.start;
+    player.pause();
+    player.seek(currentTime);
   };
 
   //取消时
