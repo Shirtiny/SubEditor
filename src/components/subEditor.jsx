@@ -80,7 +80,7 @@ class SubEditor extends Component {
       containerWidth: 10,
     },
     //字幕表滚动到的index
-    scrollIndex: 0,
+    scrollIndex: -1,
     //播放器
     player: null,
     //当前时间
@@ -153,6 +153,9 @@ class SubEditor extends Component {
     subArray.map((sub) => subService.mapSubToFullModel(sub));
     //排序
     const sortedArray = subService.sortSubArray(subArray);
+    //重置scrollIndex (需要先重置scrollIndex 再更新数组 更新数组会使wavleLine重新计算scrollIndex)
+    this.setState({ scrollIndex: -1 });
+    //更新subArray
     this.setState({ subArray: sortedArray }, () => {
       // 回调函数 ()=>{}回调函数里的this.state是更新后的state 函数无参
       //如果不需要存储的更新 则结束
@@ -489,6 +492,12 @@ class SubEditor extends Component {
     this.setState({ scrollIndex });
   };
 
+  //处理scrollIndex的高频率更新
+  handleScrollIndexFrame = (index) => {
+    if (this.state.scrollIndex === index) return;
+    this.setState({ scrollIndex: index });
+  };
+
   render() {
     const {
       videoUrl,
@@ -525,6 +534,7 @@ class SubEditor extends Component {
       onSubBlockMoveError: this.handleSubBlockMoveError,
       onSubBlockResize: this.handleSubBlockResize,
       onSubBlockClick: this.handleSubBlockClick,
+      onScrollIndexFrame: this.handleScrollIndexFrame,
     };
 
     return (

@@ -119,6 +119,10 @@ const RowWrap = styled.div`
     //播放次数无限制
     // animation-iteration-count: infinite;
   }
+
+  .scrollIndexBackColor {
+    background-color: #04e8e8 !important;
+  }
 `;
 //单击次数 用来区分双击和单击 解决onDoubleClick时触发onclick的问题
 let clickCount = 0;
@@ -158,8 +162,8 @@ const SubRow = ({
           "rowClasses",
           index % 2 ? "odd" : "",
           sub.editing ? "onEditing" : "",
-          scrollIndex !== 0 && scrollIndex === index
-            ? "scrollToRowAnimation"
+          scrollIndex === index
+            ? "scrollIndexBackColor"
             : "",
         ].join(" ")}
         onClick={() => {
