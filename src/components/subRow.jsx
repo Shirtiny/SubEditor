@@ -178,18 +178,27 @@ const SubRow = ({
         {/* 操作按钮 */}
         <div className="rowT operation" style={{ width: 90 }}>
           <i
-            onClick={() => onRowEdit(sub)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRowEdit(sub);
+            }}
             className={`fa fa-pencil ${hiddenOnEditing}`}
             title="编辑"
           ></i>
           <i
-            onClick={() => onRowCommit(sub)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRowCommit(sub);
+            }}
             className={`fa fa-check-circle-o ${displayOnEditing}`}
             title="保存"
           ></i>
           <i
             className="fa fa-times deleteIcon"
-            onClick={() => onRowRemove(sub)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRowRemove(sub);
+            }}
             title="删除"
           ></i>
         </div>
@@ -243,7 +252,11 @@ const SubRow = ({
             {index}
           </span>
           <i
-            onClick={() => onRowCancel(sub)}
+            onClick={(e) => {
+              //阻止事件传播 （阻止传给父元素
+              e.stopPropagation();
+              onRowCancel(sub);
+            }}
             className={`fa fa-reply ${displayOnEditing}`}
             title="取消编辑"
           ></i>
@@ -254,7 +267,10 @@ const SubRow = ({
             <i
               className={`fa fa-plus-square  insertBtn`}
               title="插入字幕"
-              onClick={() => onRowInsert(sub)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRowInsert(sub);
+              }}
             ></i>
           </div>
         </div>
