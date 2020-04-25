@@ -251,6 +251,11 @@ class SubEditor extends Component {
     logger.clog("handleEdit", sub, index);
   };
 
+  //点击时
+  handleSubClick = (sub) => {
+    console.log("点击字幕表：", sub);
+  };
+
   //取消时
   handleSubCancel = (sub) => {
     //取消编辑状态
@@ -500,6 +505,7 @@ class SubEditor extends Component {
       onClean: this.handleSubClean,
       onRemove: this.handleSubRemove,
       onEdit: this.handleSubEdit,
+      onClick: this.handleSubClick,
       onCommit: this.handleSubCommit,
       onCancel: this.handleSubCancel,
       onInsert: this.handleSubInsert,

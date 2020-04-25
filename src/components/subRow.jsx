@@ -120,6 +120,8 @@ const RowWrap = styled.div`
     // animation-iteration-count: infinite;
   }
 `;
+//单击次数 用来区分双击和单击 解决onDoubleClick时触发onclick的问题
+let clickCount = 0;
 
 const SubRow = ({
   index,
@@ -128,6 +130,7 @@ const SubRow = ({
   rowData: sub,
   onRowRemove,
   onRowEdit,
+  onRowClick,
   onRowCommit,
   onRowCancel,
   onRowInsert,
@@ -159,7 +162,18 @@ const SubRow = ({
             ? "scrollToRowAnimation"
             : "",
         ].join(" ")}
-        onDoubleClick={() => onRowEdit(sub)}
+        onClick={() => {
+          clickCount += 1;
+          setTimeout(() => {
+            if (clickCount === 1) {
+              onRowClick(sub);
+            } else if (clickCount === 2) {
+              onRowEdit(sub);
+            }
+            //重置count
+            clickCount = 0;
+          }, 200);
+        }}
       >
         {/* 操作按钮 */}
         <div className="rowT operation" style={{ width: 90 }}>

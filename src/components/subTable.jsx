@@ -82,7 +82,7 @@ const TableWrapper = styled.div`
 `;
 
 //PureComponent要注意它是浅比较 https://react.docschina.org/docs/optimizing-performance.html
-class SubTable extends PureComponent  {
+class SubTable extends PureComponent {
   //没用到
   $tableRef = React.createRef();
 
@@ -261,6 +261,11 @@ class SubTable extends PureComponent  {
     onEdit(sub);
   };
 
+  handleRowClick = (sub) => {
+    const { onClick } = this.props;
+    onClick(sub);
+  };
+
   //提交前
   handleRowCommit = (sub) => {
     const { onCommit } = this.props;
@@ -368,6 +373,7 @@ class SubTable extends PureComponent  {
               {...rowProps}
               onRowRemove={this.handleRowRemove}
               onRowEdit={this.handleRowEdit}
+              onRowClick={this.handleRowClick}
               onRowCommit={this.handleRowCommit}
               onRowCancel={this.handleRowCancel}
               onRowInsert={this.handleRowInsert}
