@@ -257,11 +257,9 @@ class SubEditor extends Component {
   //点击时
   handleSubClick = (sub) => {
     if (!sub || !sub.start) return;
-    const player = this.state.player;
-    if (!player || !player.video) return;
-    const currentTime = sub.start;
-    player.pause();
-    player.seek(currentTime);
+    const time = sub.start;
+    //暂停视频 然后跳转到对应time
+    this.playerSeekTo(time);
   };
 
   //取消时
@@ -359,6 +357,17 @@ class SubEditor extends Component {
     requestAnimationFrameCom(frameWork);
   };
 
+  //视频seek
+  playerSeekTo = (second, action = "pause") => {
+    const player = this.state.player;
+    if (!player || !player.video) return;
+    const duration = player.video.duration;
+    //不能超过视频总时长
+    if (second > duration) return;
+    player[action]();
+    player.seek(second);
+  };
+
   //切换视频
   handleVideoSwitch = (fileType, videoUrl) => {
     const videoType = videoService.createVideoType(fileType);
@@ -412,20 +421,14 @@ class SubEditor extends Component {
 
   //底部waveLine左键单击时 url为空时 不会执行
   handleWaveClick = (time, event) => {
-    const { player } = this.state;
-    if (!player) return;
     //暂停视频 然后跳转到对应time
-    player.pause();
-    player.seek(time);
+    this.playerSeekTo(time);
   };
 
   //底部waveLine右键单击时 url为空时 不会执行
   handleWaveContextmenu = (time, event) => {
-    const { player } = this.state;
-    if (!player) return;
     //播放视频 然后跳转到对应time
-    player.play();
-    player.seek(time);
+    this.playerSeekTo(time, "play");
   };
 
   //当timeLine的字幕块移动时
