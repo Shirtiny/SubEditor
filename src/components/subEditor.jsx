@@ -362,10 +362,11 @@ class SubEditor extends Component {
     const player = this.state.player;
     if (!player || !player.video) return;
     const duration = player.video.duration;
-    //不能超过视频总时长
-    if (second > duration) return;
     player[action]();
-    player.seek(second);
+    //不能超过视频总时长
+    const time = second > duration ? duration : second;
+    console.log(second, duration, time);
+    player.seek(time);
   };
 
   //切换视频
