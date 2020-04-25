@@ -121,8 +121,11 @@ const RowWrap = styled.div`
   }
 
   .scrollIndexBackColor {
-    transition: background-color 0.6s ease-in;
+    transition: background-color 0.5s ease-in;
     background-color: #04e8e8 !important;
+    &:hover {
+      color: black;
+    }
   }
 `;
 //单击次数 用来区分双击和单击 解决onDoubleClick时触发onclick的问题

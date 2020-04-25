@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { ShWave } from "shwave";
-import { useMemo } from "react";
 
 const LineWrapper = styled.div`
   //底部时间轴 固定150px
@@ -24,17 +23,7 @@ const WaveLine = ({
   onSubBlockMoveError,
   onSubBlockResize,
   onSubBlockClick,
-  onScrollIndexFrame,
 }) => {
-  //更新ScrollIndex （高頻率
-  useMemo(() => {
-    //对于空数组，findIndex是不会执行的 沒找到则返回-1
-    const index = subArray.findIndex(
-      (sub) => sub.start <= currentTime && sub.end > currentTime
-    );
-    if (index === -1) return;
-    onScrollIndexFrame(index);
-  }, [subArray, currentTime, onScrollIndexFrame]);
   return (
     <LineWrapper>
       <ShWave

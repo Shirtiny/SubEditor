@@ -25,11 +25,11 @@ div[class*="Toastify__toast-container--bottom"] {
 }
 
 /* 动画  animation: scrollToRowAnimation 5s; */
-@keyframes scrollToRowAnimation {
+/* @keyframes scrollToRowAnimation {
   0% {
     background: #02c0ff;
   }
   25% {
     background: #04e8e8;
   }
-}
+} */

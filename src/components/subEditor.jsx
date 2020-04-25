@@ -387,10 +387,24 @@ class SubEditor extends Component {
     }
   };
 
+  //处理scrollIndex的高频率更新
+  handleScrollIndexFrame = (index) => {
+    if (this.state.scrollIndex === index) return;
+    this.setState({ scrollIndex: index });
+  };
+
   //更新当前时间 如果和当前保存的当前时间相等 则不更新
   handleCurrentTime = (currentTime) => {
     if (this.state.currentTime === currentTime) return;
-    this.setState({ currentTime });
+    this.setState({ currentTime }, () => {
+      //更新ScrollIndex （高頻率
+      //对于空数组，findIndex是不会执行的 沒找到则返回-1
+      const index = this.state.subArray.findIndex(
+        (sub) => sub.start <= currentTime && sub.end > currentTime
+      );
+      if (index === -1) return;
+      this.handleScrollIndexFrame(index);
+    });
   };
 
   //在视频播放时
@@ -492,12 +506,6 @@ class SubEditor extends Component {
     this.setState({ scrollIndex });
   };
 
-  //处理scrollIndex的高频率更新
-  handleScrollIndexFrame = (index) => {
-    if (this.state.scrollIndex === index) return;
-    this.setState({ scrollIndex: index });
-  };
-
   render() {
     const {
       videoUrl,
@@ -534,7 +542,6 @@ class SubEditor extends Component {
       onSubBlockMoveError: this.handleSubBlockMoveError,
       onSubBlockResize: this.handleSubBlockResize,
       onSubBlockClick: this.handleSubBlockClick,
-      onScrollIndexFrame: this.handleScrollIndexFrame,
     };
 
     return (
