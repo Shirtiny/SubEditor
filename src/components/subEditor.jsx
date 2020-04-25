@@ -402,7 +402,7 @@ class SubEditor extends Component {
   };
 
   //当timeLine的字幕块移动时
-  handleSubMove = (originSub, translateSecond) => {
+  handleSubBlockMove = (originSub, translateSecond) => {
     //这里是浅拷贝 数组内元素的引用并没有变化
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(originSub);
@@ -421,11 +421,11 @@ class SubEditor extends Component {
   };
 
   //字幕块移动的错误提示id
-  toastId_subMoveError = null;
+  toastId_subBlockMoveError = null;
   //当字幕块移动有警告时
-  handleSubMoveError = () => {
+  handleSubBlockMoveError = () => {
     if (!notifier.isActive(this.toastId_subMoveError)) {
-      this.toastId_subMoveError = notifier.notify(
+      this.toastId_subBlockMoveError = notifier.notify(
         <div
           style={{
             display: "flex",
@@ -448,7 +448,7 @@ class SubEditor extends Component {
   };
 
   //字幕块resize 改变字幕长度时
-  handleSubResize = (originSub, translateSecond, type) => {
+  handleSubBlockResize = (originSub, translateSecond, type) => {
     //这里是浅拷贝 数组内元素的引用并没有变化
     const subArray = [...this.state.subArray];
     const index = subArray.indexOf(originSub);
@@ -470,6 +470,13 @@ class SubEditor extends Component {
     }
     subArray[index] = subService.mapSubToFullModel(tempSub);
     this.updateSubArray(subArray, true);
+  };
+
+  //字幕块点击事件
+  handleSubBlockClick = (sub) => {
+    const subArray = [...this.state.subArray];
+    const scrollIndex = subArray.indexOf(sub);
+    this.setState({ scrollIndex });
   };
 
   render() {
@@ -503,9 +510,10 @@ class SubEditor extends Component {
       onVideoPlaying: this.handleVideoPlaying,
       onWaveClick: this.handleWaveClick,
       onWaveContextmenu: this.handleWaveContextmenu,
-      onSubMove: this.handleSubMove,
-      onSubMoveError: this.handleSubMoveError,
-      onSubResize: this.handleSubResize,
+      onSubBlockMove: this.handleSubBlockMove,
+      onSubBlockMoveError: this.handleSubBlockMoveError,
+      onSubBlockResize: this.handleSubBlockResize,
+      onSubBlockClick: this.handleSubBlockClick,
     };
 
     return (

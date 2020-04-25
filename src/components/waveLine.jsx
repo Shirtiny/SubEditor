@@ -19,9 +19,10 @@ const WaveLine = ({
   onWaveClick,
   onWaveContextmenu,
   subArray,
-  onSubMove,
-  onSubMoveError,
-  onSubResize
+  onSubBlockMove,
+  onSubBlockMoveError,
+  onSubBlockResize,
+  onSubBlockClick
 }) => {
   return (
     <LineWrapper>
@@ -37,9 +38,10 @@ const WaveLine = ({
         click={onWaveClick}
         contextmenu={onWaveContextmenu}
         subArray={subArray}
-        onSubMove={onSubMove}
-        onSubMoveError={onSubMoveError}
-        onSubResize={onSubResize}
+        onSubMove={onSubBlockMove}
+        onSubMoveError={onSubBlockMoveError}
+        onSubResize={onSubBlockResize}
+        onSubClick={onSubBlockClick}
       />
     </LineWrapper>
   );
