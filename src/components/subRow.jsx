@@ -121,6 +121,7 @@ const RowWrap = styled.div`
   }
 
   .scrollIndexBackColor {
+    transition: background-color 0.6s ease-in;
     background-color: #04e8e8 !important;
   }
 `;
@@ -162,9 +163,7 @@ const SubRow = ({
           "rowClasses",
           index % 2 ? "odd" : "",
           sub.editing ? "onEditing" : "",
-          scrollIndex === index
-            ? "scrollIndexBackColor"
-            : "",
+          scrollIndex === index ? "scrollIndexBackColor" : "",
         ].join(" ")}
         onClick={() => {
           clickCount += 1;
