@@ -1,10 +1,11 @@
-import React, { PureComponent  } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import guideService from "../services/guideService";
 import progressor from "../utils/progressor";
 import notifier from "../utils/notifier";
 import subService from "../services/subService";
 import logger from "../utils/logger";
+import SubEditorPackage from "../../package.json";
 
 const HeaderWrap = styled.header`
   //导航栏固定50px
@@ -77,7 +78,7 @@ const LogoYa = styled.a`
   font-weight: 400;
   color: #66cccc;
 
-  :hover  {
+  :hover {
     text-decoration: none;
     color: #66cccc;
   }
@@ -183,8 +184,7 @@ const FileYinput = styled.input`
   cursor: pointer;
 `;
 
-class Header extends PureComponent  {
-
+class Header extends PureComponent {
   handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
@@ -241,7 +241,7 @@ class Header extends PureComponent  {
         <div className="band">
           <LogoYa href={guideService.subEditorPath} title="Copyright © 2020 SH">
             SubEditor
-            <span className="version">version 1.0.1</span>
+            <span className="version">version {SubEditorPackage.version}</span>
           </LogoYa>
         </div>
 
