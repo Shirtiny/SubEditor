@@ -40,6 +40,7 @@ const WaveLine = ({
         subArray={subArray}
         onSubMove={onSubBlockMove}
         onSubMoveError={onSubBlockMoveError}
+        ErrorThrottleWait={1200}
         onSubResize={onSubBlockResize}
         onSubClick={onSubBlockClick}
       />

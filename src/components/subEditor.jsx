@@ -470,7 +470,7 @@ class SubEditor extends Component {
         "warning",
         {
           hideProgressBar: true,
-          autoClose: 2000,
+          autoClose: 1200,
           canClose: true,
         },
         "flip"

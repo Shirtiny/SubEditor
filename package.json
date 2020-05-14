@@ -22,7 +22,7 @@
     "react-scripts": "3.4.0",
     "react-toastify": "^5.5.0",
     "react-virtualized": "^9.21.2",
-    "shwave": "^1.6.8",
+    "shwave": "^1.7.2",
     "styled-components": "^5.0.1"
   },
   "scripts": {
