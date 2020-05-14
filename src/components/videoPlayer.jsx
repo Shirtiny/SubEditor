@@ -6,42 +6,36 @@ import logger from "../utils/logger";
 
 const VideoWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  justify-content: center;
+  align-items: center;
+  height: 70%;
+  padding: 15px;
+  // border-bottom: 1px solid rgb(10, 10, 10);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
-  .box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70%;
-    padding: 15px;
-    // border-bottom: 1px solid rgb(10, 10, 10);
+  .dplayer_DefaultSize {
+    width: 90%;
+    height: 90%;
+  }
+
+  .dplayer {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .dplayer_disable {
+    pointer-events: none;
+  }
+
+  .playerBorder {
+    border: 4px solid #529393;
+    border-radius: 0.5em;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  }
 
-    .dplayer_DefaultSize {
-      width: 90%;
-      height: 90%;
-    }
-
-    .dplayer {
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .dplayer_disable {
-      pointer-events: none;
-    }
-
-    .playerBorder {
-      border: 4px solid #529393;
-      border-radius: 0.5em;
-      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .hiddenSubs {
-      ::cue {
-        opacity: 0;
-      }
+  .hiddenSubs {
+    ::cue {
+      opacity: 0;
     }
   }
 `;
@@ -99,82 +93,83 @@ class VideoPlayer extends Component {
   render() {
     const { videoUrl, picUrl, subUrl } = this.props;
     return (
-      <VideoWrapper>
-        <div id="playerBox" className="box">
-          <DPlayer
-            id="player"
-            className={"playerBorder dplayer_disable " + (picUrl ? "" : "dplayer_DefaultSize")}
-            style={{ resize: "both" }}
-            options={{
-              video: {
-                url: videoUrl,
-                pic: picUrl,
-                customType: {
-                  flvCustom: function (videoElement, player) {
-                    logger.clog("支持flv");
-                    if (flvjs.isSupported()) {
-                      const flvPlayer = flvjs.createPlayer({
-                        type: "flv",
-                        url: videoElement.src,
-                        hasAudio: true,
-                      });
-                      flvPlayer.attachMediaElement(videoElement);
-                      flvPlayer.load();
-                    }
-                  },
+      <VideoWrapper id="playerBox">
+        <DPlayer
+          id="player"
+          className={
+            "playerBorder dplayer_disable " +
+            (picUrl ? "" : "dplayer_DefaultSize")
+          }
+          style={{ resize: "both" }}
+          options={{
+            video: {
+              url: videoUrl,
+              pic: picUrl,
+              customType: {
+                flvCustom: function (videoElement, player) {
+                  logger.clog("支持flv");
+                  if (flvjs.isSupported()) {
+                    const flvPlayer = flvjs.createPlayer({
+                      type: "flv",
+                      url: videoElement.src,
+                      hasAudio: true,
+                    });
+                    flvPlayer.attachMediaElement(videoElement);
+                    flvPlayer.load();
+                  }
                 },
               },
-              subtitle: {
-                url: subUrl,
-                type: "webvtt",
-                fontSize: "25px",
-                bottom: "3%",
-                color: "rgb(37, 211, 211)",
+            },
+            subtitle: {
+              url: subUrl,
+              type: "webvtt",
+              fontSize: "25px",
+              bottom: "3%",
+              color: "rgb(37, 211, 211)",
+            },
+            contextmenu: [
+              {
+                text: "SubEditor",
+                // link: "https://github.com/DIYgod/DPlayer",
               },
-              contextmenu: [
-                {
-                  text: "SubEditor",
-                  // link: "https://github.com/DIYgod/DPlayer",
+              {
+                text: "使内容的高度适应于宽度",
+                click: (player) => {
+                  const $playerContainer = document.getElementById("player");
+                  $playerContainer.style.height = "";
                 },
-                {
-                  text: "使内容的高度适应于宽度",
-                  click: (player) => {
-                    const $playerContainer = document.getElementById("player");
-                    $playerContainer.style.height = "";
-                  },
+              },
+              {
+                text: "默认宽度和高度",
+                click: (player) => {
+                  const $playerContainer = document.getElementById("player");
+                  $playerContainer.style.height = "";
+                  $playerContainer.style.width = "90%";
                 },
-                {
-                  text: "默认宽度和高度",
-                  click: (player) => {
-                    const $playerContainer = document.getElementById("player");
-                    $playerContainer.style.height = "";
-                    $playerContainer.style.width = "90%";
-                  },
+              },
+              {
+                text: "chrome字幕隐藏/显示",
+                click: (player) => {
+                  const video = player.video;
+                  const index = video.className.indexOf("hiddenSubs");
+                  if (index > 0) {
+                    video.classList.remove("hiddenSubs");
+                  } else {
+                    video.classList.add("hiddenSubs");
+                  }
                 },
-                {
-                  text: "chrome字幕隐藏/显示",
-                  click: (player) => {
-                    const video = player.video;
-                    const index = video.className.indexOf("hiddenSubs");
-                    if (index > 0) {
-                      video.classList.remove("hiddenSubs");
-                    } else {
-                      video.classList.add("hiddenSubs");
-                    }
-                  },
-                },
-              ],
-              theme: "#ccc",
-              loop: true,
-            }}
-            onLoad={this.load}
-            onError={this.error}
-            onCanplay={this.canPlay}
-            onPlaying={this.playing}
-            onFullscreen={this.fullscreen}
-            onFullscreenCancel={this.fullscreenCancel}
-          />
-        </div>
+              },
+            ],
+            theme: "#ccc",
+            loop: true,
+          }}
+          onLoad={this.load}
+          onError={this.error}
+          onCanplay={this.canPlay}
+          onPlaying={this.playing}
+          onFullscreen={this.fullscreen}
+          onFullscreenCancel={this.fullscreenCancel}
+        />
       </VideoWrapper>
     );
   }

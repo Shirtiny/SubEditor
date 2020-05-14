@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import Header from "./header";
 import styled, { createGlobalStyle } from "styled-components";
-import SubTable from "./subTable";
-import VideoPlayer from "./videoPlayer";
-// import Timeline from "./timeline";
 import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
 import videoService from "../services/videoService";
+import Header from "./header";
+import VideoPlayer from "./videoPlayer";
+import SubTable from "./subTable";
+import Tools from "./tools";
 import WaveLine from "./waveLine";
 
 const GlobalStyle = createGlobalStyle`
@@ -58,6 +58,17 @@ const Main = styled.div`
   position: relative;
   display: flex;
   flex: 1;
+`;
+
+const Left = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
+const Right = styled.div`
+  flex: 1;
+  margin-top: 5px;
 `;
 
 const requestAnimationFrameCom =
@@ -553,19 +564,24 @@ class SubEditor extends Component {
         <GlobalStyle />
         <Header {...funcProps} />
         <Main>
-          <VideoPlayer
-            {...funcProps}
-            picUrl={picUrl}
-            videoUrl={videoUrl}
-            subUrl={subUrl}
-            player={player}
-          />
-          <SubTable
-            {...funcProps}
-            container={container}
-            subArray={subArray}
-            scrollIndex={scrollIndex}
-          />
+          <Left>
+            <VideoPlayer
+              {...funcProps}
+              picUrl={picUrl}
+              videoUrl={videoUrl}
+              subUrl={subUrl}
+              player={player}
+            />
+            <Tools />
+          </Left>
+          <Right>
+            <SubTable
+              {...funcProps}
+              container={container}
+              subArray={subArray}
+              scrollIndex={scrollIndex}
+            />
+          </Right>
         </Main>
         {/* <Timeline {...funcProps}/> */}
         <WaveLine

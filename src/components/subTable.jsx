@@ -9,8 +9,6 @@ import logger from "../utils/logger";
 import notifier from "../utils/notifier";
 
 const TableWrapper = styled.div`
-  flex: 1;
-  margin-top: 5px;
   .ReactVirtualized__Table {
     font-size: 12px;
     background: #e3eeee;
