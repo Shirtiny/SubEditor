@@ -525,12 +525,7 @@ class SubEditor extends Component {
 
   //当duration调整时
   handleDurationChange = (duration) => {
-    this.setState({ duration }, () => {
-      //暂停视频 减少性能消耗
-      const player = this.state.player;
-      if (!player || !player.video || player.video.paused) return;
-      player.pause();
-    });
+    this.setState({ duration });
   };
 
   render() {

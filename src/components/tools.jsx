@@ -15,7 +15,6 @@ const ToolsWrapper = styled.div`
     // border: 1px solid;
   }
 
-
   //滑块样式
   input[type="range"] {
     appearance: none;
@@ -44,15 +43,15 @@ const Tools = ({ duration, onDurationChange }) => {
           type="range"
           title={duration}
           value={duration}
-          min="5"
-          max="25"
+          min="10"
+          max="20"
           step="1"
           onChange={(e) => {
-            onDurationChange(e.currentTarget.value);
+            onDurationChange(Number(e.currentTarget.value));
           }}
         />
       </div>
-      <div className="toolsBox">工具区</div>
+      {/* <div className="toolsBox">工具区</div> */}
     </ToolsWrapper>
   );
 };
