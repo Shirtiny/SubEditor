@@ -23,11 +23,12 @@ const WaveLine = ({
   onSubBlockMoveError,
   onSubBlockResize,
   onSubBlockClick,
+  duration
 }) => {
   return (
     <LineWrapper>
       <ShWave
-        duration={15}
+        duration={duration}
         backgroundColor={"#529393"}
         currentTime={currentTime}
         throttleWait={1}

@@ -96,6 +96,8 @@ class SubEditor extends Component {
     player: null,
     //当前时间
     currentTime: 0,
+    //时间轴长度
+    duration: 15,
   };
 
   //用来加工字幕url的worker
@@ -521,6 +523,16 @@ class SubEditor extends Component {
     this.setState({ scrollIndex });
   };
 
+  //当duration调整时
+  handleDurationChange = (duration) => {
+    this.setState({ duration }, () => {
+      //暂停视频 减少性能消耗
+      const player = this.state.player;
+      if (!player || !player.video || player.video.paused) return;
+      player.pause();
+    });
+  };
+
   render() {
     const {
       videoUrl,
@@ -531,6 +543,7 @@ class SubEditor extends Component {
       scrollIndex,
       player,
       currentTime,
+      duration,
     } = this.state;
     const funcProps = {
       updateOneState: this.updateOneState,
@@ -557,6 +570,7 @@ class SubEditor extends Component {
       onSubBlockMoveError: this.handleSubBlockMoveError,
       onSubBlockResize: this.handleSubBlockResize,
       onSubBlockClick: this.handleSubBlockClick,
+      onDurationChange: this.handleDurationChange,
     };
 
     return (
@@ -572,7 +586,7 @@ class SubEditor extends Component {
               subUrl={subUrl}
               player={player}
             />
-            <Tools />
+            <Tools duration={duration} {...funcProps} />
           </Left>
           <Right>
             <SubTable
@@ -589,6 +603,7 @@ class SubEditor extends Component {
           currentTime={currentTime}
           videoUrl={videoUrl}
           subArray={subArray}
+          duration={duration}
         />
       </React.Fragment>
     );
