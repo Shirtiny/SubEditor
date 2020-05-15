@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
+// import { BrowserRouter } from "react-router-dom";
+// 为了使用github的pages服务 改用HashRouter
+import { HashRouter  } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 import "./index.css";
@@ -11,9 +13,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-virtualized/styles.css";
 
 ReactDOM.render(
-  <BrowserRouter>
+  <HashRouter >
     <App />
-  </BrowserRouter>,
+  </HashRouter >,
   document.getElementById("root")
 );
 
