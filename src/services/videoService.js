@@ -18,9 +18,15 @@ export function getDefaultPicUrl() {
   return `${guideService.home}subEditor.png`;
 }
 
+//默认字幕的地址
+export function getDefaultSubUrl() {
+  return `${guideService.home}welcom.vtt`;
+}
+
 const videoService = {
   createVideoType,
   getDefaultPicUrl,
+  getDefaultSubUrl,
 };
 
 export default videoService;

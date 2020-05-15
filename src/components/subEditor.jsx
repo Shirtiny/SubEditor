@@ -5,7 +5,7 @@ import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
 import videoService from "../services/videoService";
-import config from "../config/config.json"
+import config from "../config/config.json";
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
 import SubTable from "./subTable";
@@ -189,7 +189,6 @@ class SubEditor extends Component {
   updateSubUrl = (subUrl, willLoadTrack = false) => {
     //释放上一个url资源
     URL.revokeObjectURL(this.state.subUrl);
-    logger.clog("释放：", this.state.subUrl);
     this.setState({ subUrl }, () => {
       //如果需要载入字幕
       if (willLoadTrack) {
@@ -237,13 +236,21 @@ class SubEditor extends Component {
   initSubTable = async () => {
     try {
       const subArray = await subService.getSubArray();
-      logger.clog("从存储中，初始化字幕", subArray);
+      //初始字幕 临时方案
+      if (!subArray || subArray.length === 0) {
+        const defaultSubUrl = videoService.getDefaultSubUrl();
+        this.updateSubUrl(defaultSubUrl, true);
+        const defaultSubArray = await subService.createSubArray(defaultSubUrl);
+        this.updateSubArray(defaultSubArray);
+        return;
+      }
       //不需要存储
       this.updateSubArray(subArray);
       const subUrl = subService.createSubArrayUrl(subArray);
       //更新记录的字幕url 并载入字幕 这样就不需要在初始化数组的时候 再去存一遍了
       this.updateSubUrl(subUrl, true);
     } catch (e) {
+      console.log(e);
       notifier.notify("读取字幕失败，请尝试清除缓存", "top_center", "info");
     }
   };
