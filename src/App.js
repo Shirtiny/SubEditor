@@ -16,8 +16,8 @@ class App extends Component {
       <React.Fragment>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>SH - SubEditor</title>
-          <link rel="icon" href="/sh.ico" />
+          <title>SH - SubEditor App</title>
+          <link rel="icon" href={`${guideService.home}/sh.ico`} />
         </Helmet>
         <ToastContainer
           autoClose={3000}

@@ -1,4 +1,5 @@
 import logger from "../utils/logger";
+import guideService from "./guideService";
 
 export function createVideoType(fileType) {
   if (typeof fileType !== "string") return "";
@@ -14,7 +15,7 @@ export function createVideoType(fileType) {
 
 //返回默认的视频封面
 export function getDefaultPicUrl() {
-  return "/subEditor.png";
+  return `${guideService.home}/subEditor.png`;
 }
 
 const videoService = {

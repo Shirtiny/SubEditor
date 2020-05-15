@@ -5,6 +5,7 @@ import logger from "../utils/logger";
 import subService from "../services/subService";
 import notifier from "../utils/notifier";
 import videoService from "../services/videoService";
+import config from "../config/config.json"
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
 import SubTable from "./subTable";
@@ -572,7 +573,7 @@ class SubEditor extends Component {
     return (
       <React.Fragment>
         <Helmet>
-          <title>SubEditor - 在线字幕编辑</title>
+          <title>{config.subeditor_title}</title>
         </Helmet>
         <GlobalStyle />
         <Header {...funcProps} />
