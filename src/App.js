@@ -17,7 +17,7 @@ class App extends Component {
         <Helmet>
           <meta charSet="utf-8" />
           <title>SH - SubEditor App</title>
-          <link rel="icon" href={`${guideService.home}/sh.ico`} />
+          <link rel="icon" href={`${guideService.home}sh.ico`} />
         </Helmet>
         <ToastContainer
           autoClose={3000}

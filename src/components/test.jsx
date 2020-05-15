@@ -13,13 +13,13 @@ const Test = () => {
         id="video"
         controls
         width="900px"
-        src={`${guideService.home}/friday.mp4`}
+        src={`${guideService.home}friday.mp4`}
       >
         <track
           default
           kind="subtitles"
           srcLang="en"
-          src={`${guideService.home}/friday.vtt`}
+          src={`${guideService.home}friday.vtt`}
         />
       </video>
     </div>

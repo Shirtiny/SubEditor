@@ -15,7 +15,7 @@ export function createVideoType(fileType) {
 
 //返回默认的视频封面
 export function getDefaultPicUrl() {
-  return `${guideService.home}/subEditor.png`;
+  return `${guideService.home}subEditor.png`;
 }
 
 const videoService = {
