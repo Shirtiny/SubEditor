@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Helmet } from "react-helmet";
 import styled, { createGlobalStyle } from "styled-components";
 import logger from "../utils/logger";
 import subService from "../services/subService";
@@ -570,6 +571,9 @@ class SubEditor extends Component {
 
     return (
       <React.Fragment>
+        <Helmet>
+          <title>SubEditor - 在线字幕编辑</title>
+        </Helmet>
         <GlobalStyle />
         <Header {...funcProps} />
         <Main>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Helmet } from "react-helmet";
 import { ToastContainer, toast } from "react-toastify";
 import { Switch, Route } from "react-router-dom";
 import SubEditor from "./components/subEditor";
@@ -13,6 +14,11 @@ class App extends Component {
     notifier.notify("hello", "top_left");
     return (
       <React.Fragment>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>SH - SubEditor</title>
+          <link rel="icon" href="/sh.ico" />
+        </Helmet>
         <ToastContainer
           autoClose={3000}
           closeOnClick={false}

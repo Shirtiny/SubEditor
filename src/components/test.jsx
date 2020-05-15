@@ -1,10 +1,12 @@
 import React from "react";
-
+import { Helmet } from "react-helmet";
 
 const Test = () => {
- 
   return (
     <div className="container">
+      <Helmet>
+        <title>SubEditor - 测试</title>
+      </Helmet>
       <video
         id="video"
         controls
