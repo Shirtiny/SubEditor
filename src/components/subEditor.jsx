@@ -236,7 +236,7 @@ class SubEditor extends Component {
   initSubTable = async () => {
     try {
       const subArray = await subService.getSubArray();
-      //初始字幕 临时方案
+      //初始字幕 临时方案 明天处理
       if (!subArray || subArray.length === 0) {
         const defaultSubUrl = videoService.getDefaultSubUrl();
         this.updateSubUrl(defaultSubUrl, true);
