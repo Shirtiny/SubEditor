@@ -41,6 +41,7 @@ const RippleButton = ({
   onClick,
   title,
   className,
+  element
 }) => {
   const rippleBtnBoxRef = useCallback((node) => {
     if (node !== null && !disabled) {
@@ -83,7 +84,7 @@ const RippleButton = ({
       className={className}
     >
       <span className="rippleSpan"></span>
-      {label}
+      {label}{element}
     </RippleButtonWrapper>
   );
 };
