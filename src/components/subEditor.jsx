@@ -539,8 +539,16 @@ class SubEditor extends Component {
   };
 
   //翻译全部字幕
-  handleAllSubTranslate = (langKey) => {
-    translater.translateByLangKey(langKey);
+  handleAllSubTranslate = async (fromKey, toKey) => {
+    //从存储中拿到字幕数组
+    const subArray = await subService.getSubArray();
+    //从存储中拿到字幕文本数组
+    const subTextArr = subService.createSubTextArr(subArray);
+    const translateText = translater.createTranslateTextFromStringArr(
+      subTextArr
+    );
+    //翻译时传入当前的字幕数组 当翻译结果返回时 会将这个数组也返回
+    translater.translateByLangKey(fromKey, toKey, translateText,subArray);
   };
 
   render() {

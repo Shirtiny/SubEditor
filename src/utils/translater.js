@@ -1,6 +1,7 @@
 import httpService from "../services/httpService";
 import md5 from "js-md5";
 import _ from "lodash";
+import config from "../config/config.json";
 import { Base64 } from "js-base64";
 
 //非正式 不稳定
@@ -30,14 +31,16 @@ const baiduTranslateAppid = "20180619000178085";
 const baiduTranslateKey = "ZEg5rb06NeW4wNjslD6F";
 const baiduTranslateParams = baiduTranslateUrl.searchParams;
 baiduTranslateParams.append("appid", baiduTranslateAppid);
-baiduTranslateParams.append("from", "auto");
+
 //百度翻译 函数
-export function baiduTranslate(lang, text) {
+export function baiduTranslate(from, to, text, any) {
+  console.log("百度翻译");
   const salt = new Date().getTime();
   const sign = md5(`${baiduTranslateAppid}${text}${salt}${baiduTranslateKey}`);
   baiduTranslateParams.set("salt", salt);
   baiduTranslateParams.set("sign", sign);
-  baiduTranslateParams.set("to", lang);
+  baiduTranslateParams.set("from", from);
+  baiduTranslateParams.set("to", to);
   baiduTranslateParams.set("q", text);
 
   // const encodeHref = Base64.encodeURI(url.href);这个方法编码出的base64结尾没有=
@@ -45,13 +48,27 @@ export function baiduTranslate(lang, text) {
   httpService
     .get(`https://shproxy.herokuapp.com/shProxyApi/v1/get?url=${encodeHref}`)
     .then((res) => {
-      console.log("百度翻译：", res);
+      const resultArr = res.data.trans_result || [];
+      console.log("百度翻译：", resultArr[0].dst || "");
     })
     .catch((e) => console.log(e));
 }
 
+//翻译
+export function translate(from, to, text, any) {
+  //这里用的是百度翻译 如果以后要换翻译服务商 注意translateByLangKey函数里用的是百度的语言key列表
+  return baiduTranslate(from, to, text, any);
+}
+
+//限制调用 (首次立即调用，其后5秒内不会再次调用)
+export const translateDebounce = _.debounce(translate, 5000, {
+  leading: true,
+  trailing: false,
+});
+
 //百度翻译 目标语言列表 (Object)
 const baiduTranslateLanguages = {
+  auto: "自动检测",
   zh: "中文",
   en: "英语",
   cht: "繁体中文",
@@ -92,9 +109,19 @@ export function getBaiduTranslateLangKey(value) {
   console.log(key);
 }
 
+const translateArrSeparator = config.translate_arr_separator;
+//将文本数组 组成 以 translateArrSeparator(^Shirtiny_SubEditor^) 分隔的一串文本
+export function createTranslateTextFromStringArr(stringArr) {
+  if (!stringArr || stringArr.length === 0) return "";
+  return stringArr.join(translateArrSeparator);
+}
+
 //传入key值
-export function translateByLangKey(langKey) {
-  if (!baiduTranslateLanguages[langKey]) return;
+export function translateByLangKey(fromKey, toKey, translateText, any) {
+  if (!baiduTranslateLanguages[fromKey] || !baiduTranslateLanguages[toKey])
+    return;
+  //执行翻译 防止频繁点击
+  return translateDebounce(fromKey, toKey, translateText, any);
 }
 
 const translater = {
@@ -103,6 +130,8 @@ const translater = {
   getBaiduTranslateLangKey,
   getBaiduTranslateLanguages,
   translateByLangKey,
+  translateDebounce,
+  createTranslateTextFromStringArr,
 };
 
 export default translater;

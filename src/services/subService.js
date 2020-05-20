@@ -333,6 +333,21 @@ export function sortSubArray(subArray) {
   return sortedArray;
 }
 
+//将传入的字幕数组，转为字符串数组
+export function createSubTextArr(subArray) {
+  //fullMode的subArray 当读取到的subArray是null 或者为空数组时 返回空数组
+  if (!subArray || subArray.length === 0) return [];
+  const subTextArr = subArray.map((sub) => sub.content);
+  return subTextArr;
+}
+
+//将存储的字幕数组，转为字符串数组
+export async function createSubTextArrFromStorage() {
+  //从存储中拿到字幕数组
+  const subArray = await getSubArray();
+  return createSubTextArr(subArray);
+}
+
 const subService = {
   readSubFileAsText,
   createSubArray,
@@ -352,6 +367,8 @@ const subService = {
   getTimeLength,
   createSubUrlWorker,
   sortSubArray,
+  createSubTextArr,
+  createSubTextArrFromStorage,
 };
 
 export default subService;

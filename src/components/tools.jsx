@@ -43,13 +43,13 @@ const ToolsWrapper = styled.div`
     .shRowBody {
       flex: 1;
       display: flex;
-      padding: 5px;
-      justify-content: center;
+      padding: 0 30px 0 30px;
+      justify-content: space-between;
       align-items: center;
       flex-direction: row;
 
       .toolsBtn {
-        margin-right: 15px;
+        // margin-right: 15px;
         z-index: 1;
         // pointer-events: none;
       }
@@ -69,14 +69,14 @@ const ToolsWrapper = styled.div`
       text-align: center; //文字对齐方式
       text-align-last: center;
       height: 35px;
-      width: 150px;
+      // width: 100px;
       border-radius: 5px;
       background: linear-gradient(30deg, #529393, #66cccc);
       color: white;
       cursor: pointer;
       box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.2);
       overflow: hidden;
-      margin-right: 30px;
+      // margin-right: 10px;
       option {
         color: black;
         background: #ffffff;
@@ -129,17 +129,19 @@ class Tools extends PureComponent {
   languagesKeys = Object.keys(this.languages);
 
   state = {
-    currentLanguageKey: "zh",
+    currentLanguageKeyFrom: "auto",
+    // 不能为auto
+    currentLanguageKeyTo: "zh",
   };
 
-  handleLanguageChange = (currentLanguageKey) => {
-    this.setState({ currentLanguageKey });
+  handleLanguageChange = (name, value) => {
+    this.setState({ [name]: value });
   };
 
   handleTranslate = () => {
     const { onAllSubTranslate } = this.props;
-    const { currentLanguageKey } = this.state;
-    onAllSubTranslate(currentLanguageKey);
+    const { currentLanguageKeyFrom, currentLanguageKeyTo } = this.state;
+    onAllSubTranslate(currentLanguageKeyFrom, currentLanguageKeyTo);
   };
 
   handleSubFile = async (e) => {
@@ -194,7 +196,7 @@ class Tools extends PureComponent {
 
   render() {
     const { duration, onDurationChange } = this.props;
-    const { currentLanguageKey } = this.state;
+    const { currentLanguageKeyFrom, currentLanguageKeyTo } = this.state;
     return (
       <ToolsWrapper>
         <div className="toolsContainerBox">
@@ -299,21 +301,47 @@ class Tools extends PureComponent {
                 />
               </div>
               <div className="shRowBody">
-                <div className="toolsSelectBox">
-                  <select
-                    className="toolsSelect"
-                    value={currentLanguageKey}
-                    onChange={(e) =>
-                      this.handleLanguageChange(e.currentTarget.value)
-                    }
-                  >
-                    {this.languagesKeys.map((k) => (
+                <select
+                  className="toolsSelect"
+                  name="currentLanguageKeyFrom"
+                  value={currentLanguageKeyFrom}
+                  title="当前语言"
+                  onChange={(e) =>
+                    this.handleLanguageChange(
+                      e.currentTarget.name,
+                      e.currentTarget.value
+                    )
+                  }
+                >
+                  {this.languagesKeys.map((k) => (
+                    <option key={k} value={k}>
+                      {this.languages[k]}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  className="toolsSelect"
+                  name="currentLanguageKeyTo"
+                  value={currentLanguageKeyTo}
+                  title="翻译至"
+                  onChange={(e) =>
+                    this.handleLanguageChange(
+                      e.currentTarget.name,
+                      e.currentTarget.value
+                    )
+                  }
+                >
+                  {this.languagesKeys
+                    //to Key 的值 不能让用户选为auto
+                    .filter((v) => v !== "auto")
+                    .map((k) => (
                       <option key={k} value={k}>
                         {this.languages[k]}
                       </option>
                     ))}
-                  </select>
-                </div>
+                </select>
+
                 <RippleButton
                   className="toolsBtn"
                   width="45px"
@@ -327,7 +355,7 @@ class Tools extends PureComponent {
                   }
                   color="white"
                   bgColor="#66cccc"
-                  title="点击翻译"
+                  title="点击翻译 (请给它些休息时间)"
                   onClick={this.handleTranslate}
                 />
               </div>
