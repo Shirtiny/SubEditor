@@ -59,7 +59,15 @@ const HeaderWrap = styled.header`
           //   text-decoration: underline;
         }
       }
+    }
 
+    .users {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      margin-right: 20px;
       .avatar {
         border-radius: 50%;
         height: 40px;
@@ -91,97 +99,6 @@ const LogoYa = styled.a`
     font-style: italic;
     color: #262a3e;
   }
-`;
-
-const BtnYbutton = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  // height: 100%;
-  cursor: pointer;
-  overflow: hidden;
-  color: #ccc;
-  background: #529393;
-  border-style: none;
-  border-radius: 20px;
-  padding: 9px 16px;
-  margin-right: 10px;
-  // outline: none;
-  transition: all 300ms linear 0s;
-
-  span {
-    display: none;
-  }
-
-  &:hover {
-    color: #fff;
-    background-color: #43d7d7;
-    height: 40px;
-    span {
-      display: block;
-    }
-    i {
-      display: none;
-    }
-  }
-
-  i {
-    margin-right: 0px;
-  }
-`;
-
-const BtnYbuttonDanger = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  // height: 100%;
-  cursor: pointer;
-  overflow: hidden;
-  color: #ccc;
-  background: #ec6464;
-  border-style: none;
-  border-radius: 20px;
-  padding: 9px 16px;
-  margin-right: 10px;
-  // outline: none;
-  transition: all 300ms linear 0s;
-
-  span {
-    display: none;
-  }
-
-  &:hover {
-    color: #ec6464;
-    background-color: #e1e1e1;
-    height: 40px;
-    span {
-      display: block;
-    }
-    i {
-      display: none;
-    }
-  }
-
-  i {
-    margin-right: 0px;
-  }
-`;
-
-//利用了绝对定位 绝对定位可以让元素脱离正常的文档流，实现更灵活的布局方式
-const FileYinput = styled.input`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
 `;
 
 class Header extends PureComponent {
@@ -246,40 +163,12 @@ class Header extends PureComponent {
         </div>
 
         <div className="body">
-          <div className="buttons">
-            <BtnYbutton>
-              <i className="fa fa-folder-open" aria-hidden="true"></i>
-              <FileYinput
-                className="uploadSubtitle"
-                type="file"
-                name="file"
-                onChange={this.handleSubFile}
-              />
-              <span>打开字幕</span>
-            </BtnYbutton>
-            <BtnYbutton>
-              <i className="fa fa-play-circle" aria-hidden="true"></i>
-              <FileYinput
-                className="uploadVideo"
-                type="file"
-                name="file"
-                onChange={this.handleVideoFile}
-              />
-              <span>打开视频</span>
-            </BtnYbutton>
-            <BtnYbutton onClick={this.handleSubFileDownload}>
-              <i className="fa fa-cloud-download" aria-hidden="true"></i>
-              <span>下载字幕</span>
-            </BtnYbutton>
-            <BtnYbuttonDanger onClick={this.handleSubClean}>
-              <i className="fa fa-trash" aria-hidden="true"></i>
-              <span>清空字幕</span>
-            </BtnYbuttonDanger>
-          </div>
           <div className="links">
             <a href="https://github.com/Shirtiny/SubEditor" title="前往Github">
               <i className="fa fa-github" aria-hidden="true"></i>Github
             </a>
+          </div>
+          <div className="users">
             <a href="http://bbs.vcb-s.com/" title="用户">
               <img
                 className="avatar"
