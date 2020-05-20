@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import styled, { createGlobalStyle } from "styled-components";
-import logger from "../utils/logger";
 import subService from "../services/subService";
-import notifier from "../utils/notifier";
 import videoService from "../services/videoService";
+import logger from "../utils/logger";
+import notifier from "../utils/notifier";
+import translater from "../utils/translater";
 import config from "../config/config.json";
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
@@ -537,6 +538,11 @@ class SubEditor extends Component {
     this.setState({ duration });
   };
 
+  //翻译全部字幕
+  handleAllSubTranslate = (langKey) => {
+    translater.translateByLangKey(langKey);
+  };
+
   render() {
     const {
       videoUrl,
@@ -575,6 +581,7 @@ class SubEditor extends Component {
       onSubBlockResize: this.handleSubBlockResize,
       onSubBlockClick: this.handleSubBlockClick,
       onDurationChange: this.handleDurationChange,
+      onAllSubTranslate: this.handleAllSubTranslate,
     };
 
     return (

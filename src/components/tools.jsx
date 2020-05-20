@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import progressor from "../utils/progressor";
 import notifier from "../utils/notifier";
 import subService from "../services/subService";
+import translater from "../utils/translater";
 import logger from "../utils/logger";
 import RippleButton from "./common/rippleButton";
 
@@ -53,6 +54,34 @@ const ToolsWrapper = styled.div`
         // pointer-events: none;
       }
     }
+
+    //select样式
+    .toolsSelect {
+      user-select: none;
+      border: none;
+      background: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -ms-appearance: none;
+      -moz-appearance: none;
+      -o-appearance: none;
+      outline: none;
+      text-align: center; //文字对齐方式
+      text-align-last: center;
+      height: 35px;
+      width: 150px;
+      border-radius: 5px;
+      background: linear-gradient(30deg, #529393, #66cccc);
+      color: white;
+      cursor: pointer;
+      box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      margin-right: 30px;
+      option {
+        color: black;
+        background: #ffffff;
+      }
+    }
   }
 
   //滑块样式
@@ -94,7 +123,25 @@ const FileYinput = styled.input`
   cursor: pointer;
 `;
 
-class Tools extends Component {
+class Tools extends PureComponent {
+  //语言列表
+  languages = translater.getBaiduTranslateLanguages();
+  languagesKeys = Object.keys(this.languages);
+
+  state = {
+    currentLanguageKey: "zh",
+  };
+
+  handleLanguageChange = (currentLanguageKey) => {
+    this.setState({ currentLanguageKey });
+  };
+
+  handleTranslate = () => {
+    const { onAllSubTranslate } = this.props;
+    const { currentLanguageKey } = this.state;
+    onAllSubTranslate(currentLanguageKey);
+  };
+
   handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
@@ -147,6 +194,7 @@ class Tools extends Component {
 
   render() {
     const { duration, onDurationChange } = this.props;
+    const { currentLanguageKey } = this.state;
     return (
       <ToolsWrapper>
         <div className="toolsContainerBox">
@@ -239,6 +287,51 @@ class Tools extends Component {
                 />
               </div>
             </div>
+            <div className="shRow">
+              <div className="shRowHeader">
+                <RippleButton
+                  disabled={true}
+                  label="翻译"
+                  width="50px"
+                  height="40px"
+                  color="gray"
+                  bgColor="white"
+                />
+              </div>
+              <div className="shRowBody">
+                <div className="toolsSelectBox">
+                  <select
+                    className="toolsSelect"
+                    value={currentLanguageKey}
+                    onChange={(e) =>
+                      this.handleLanguageChange(e.currentTarget.value)
+                    }
+                  >
+                    {this.languagesKeys.map((k) => (
+                      <option key={k} value={k}>
+                        {this.languages[k]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <RippleButton
+                  className="toolsBtn"
+                  width="45px"
+                  height="35px"
+                  label={
+                    <i
+                      style={{ fontSize: "16px" }}
+                      className="fa fa-globe"
+                      aria-hidden="true"
+                    ></i>
+                  }
+                  color="white"
+                  bgColor="#66cccc"
+                  title="点击翻译"
+                  onClick={this.handleTranslate}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </ToolsWrapper>
@@ -246,4 +339,4 @@ class Tools extends Component {
   }
 }
 
-export default React.memo(Tools);
+export default Tools;

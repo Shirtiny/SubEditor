@@ -11,7 +11,6 @@ import "font-awesome/css/font-awesome.css";
 import "nprogress/nprogress.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-virtualized/styles.css";
-import translater from "./utils/translater";
 
 ReactDOM.render(
   <HashRouter>
@@ -19,8 +18,6 @@ ReactDOM.render(
   </HashRouter>,
   document.getElementById("root")
 );
-
-translater.baiduTranslate("en","百度翻译 我是你爸爸")
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
