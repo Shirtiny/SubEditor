@@ -33,3 +33,11 @@ div[class*="Toastify__toast-container--bottom"] {
     background: #04e8e8;
   }
 } */
+
+/* 扩散动画 */
+@keyframes ripple {
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
