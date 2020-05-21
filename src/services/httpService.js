@@ -2,6 +2,12 @@ import axios from "axios";
 
 //https://github.com/axios/axios
 
+//拦截器
+// axios.interceptors.response.use(null, (error) => {
+//   console.log("请求出错",error,error.response.status);
+//   return Promise.reject(error);
+// });
+
 /**
  * http get
  * @param {String} url

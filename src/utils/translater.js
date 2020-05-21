@@ -48,13 +48,21 @@ export function baiduTranslate(from, to, text) {
   return httpService
     .get(`https://shproxy.herokuapp.com/shProxyApi/v1/get?url=${encodeHref}`)
     .then((res) => {
+      console.log("百度翻译请求结果：", res);
+      if (!res.data || !res.data.trans_result) {
+        //抛出异常
+        throw new Error("翻译出错");
+      }
       //无结果时 返回空数组
       const resultTextArr =
-        (res.data.trans_result && res.data.trans_result.map(o => o.dst)) || [];
-      console.log("百度翻译结果：", res.data);
+        (res.data.trans_result && res.data.trans_result.map((o) => o.dst)) ||
+        [];
       return resultTextArr;
     })
-    .catch((e) => console.log(e));
+    .catch((e) => {
+      //抛出异常
+      throw new Error(e);
+    });
 }
 
 //翻译

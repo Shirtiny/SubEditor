@@ -558,11 +558,20 @@ class SubEditor extends Component {
       "top_center"
     );
     //翻译内容为空或者出错时 返回空字符串
-    const resultTextArr = await translater.translateByLangKey(
-      fromKey,
-      toKey,
-      translateText
-    );
+    let resultTextArr = [];
+    try {
+      resultTextArr = await translater.translateByLangKey(
+        fromKey,
+        toKey,
+        translateText
+      );
+    } catch (error) {
+      console.log(error);
+      progressor.done();
+      //提示
+      notifier.notify("翻译失败", "top_center");
+      return;
+    }
     console.log("得到的翻译文本数组：", resultTextArr);
     //翻译出错 或结果为空时
     if (!resultTextArr || resultTextArr === []) {
@@ -570,10 +579,13 @@ class SubEditor extends Component {
       return notifier.notify("翻译结果为空", "top_center");
     }
 
-    //当翻译结果的数组长度，与原字幕数组长度不一致时，结束
-    if (resultTextArr.length !== subArray.length) {
+    //翻译成功 翻译结果的数组长度，与原字幕数组长度不一致时，结束
+    if (resultTextArr !== [] && resultTextArr.length !== subArray.length) {
       progressor.done();
-      return notifier.notify("已得到翻译结果，但未应用,翻译前请不要在字幕里出现换行，也可能是原文本无需翻译", "top_center");
+      return notifier.notify(
+        "未应用翻译结果，翻译前请不要在字幕里出现换行，也可能是原文本无需翻译",
+        "top_center"
+      );
     }
 
     //得到翻译后的字幕数组 使用map，然后对每个字幕对象拷贝 这样来实现深拷贝
@@ -587,6 +599,8 @@ class SubEditor extends Component {
     //更新为 翻译后的数组 并存储
     this.updateSubArray(translatedSubArray, true);
     progressor.done();
+    //提示
+    notifier.notify("翻译完成", "top_center");
   };
 
   //翻译全部字幕 Debounce版
@@ -601,7 +615,7 @@ class SubEditor extends Component {
     this.updateSubArray(backupSubArray, false);
     //提示
     notifier.notify(
-      "已回退到备份的版本，如果想将它保存为正式版本，请进行一次提交或删除",
+      "已回退到备份的版本，如果想将它保存为正式版本，请进行一次提交或删除。如果不想使用此版本，刷新浏览器即可。",
       "top_center"
     );
   };
