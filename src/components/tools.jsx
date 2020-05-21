@@ -154,12 +154,21 @@ class Tools extends PureComponent {
     const file = e.currentTarget.files[0];
     if (file.type !== "text/vtt") {
       progressor.done();
-      notifier.notify(`暂只支持vtt格式的字幕`, "top_center", "warning");
+      notifier.notify(
+        `暂只支持vtt格式的字幕文件，其他格式将在后续更新中加入`,
+        "top_center",
+        "warning"
+      );
       return;
     }
     const { updateSubArray, updateSubUrl } = this.props;
     try {
       const vttStr = await subService.readSubFileAsText(file);
+      //开一个预览字幕的提示
+      notifier.notify(<p>{vttStr}</p>, "top_center", "default", {
+        autoClose: false,
+        className: "textReader",
+      });
       const subUrl = subService.createVttSubBlobUrl(vttStr);
       updateSubUrl(subUrl, true);
       //从url中读取字幕数组
@@ -178,9 +187,16 @@ class Tools extends PureComponent {
     // maybe video/mp4 video/x-flv
     const $video = document.createElement("video");
     //如果文件不能被web播放器播放，并且不是flv格式
-    if ($video.canPlayType(file.type) !== "maybe" && file.type !== "video/x-flv") {
+    if (
+      $video.canPlayType(file.type) !== "maybe" &&
+      file.type !== "video/x-flv"
+    ) {
       progressor.done();
-      notifier.notify(`无法播放该文件，播放器明确支持mp4、flv格式的视频`, "top_center", "warning");
+      notifier.notify(
+        `无法播放该文件，播放器明确支持mp4、flv格式的视频`,
+        "top_center",
+        "warning"
+      );
       return;
     }
     logger.clog("创建元素：", $video, $video.canPlayType(file.type));
