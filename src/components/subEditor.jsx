@@ -569,14 +569,14 @@ class SubEditor extends Component {
       console.log(error);
       progressor.done();
       //提示
-      notifier.notify("翻译失败", "top_center");
+      notifier.notify("翻译失败", "top_center", "warning");
       return;
     }
     console.log("得到的翻译文本数组：", resultTextArr);
     //翻译出错 或结果为空时
     if (!resultTextArr || resultTextArr === []) {
       progressor.done();
-      return notifier.notify("翻译结果为空", "top_center");
+      return notifier.notify("翻译结果为空", "top_center", "warning");
     }
 
     //翻译成功 翻译结果的数组长度，与原字幕数组长度不一致时，结束
@@ -584,7 +584,8 @@ class SubEditor extends Component {
       progressor.done();
       return notifier.notify(
         "未应用翻译结果，翻译前请不要在字幕里出现换行，也可能是原文本无需翻译",
-        "top_center"
+        "top_center",
+        "warning"
       );
     }
 
