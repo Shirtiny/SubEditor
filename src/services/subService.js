@@ -6,6 +6,8 @@ import validateService from "./validateService";
 
 //sub数组 存在localstorage的key
 const subArrayKey = config.sub_storage_key || "DefaultSubs";
+//sub数组的备份 存储key
+const subArrayBackupKey = config.sub_storage_backup_key || "DefaultSubsBackup";
 
 //将字幕的秒数 转为 时:分:秒 的时间轴格式
 export function toTime(number) {
@@ -119,11 +121,14 @@ export function mapSubToFullModel(sub) {
 }
 
 //PromiseExecutor 将字幕数组存入localStorage
-function storageSubsPE(resolve, reject, subArray) {
+function storageSubsPE(resolve, reject, subArray, isBackup = false) {
   try {
     const subs = subArray.map((sub) => mapSubToFullModel(sub));
     const json = JSON.stringify(subs);
-    localStorage.setItem(subArrayKey, json);
+    //是否是备份
+    isBackup
+      ? localStorage.setItem(subArrayBackupKey, json)
+      : localStorage.setItem(subArrayKey, json);
     resolve(json);
   } catch (e) {
     logger.clog("subs存入local时出错", e);
@@ -132,10 +137,10 @@ function storageSubsPE(resolve, reject, subArray) {
 }
 
 //把sub数组存入localstorage
-export function saveSubArray(subArray) {
+export function saveSubArray(subArray, isBackup = false) {
   //将sub对象的秒数转为time时间轴类型 并存入localStorage
   return new Promise((resolve, reject) =>
-    storageSubsPE(resolve, reject, subArray)
+    storageSubsPE(resolve, reject, subArray, isBackup)
   );
 }
 
@@ -145,8 +150,9 @@ export function cleanSubArray() {
 }
 
 //PromiseExecutor 从localStorage中读取sub数组 可能会解析出错以及得到null 这里对null返回空数组
-function getParseSubArrayPE(resolve, reject) {
-  const subsJson = localStorage.getItem(subArrayKey);
+function getParseSubArrayPE(resolve, reject, isBackup = false) {
+  const key = isBackup ? subArrayBackupKey : subArrayKey;
+  const subsJson = localStorage.getItem(key);
   try {
     const subArray = JSON.parse(subsJson);
     resolve(subArray || []);
@@ -156,9 +162,11 @@ function getParseSubArrayPE(resolve, reject) {
   }
 }
 
-//从localStorage中读取sub数组
-export function getSubArray() {
-  return new Promise((resolve, reject) => getParseSubArrayPE(resolve, reject));
+//从localStorage中读取sub数组 如果是备份 则读取备份的数组
+export function getSubArray(isBackup = false) {
+  return new Promise((resolve, reject) =>
+    getParseSubArrayPE(resolve, reject, isBackup)
+  );
 }
 
 //处理开始时间 和 结束时间的 格式， 需要一个已经受过输入校验的time

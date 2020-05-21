@@ -69,9 +69,9 @@ const ToolsWrapper = styled.div`
       text-align: center; //文字对齐方式
       text-align-last: center;
       height: 35px;
-      // width: 100px;
+      width: 90px;
       border-radius: 5px;
-      background: linear-gradient(30deg, #529393, #66cccc);
+      background: linear-gradient(150deg, #00dfea, #66cccc);
       color: white;
       cursor: pointer;
       box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.2);
@@ -142,6 +142,11 @@ class Tools extends PureComponent {
     const { onAllSubTranslate } = this.props;
     const { currentLanguageKeyFrom, currentLanguageKeyTo } = this.state;
     onAllSubTranslate(currentLanguageKeyFrom, currentLanguageKeyTo);
+  };
+
+  handleTranslateBackupReset = () => {
+    const { onSubArrayBackupReset } = this.props;
+    onSubArrayBackupReset();
   };
 
   handleSubFile = async (e) => {
@@ -344,7 +349,7 @@ class Tools extends PureComponent {
 
                 <RippleButton
                   className="toolsBtn"
-                  width="45px"
+                  width="35px"
                   height="35px"
                   label={
                     <i
@@ -357,6 +362,23 @@ class Tools extends PureComponent {
                   bgColor="#66cccc"
                   title="点击翻译 (请给它些休息时间)"
                   onClick={this.handleTranslate}
+                />
+
+                <RippleButton
+                  className="toolsBtn"
+                  width="35px"
+                  height="35px"
+                  label={
+                    <i
+                      style={{ fontSize: "16px" }}
+                      className="fa fa-undo"
+                      aria-hidden="true"
+                    ></i>
+                  }
+                  color="white"
+                  bgColor="#00dfea"
+                  title="回退至上次翻译前的版本"
+                  onClick={this.handleTranslateBackupReset}
                 />
               </div>
             </div>

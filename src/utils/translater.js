@@ -32,8 +32,8 @@ const baiduTranslateKey = "ZEg5rb06NeW4wNjslD6F";
 const baiduTranslateParams = baiduTranslateUrl.searchParams;
 baiduTranslateParams.append("appid", baiduTranslateAppid);
 
-//百度翻译 函数
-export function baiduTranslate(from, to, text, any) {
+//百度翻译 函数 返回字符串，如果翻译结果为空 则返回空字符串
+export function baiduTranslate(from, to, text) {
   console.log("百度翻译");
   const salt = new Date().getTime();
   const sign = md5(`${baiduTranslateAppid}${text}${salt}${baiduTranslateKey}`);
@@ -45,23 +45,26 @@ export function baiduTranslate(from, to, text, any) {
 
   // const encodeHref = Base64.encodeURI(url.href);这个方法编码出的base64结尾没有=
   const encodeHref = Base64.btoa(baiduTranslateUrl.href);
-  httpService
+  return httpService
     .get(`https://shproxy.herokuapp.com/shProxyApi/v1/get?url=${encodeHref}`)
     .then((res) => {
-      const resultArr = res.data.trans_result || [];
-      console.log("百度翻译：", resultArr[0].dst || "");
+      //无结果时 返回空数组
+      const resultTextArr =
+        (res.data.trans_result && res.data.trans_result.map(o => o.dst)) || [];
+      console.log("百度翻译结果：", res.data);
+      return resultTextArr;
     })
     .catch((e) => console.log(e));
 }
 
 //翻译
-export function translate(from, to, text, any) {
+export function translate(from, to, text) {
   //这里用的是百度翻译 如果以后要换翻译服务商 注意translateByLangKey函数里用的是百度的语言key列表
-  return baiduTranslate(from, to, text, any);
+  return baiduTranslate(from, to, text);
 }
 
-//限制调用 (首次立即调用，其后5秒内不会再次调用)
-export const translateDebounce = _.debounce(translate, 5000, {
+//限制调用 (首次立即调用，其后2秒内不会再次调用)
+export const translateDebounce = _.debounce(translate, 2000, {
   leading: true,
   trailing: false,
 });
@@ -110,18 +113,18 @@ export function getBaiduTranslateLangKey(value) {
 }
 
 const translateArrSeparator = config.translate_arr_separator;
-//将文本数组 组成 以 translateArrSeparator(^Shirtiny_SubEditor^) 分隔的一串文本
+//将文本数组 组成 以 translateArrSeparator(\n) 分隔的一串文本
 export function createTranslateTextFromStringArr(stringArr) {
   if (!stringArr || stringArr.length === 0) return "";
   return stringArr.join(translateArrSeparator);
 }
 
 //传入key值
-export function translateByLangKey(fromKey, toKey, translateText, any) {
+export function translateByLangKey(fromKey, toKey, translateText) {
   if (!baiduTranslateLanguages[fromKey] || !baiduTranslateLanguages[toKey])
-    return;
+    return "";
   //执行翻译 防止频繁点击
-  return translateDebounce(fromKey, toKey, translateText, any);
+  return translateDebounce(fromKey, toKey, translateText);
 }
 
 const translater = {

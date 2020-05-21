@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
+import _ from "lodash";
 import styled, { createGlobalStyle } from "styled-components";
 import subService from "../services/subService";
 import videoService from "../services/videoService";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
 import translater from "../utils/translater";
+import progressor from "../utils/progressor";
 import config from "../config/config.json";
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
@@ -222,22 +224,22 @@ class SubEditor extends Component {
     }
   };
 
-  //存储字幕数组到本地
-  storageSubs = (subArray) => {
-    subService.saveSubArray(subArray);
+  //存储字幕数组到本地 指明是否是备份
+  storageSubs = (subArray, isBackup = false) => {
+    subService.saveSubArray(subArray, isBackup);
   };
 
-  //清空存储里的字幕
+  //清空存储里的字幕 不含备份
   cleanStorageSubs = () => {
     subService.cleanSubArray();
-    logger.clog("清空存储的字幕");
+    logger.clog("清空存储的字幕，不含备份");
   };
 
   //初始化字幕表
   initSubTable = async () => {
     try {
       const subArray = await subService.getSubArray();
-      //初始字幕 临时方案 明天处理
+      //初始字幕
       if (!subArray || subArray.length === 0) {
         const defaultSubUrl = videoService.getDefaultSubUrl();
         this.updateSubUrl(defaultSubUrl, true);
@@ -538,8 +540,9 @@ class SubEditor extends Component {
     this.setState({ duration });
   };
 
-  //翻译全部字幕
+  //翻译全部字幕 使用时 调下面那个去抖版本
   handleAllSubTranslate = async (fromKey, toKey) => {
+    progressor.start();
     //从存储中拿到字幕数组
     const subArray = await subService.getSubArray();
     //从存储中拿到字幕文本数组
@@ -547,8 +550,60 @@ class SubEditor extends Component {
     const translateText = translater.createTranslateTextFromStringArr(
       subTextArr
     );
-    //翻译时传入当前的字幕数组 当翻译结果返回时 会将这个数组也返回
-    translater.translateByLangKey(fromKey, toKey, translateText,subArray);
+    progressor.set(10);
+    progressor.inc(50);
+    //提示
+    notifier.notify(
+      "翻译请求正准备发送，由于代理服务器位于美国，可能比较慢，请耐心等待...(翻译功能内置间隔为 2秒",
+      "top_center"
+    );
+    //翻译内容为空或者出错时 返回空字符串
+    const resultTextArr = await translater.translateByLangKey(
+      fromKey,
+      toKey,
+      translateText
+    );
+    console.log("得到的翻译文本数组：", resultTextArr);
+    //翻译出错 或结果为空时
+    if (!resultTextArr || resultTextArr === []) {
+      progressor.done();
+      return notifier.notify("翻译结果为空", "top_center");
+    }
+
+    //当翻译结果的数组长度，与原字幕数组长度不一致时，结束
+    if (resultTextArr.length !== subArray.length) {
+      progressor.done();
+      return notifier.notify("已得到翻译结果，但未应用,翻译前请不要在字幕里出现换行，也可能是原文本无需翻译", "top_center");
+    }
+
+    //得到翻译后的字幕数组 使用map，然后对每个字幕对象拷贝 这样来实现深拷贝
+    const translatedSubArray = subArray.map((sub, index) => ({
+      ...sub,
+      content: resultTextArr[index],
+    }));
+    progressor.inc(20);
+    //备份存储 翻译前的原数组
+    this.storageSubs(subArray, true);
+    //更新为 翻译后的数组 并存储
+    this.updateSubArray(translatedSubArray, true);
+    progressor.done();
+  };
+
+  //翻译全部字幕 Debounce版
+  handleAllSubTranslateDebounce = _.debounce(this.handleAllSubTranslate, 2000, {
+    leading: true,
+    trailing: false,
+  });
+
+  //从存储中读取备份的字幕数组 并更新 但不存储
+  handleSubArrayBackupReset = async () => {
+    const backupSubArray = await subService.getSubArray(true);
+    this.updateSubArray(backupSubArray, false);
+    //提示
+    notifier.notify(
+      "已回退到备份的版本，如果想将它保存为正式版本，请进行一次提交或删除",
+      "top_center"
+    );
   };
 
   render() {
@@ -589,7 +644,8 @@ class SubEditor extends Component {
       onSubBlockResize: this.handleSubBlockResize,
       onSubBlockClick: this.handleSubBlockClick,
       onDurationChange: this.handleDurationChange,
-      onAllSubTranslate: this.handleAllSubTranslate,
+      onAllSubTranslate: this.handleAllSubTranslateDebounce,
+      onSubArrayBackupReset: this.handleSubArrayBackupReset,
     };
 
     return (
