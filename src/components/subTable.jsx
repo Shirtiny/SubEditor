@@ -3,6 +3,7 @@ import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
 import SubHeaderRow from "./subHeaderRow";
+import guideService from "../services/guideService"
 import subService from "../services/subService";
 import validateService from "../services/validateService";
 import logger from "../utils/logger";
@@ -19,7 +20,10 @@ const TableWrapper = styled.div`
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
       border-radius: 0.5rem;
       min-width: 650px;
-      background: #e3eeee;
+      background-color: #e3eeee;
+      background-image: url(${guideService.home}mikuLihua.png);
+      background-repeat: no-repeat;
+      background-position: 98% 98%;
 
       .ReactVirtualized__Grid__innerScrollContainer {
         min-width: 650px;
