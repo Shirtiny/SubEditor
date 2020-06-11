@@ -1,10 +1,7 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import guideService from "../services/guideService";
-import progressor from "../utils/progressor";
-import notifier from "../utils/notifier";
-import subService from "../services/subService";
-import logger from "../utils/logger";
+import httpService from "../services/httpService";
 import SubEditorPackage from "../../package.json";
 
 const HeaderWrap = styled.header`
@@ -75,6 +72,16 @@ const HeaderWrap = styled.header`
         padding: 4px;
         display: block;
       }
+      span {
+        color: #4c7b7b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      span:hover {
+        color: #66cccc;
+      }
     }
   }
 `;
@@ -102,54 +109,15 @@ const LogoYa = styled.a`
 `;
 
 class Header extends PureComponent {
-  handleSubFile = async (e) => {
-    progressor.start();
-    const file = e.currentTarget.files[0];
-    const { updateSubArray, updateSubUrl } = this.props;
-    try {
-      const vttStr = await subService.readSubFileAsText(file);
-      //开一个预览字幕的提示
-      notifier.notify(<p>{vttStr}</p>, "top_center", "default", {
-        autoClose: false,
-        className: "textReader",
-      });
-      const subUrl = subService.createVttSubBlobUrl(vttStr);
-      updateSubUrl(subUrl, true);
-      //从url中读取字幕数组
-      const subArray = await subService.createSubArray(subUrl);
-      updateSubArray(subArray, true);
-      //释放url资源
-      // URL.revokeObjectURL(subUrl);
-      // logger.clog("读入完成，释放url资源：", subUrl);
-    } catch (e) {
-      notifier.notify(`<Header>${e.message}`, "top_center", "warning");
-    }
-    progressor.done();
+  state = {
+    user: {},
   };
 
-  //拿到上传的视频
-  handleVideoFile = (e) => {
-    progressor.start();
-    const file = e.currentTarget.files[0];
-    const $video = document.createElement("video");
-    logger.clog("创建元素：", $video, $video.canPlayType(file.type));
-    const videoUrl = URL.createObjectURL(file);
-    logger.clog("视频url", videoUrl);
-    const { onSwitch } = this.props;
-    onSwitch(file.type, videoUrl);
-    progressor.done();
-  };
+  async componentDidMount() {}
 
-  //下载字幕
-  handleSubFileDownload = () => {
-    const { onDownload } = this.props;
-    onDownload();
-  };
-
-  //清空字幕
-  handleSubClean = () => {
-    const { onClean } = this.props;
-    onClean();
+  handleLogout = async () => {
+    //刷新页面
+    document.location.reload();
   };
 
   render() {
@@ -169,13 +137,25 @@ class Header extends PureComponent {
             </a>
           </div>
           <div className="users">
-            <a href="http://bbs.vcb-s.com/" title="用户">
+            <a
+              href="http://localhost:2020"
+              title={this.state.user.userName || "未登录"}
+              style={{ marginRight: "10px" }}
+            >
               <img
                 className="avatar"
                 alt="avatar"
-                src="http://bbs.vcb-s.com/data/attachment/common/d6/common_39_icon.png"
+                src={
+                  this.state.user.avatarImage ||
+                  `${guideService.home}subEditorLogo.png`
+                }
               />
             </a>
+            {this.state.user.userName && (
+              <span onClick={this.handleLogout} title="退出登录">
+                注销
+              </span>
+            )}
           </div>
         </div>
       </HeaderWrap>
