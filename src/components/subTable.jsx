@@ -19,6 +19,7 @@ const TableWrapper = styled.div`
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
       border-radius: 0.5rem;
       min-width: 650px;
+      background: #e3eeee;
 
       .ReactVirtualized__Grid__innerScrollContainer {
         min-width: 650px;

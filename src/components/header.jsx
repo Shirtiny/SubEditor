@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import guideService from "../services/guideService";
-import httpService from "../services/httpService";
 import SubEditorPackage from "../../package.json";
 
 const HeaderWrap = styled.header`
