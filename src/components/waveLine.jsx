@@ -29,19 +29,20 @@ const WaveLine = ({
     <LineWrapper>
       <ShWave
         duration={duration}
-        backgroundColor={"#529393"}
+        backgroundColor="#529393"
         currentTime={currentTime}
         throttleWait={1}
         url={videoUrl}
-        waveColor={"#fbf8f86b"}
-        alterWaveColor={"#57e3e3"}
+        waveColor="#fbf8f86b"
+        alterWaveColor="#57e3e3"
         waveScale={0.8}
         click={onWaveClick}
         contextmenu={onWaveContextmenu}
         subArray={subArray}
         onSubMove={onSubBlockMove}
         onSubMoveError={onSubBlockMoveError}
-        ErrorThrottleWait={1200}
+        ErrorWait={1050}
+        ErrorColor="#f09b50d9"
         onSubResize={onSubBlockResize}
         onSubClick={onSubBlockClick}
       />

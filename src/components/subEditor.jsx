@@ -480,7 +480,7 @@ class SubEditor extends Component {
   toastId_subBlockMoveError = null;
   //当字幕块移动有警告时
   handleSubBlockMoveError = () => {
-    if (!notifier.isActive(this.toastId_subMoveError)) {
+    if (!notifier.isActive(this.toastId_subBlockMoveError)) {
       this.toastId_subBlockMoveError = notifier.notify(
         <div
           style={{
@@ -495,7 +495,7 @@ class SubEditor extends Component {
         "warning",
         {
           hideProgressBar: true,
-          autoClose: 1200,
+          autoClose: 1000,
           canClose: true,
         },
         "flip"
