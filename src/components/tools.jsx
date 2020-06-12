@@ -26,7 +26,7 @@ const ToolsWrapper = styled.div`
     display: flex;
     flex-direction: column-reverse;
     background: url(${require("../imgs/blackboard.png")}) no-repeat;
-    background-size: 40%;
+    background-size: 47%;
     background-position: 85% center;
   }
   .toolsBox {
