@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
+import guideService from "./services/guideService";
 import "./index.css";
 import "normalize.css";
 import "font-awesome/css/font-awesome.css";
@@ -12,10 +13,16 @@ import "nprogress/nprogress.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-virtualized/styles.css";
 
+const isMobile = guideService.isMobile();
+
 ReactDOM.render(
-  <HashRouter>
-    <App />
-  </HashRouter>,
+  isMobile ? (
+    "暂不支持移动设备"
+  ) : (
+    <HashRouter>
+      <App />
+    </HashRouter>
+  ),
   document.getElementById("root")
 );
 
