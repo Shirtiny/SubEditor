@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 // import { BrowserRouter } from "react-router-dom";
 // 为了使用github的pages服务 改用HashRouter
 import { HashRouter } from "react-router-dom";
-import * as serviceWorker from "./serviceWorker";
 import App from "./App";
+import NotSupportMobile from "./components/notSupportMobile";
+import * as serviceWorker from "./serviceWorker";
 import guideService from "./services/guideService";
 import "./index.css";
 import "normalize.css";
@@ -17,7 +18,7 @@ const isMobile = guideService.isMobile();
 
 ReactDOM.render(
   isMobile ? (
-    "暂不支持移动设备"
+    <NotSupportMobile />
   ) : (
     <HashRouter>
       <App />
