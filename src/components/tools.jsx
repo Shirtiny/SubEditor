@@ -45,7 +45,7 @@ const ToolsWrapper = styled.div`
       }
     }
   }
-  
+
   .toolsBox {
     flex: 1;
     border: 1px dashed #529393;
@@ -253,19 +253,11 @@ class Tools extends PureComponent {
           <div className="leftBox">
             <div className="controlBox">
               <div className="videoControlBox">
-                <i
-                  className="fa fa-backward controlIcon"
-                  aria-hidden="true"
-                ></i>
-                <i
-                  className="fa fa-step-backward controlIcon"
-                  aria-hidden="true"
-                ></i>
-                <i
-                  className="fa fa-step-forward controlIcon"
-                  aria-hidden="true"
-                ></i>
-                <i className="fa fa-forward controlIcon" aria-hidden="true"></i>
+                {/* 记得设置快捷键 */}
+                <i className="fa fa-backward controlIcon"></i>
+                <i className="fa fa-step-backward controlIcon"></i>
+                <i className="fa fa-step-forward controlIcon"></i>
+                <i className="fa fa-forward controlIcon"></i>
               </div>
               <input
                 type="range"
