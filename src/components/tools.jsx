@@ -19,6 +19,8 @@ const ToolsWrapper = styled.div`
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     background-color: #e3eeeef2;
     padding: 15px;
+    max-width: 950px;
+    max-height: 250px;
   }
 
   .leftBox {
