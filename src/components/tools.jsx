@@ -10,21 +10,29 @@ import RippleButton from "./common/rippleButton";
 const ToolsWrapper = styled.div`
   flex: 1;
   display: flex;
-  padding: 15px;
+  padding: 15px 0 15px 0;
+  // backgroud-color: #c0d9d9;
 
   .toolsContainerBox {
     display: flex;
     flex: 1;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+    background-color: #e3eeeef2;
+    padding: 15px;
   }
 
   .clearBox {
     flex: 1;
     display: flex;
     flex-direction: column-reverse;
+    background: url(${require("../imgs/blackboard.png")}) no-repeat;
+    background-size: 40%;
+    background-position: 85% center;
   }
   .toolsBox {
     flex: 1;
     border: 1px dashed #529393;
+    border-radius: 6px 6px;
     display: flex;
     flex-direction: column;
 
@@ -228,7 +236,7 @@ class Tools extends PureComponent {
           <div className="clearBox">
             <input
               type="range"
-              title={duration}
+              title={`时间轴：${duration}`}
               value={duration}
               min="10"
               max="20"
