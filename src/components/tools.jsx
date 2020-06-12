@@ -21,14 +21,31 @@ const ToolsWrapper = styled.div`
     padding: 15px;
   }
 
-  .clearBox {
+  .leftBox {
     flex: 1;
     display: flex;
-    flex-direction: column-reverse;
     background: url(${require("../imgs/blackboard.png")}) no-repeat;
     background-size: 47%;
     background-position: 85% center;
+
+    .controlBox {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+      .videoControlBox {
+        display: flex;
+        margin-bottom: 15px;
+        justify-content: space-around;
+
+        .controlIcon {
+          color: #529393;
+        }
+      }
+    }
   }
+  
   .toolsBox {
     flex: 1;
     border: 1px dashed #529393;
@@ -233,18 +250,35 @@ class Tools extends PureComponent {
     return (
       <ToolsWrapper>
         <div className="toolsContainerBox">
-          <div className="clearBox">
-            <input
-              type="range"
-              title={`时间轴：${duration}`}
-              value={duration}
-              min="10"
-              max="20"
-              step="1"
-              onChange={(e) => {
-                onDurationChange(Number(e.currentTarget.value));
-              }}
-            />
+          <div className="leftBox">
+            <div className="controlBox">
+              <div className="videoControlBox">
+                <i
+                  className="fa fa-backward controlIcon"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  className="fa fa-step-backward controlIcon"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  className="fa fa-step-forward controlIcon"
+                  aria-hidden="true"
+                ></i>
+                <i className="fa fa-forward controlIcon" aria-hidden="true"></i>
+              </div>
+              <input
+                type="range"
+                title={`时间轴：`}
+                value={duration}
+                min="10"
+                max="20"
+                step="1"
+                onChange={(e) => {
+                  onDurationChange(Number(e.currentTarget.value));
+                }}
+              />
+            </div>
           </div>
           <div className="toolsBox">
             <div className="shRow">
