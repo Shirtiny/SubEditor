@@ -23,6 +23,8 @@ const GlobalStyle = createGlobalStyle`
         line-height: 1.5;
         height: 100%;
         overflow: hidden;
+        min-width: 1300px;
+        min-height: 800px;
     }
 
     *, *::before, *::after {
