@@ -118,6 +118,8 @@ class SubEditor extends Component {
     this.resizeContainer();
     //添加resize的事件监听
     this.addResizeListener();
+    //添加视频控制组件的键盘监听
+    this.addKeyboardListener();
     //初始化字幕表
     this.initSubTable();
     //设置 收到worker回复时的处理
@@ -132,6 +134,7 @@ class SubEditor extends Component {
     //移除添加的事件监听 不然页面切换多了会可能卡顿 ??
     // window.removeEventListener("resize", this.resizeContainer);
     // logger.clog("移除resize事件监听");
+    window.removeEventListener("keyup", this.videoControlsShortcutkey);
   }
 
   //调整container的宽高
@@ -158,6 +161,41 @@ class SubEditor extends Component {
     //添加resize事件监听 窗口大小变化时自动执行this.resizeContainer
     window.addEventListener("resize", timeOutResize);
     logger.clog("添加resize事件监听");
+  };
+
+  //工具栏videoControl的快捷键
+  videoControlsShortcutkey = (e) => {
+    //阻止默认行为
+    e.preventDefault();
+    //对ctrl、alt键的up不处理
+    if (e.keyCode === 17 || e.keyCode === 18) return;
+    let step;
+    switch (e.keyCode) {
+      // Left（左箭头）
+      case 37:
+        step = -0.1;
+        if (e.ctrlKey) step = -1;
+        if (e.ctrlKey && e.altKey) step = -10;
+        break;
+      // Right（右箭头）
+      case 39:
+        step = 0.1;
+        if (e.ctrlKey) step = 1;
+        if (e.ctrlKey && e.altKey) step = 10;
+        break;
+      //Space（空格键）  
+      case 32:
+        // step保持默认undifined即可
+        break;  
+      default:
+        return;
+    }
+    this.handleVideoControlActions(step);
+  };
+
+  //添加键盘事件监听
+  addKeyboardListener = () => {
+    window.addEventListener("keyup", this.videoControlsShortcutkey);
   };
 
   //更新一个属性 供子组件回调
@@ -640,7 +678,6 @@ class SubEditor extends Component {
     if (step && typeof step === "number") {
       const currentTime = this.state.currentTime;
       const time = Math.round((currentTime + step) * 10) / 10;
-      console.log(time);
       this.playerSeekTo(time);
     } else {
       if (!player.video.duration) return;
