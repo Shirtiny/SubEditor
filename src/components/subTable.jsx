@@ -3,7 +3,7 @@ import { Table } from "react-virtualized";
 import styled from "styled-components";
 import SubRow from "./subRow";
 import SubHeaderRow from "./subHeaderRow";
-import guideService from "../services/guideService"
+import guideService from "../services/guideService";
 import subService from "../services/subService";
 import validateService from "../services/validateService";
 import logger from "../utils/logger";

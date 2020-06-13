@@ -5,6 +5,7 @@ import notifier from "../utils/notifier";
 import subService from "../services/subService";
 import translater from "../utils/translater";
 import logger from "../utils/logger";
+import VideoControls from "./videoControls";
 import RippleButton from "./common/rippleButton";
 
 const ToolsWrapper = styled.div`
@@ -35,16 +36,6 @@ const ToolsWrapper = styled.div`
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-
-      .videoControlBox {
-        display: flex;
-        margin-bottom: 15px;
-        justify-content: space-around;
-
-        .controlIcon {
-          color: #529393;
-        }
-      }
     }
   }
 
@@ -176,6 +167,11 @@ class Tools extends PureComponent {
     onSubArrayBackupReset();
   };
 
+  handleVideoControlActions = (step) => {
+    const { onVideoControlAction } = this.props;
+    onVideoControlAction(step);
+  };
+
   handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
@@ -247,20 +243,17 @@ class Tools extends PureComponent {
   };
 
   render() {
-    const { duration, onDurationChange } = this.props;
+    const { duration, playerPaused, onDurationChange } = this.props;
     const { currentLanguageKeyFrom, currentLanguageKeyTo } = this.state;
     return (
       <ToolsWrapper>
         <div className="toolsContainerBox">
           <div className="leftBox">
             <div className="controlBox">
-              <div className="videoControlBox">
-                {/* 记得设置快捷键 */}
-                <i className="fa fa-backward controlIcon"></i>
-                <i className="fa fa-step-backward controlIcon"></i>
-                <i className="fa fa-step-forward controlIcon"></i>
-                <i className="fa fa-forward controlIcon"></i>
-              </div>
+              <VideoControls
+                onAction={this.handleVideoControlActions}
+                playerPaused={playerPaused}
+              />
               <input
                 type="range"
                 title={`时间轴：`}

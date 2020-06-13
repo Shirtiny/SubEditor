@@ -70,6 +70,20 @@ class VideoPlayer extends Component {
     $playerContainer.classList.remove("dplayer_disable");
   };
 
+  //暂停时
+  pause = () => {
+    console.log("播放器暂停");
+    const { onVideoPlayerPausedSwitch } = this.props;
+    onVideoPlayerPausedSwitch(true);
+  };
+
+  //播放时
+  play = () => {
+    console.log("播放器播放");
+    const { onVideoPlayerPausedSwitch } = this.props;
+    onVideoPlayerPausedSwitch(false);
+  };
+
   //播放中
   playing = () => {
     const { onVideoPlaying } = this.props;
@@ -166,6 +180,8 @@ class VideoPlayer extends Component {
           onLoad={this.load}
           onError={this.error}
           onCanplay={this.canPlay}
+          onPause={this.pause}
+          onPlay={this.play}
           onPlaying={this.playing}
           onFullscreen={this.fullscreen}
           onFullscreenCancel={this.fullscreenCancel}

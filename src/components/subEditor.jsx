@@ -105,6 +105,8 @@ class SubEditor extends Component {
     currentTime: 0,
     //时间轴长度
     duration: 15,
+    //播放器是否暂停
+    playerPaused: true,
   };
 
   //用来加工字幕url的worker
@@ -392,7 +394,6 @@ class SubEditor extends Component {
     player[action]();
     //不能超过视频总时长
     const time = second > duration ? duration : second;
-    console.log(second, duration, time);
     player.seek(time);
   };
 
@@ -444,7 +445,16 @@ class SubEditor extends Component {
     });
   };
 
-  //在视频播放时
+  //更新播放器暂停状态
+  handlePlayerPaused = (playerPaused) => {
+    const player = this.state.player;
+    if (player && player.video) {
+      playerPaused = player.video.paused;
+    }
+    this.setState({ playerPaused });
+  };
+
+  //在视频开始播放进行时
   handleVideoPlaying = () => {};
 
   //底部waveLine左键单击时 url为空时 不会执行
@@ -623,6 +633,22 @@ class SubEditor extends Component {
     );
   };
 
+  //工具栏 videoControl
+  handleVideoControlActions = (step) => {
+    const player = this.state.player;
+    if (!player || !player.video) return;
+    if (step && typeof step === "number") {
+      const currentTime = this.state.currentTime;
+      const time = Math.round((currentTime + step) * 10) / 10;
+      console.log(time);
+      this.playerSeekTo(time);
+    } else {
+      if (!player.video.duration) return;
+      const { paused } = player.video;
+      paused ? player.play() : player.pause();
+    }
+  };
+
   render() {
     const {
       videoUrl,
@@ -634,6 +660,7 @@ class SubEditor extends Component {
       player,
       currentTime,
       duration,
+      playerPaused,
     } = this.state;
     const funcProps = {
       updateOneState: this.updateOneState,
@@ -653,6 +680,7 @@ class SubEditor extends Component {
       initPlayer: this.handlePlayerInit,
       onVideoCanPlay: this.handleVideoCanPlay,
       updateCurrentTime: this.handleCurrentTime,
+      onVideoPlayerPausedSwitch: this.handlePlayerPaused,
       onVideoPlaying: this.handleVideoPlaying,
       onWaveClick: this.handleWaveClick,
       onWaveContextmenu: this.handleWaveContextmenu,
@@ -663,6 +691,7 @@ class SubEditor extends Component {
       onDurationChange: this.handleDurationChange,
       onAllSubTranslate: this.handleAllSubTranslateDebounce,
       onSubArrayBackupReset: this.handleSubArrayBackupReset,
+      onVideoControlAction: this.handleVideoControlActions,
     };
 
     return (
@@ -681,7 +710,11 @@ class SubEditor extends Component {
               subUrl={subUrl}
               player={player}
             />
-            <Tools duration={duration} {...funcProps} />
+            <Tools
+              duration={duration}
+              playerPaused={playerPaused}
+              {...funcProps}
+            />
           </Left>
           <Right>
             <SubTable
