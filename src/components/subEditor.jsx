@@ -14,6 +14,7 @@ import VideoPlayer from "./videoPlayer";
 import SubTable from "./subTable";
 import Tools from "./tools";
 import WaveLine from "./waveLine";
+import EditorState from "../model/editorState";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -129,6 +130,14 @@ class SubEditor extends Component {
     });
   }
 
+  //状态改变后，决定是否更新 在这里记录历史状态
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextProps, nextState);
+    const editorstate = this.createEditorState();
+    console.log(editorstate.currentTime);
+    return true;
+  }
+
   //卸载组件前
   componentWillUnmount() {
     //移除添加的事件监听 不然页面切换多了会可能卡顿 ??
@@ -183,10 +192,10 @@ class SubEditor extends Component {
         if (e.ctrlKey) step = 1;
         if (e.ctrlKey && e.altKey) step = 10;
         break;
-      //Space（空格键）  
+      //Space（空格键）
       case 32:
         // step保持默认undifined即可
-        break;  
+        break;
       default:
         return;
     }
@@ -409,7 +418,7 @@ class SubEditor extends Component {
     }
   };
 
-  //初始化视频播放器对象
+  //初始化视频播放器对象 设置高频更新当前时间
   handlePlayerInit = (player) => {
     logger.clog("初始化播放器");
     this.setState({ player });
@@ -684,6 +693,13 @@ class SubEditor extends Component {
       const { paused } = player.video;
       paused ? player.play() : player.pause();
     }
+  };
+
+  //创建当前的编辑器状态对象副本
+  createEditorState = () => {
+    const { subArray, currentTime, duration, player } = this.state;
+    console.log("保存状态：", player, duration);
+    return new EditorState(subArray, currentTime);
   };
 
   render() {

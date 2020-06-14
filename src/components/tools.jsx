@@ -256,7 +256,7 @@ class Tools extends PureComponent {
               />
               <input
                 type="range"
-                title={`时间轴：`}
+                title={`时间轴：${duration}`}
                 value={duration}
                 min="10"
                 max="20"
