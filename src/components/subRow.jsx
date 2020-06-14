@@ -180,6 +180,23 @@ const SubRow = ({
             clickCount = 0;
           }, 200);
         }}
+        onKeyUp={(e) => {
+          e.preventDefault();
+          //阻止事件进一步传播
+          e.stopPropagation();
+          switch (e.keyCode) {
+            //回车 提交
+            case 13:
+              onRowCommit(sub);
+              break;
+            //Esc 取消编辑
+            case 27:
+              onRowCancel(sub);
+              break;
+            default:
+              return;
+          }
+        }}
       >
         {/* 操作按钮 */}
         <div className="rowT operation" style={{ width: 90 }}>

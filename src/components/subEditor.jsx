@@ -354,7 +354,13 @@ class SubEditor extends Component {
   handleSubEdit = (sub) => {
     //将数组内每个sub的editing重置
     const subArray = this.state.subArray.map((sub) => {
-      return { ...sub, editing: false };
+      return {
+        ...sub,
+        startTime: sub.startTime,
+        endTime: sub.endTime,
+        length: sub.length,
+        editing: false,
+      };
     });
     const index = this.state.subArray.indexOf(sub);
     subArray[index].editing = true;
@@ -730,7 +736,12 @@ class SubEditor extends Component {
   //创建当前的编辑器状态对象副本
   createEditorState = () => {
     const { subArray, currentTime } = this.state;
-    const arr = [...subArray].map((sub) => ({ ...sub }));
+    const arr = [...subArray].map((sub) => ({
+      ...sub,
+      startTime: sub.startTime,
+      endTime: sub.endTime,
+      length: sub.length,
+    }));
     return new EditorState(arr, currentTime);
   };
 
