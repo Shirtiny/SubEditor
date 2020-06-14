@@ -4,6 +4,7 @@ import _ from "lodash";
 import styled, { createGlobalStyle } from "styled-components";
 import subService from "../services/subService";
 import videoService from "../services/videoService";
+import editorStateService from "../services/editorStateService";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
 import translater from "../utils/translater";
@@ -130,11 +131,15 @@ class SubEditor extends Component {
     });
   }
 
-  //状态改变后，决定是否更新 在这里记录历史状态
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps, nextState);
-    const editorstate = this.createEditorState();
-    console.log(editorstate.currentTime);
+  //组件更新后 在这里记录历史状态
+  componentDidUpdate(prevProps, prevState) {
+    //如果与之前state的subArray地址有变化
+    if (prevState.subArray !== this.state.subArray) {
+      const editorstate = this.createEditorState();
+      editorStateService.push(editorstate);
+      const history = editorStateService.getHistory();
+      console.log(history.length, history);
+    }
     return true;
   }
 
@@ -697,8 +702,8 @@ class SubEditor extends Component {
 
   //创建当前的编辑器状态对象副本
   createEditorState = () => {
-    const { subArray, currentTime, duration, player } = this.state;
-    console.log("保存状态：", player, duration);
+    const { subArray, currentTime } = this.state;
+    // console.log("保存状态：", player, duration);
     return new EditorState(subArray, currentTime);
   };
 
