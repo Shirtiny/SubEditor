@@ -27,7 +27,7 @@ const ToolsWrapper = styled.div`
   .leftBox {
     flex: 1;
     display: flex;
-    background: url(${require("../imgs/blackboard.png")}) no-repeat;
+    background: url(${require("../resources/image/blackboard.png")}) no-repeat;
     background-size: 47%;
     background-position: 85% center;
 

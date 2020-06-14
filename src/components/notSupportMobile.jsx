@@ -13,7 +13,7 @@ const NotSupportMobileWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url(${require("../imgs/subEditor.png")});
+    background-image: url(${require("../resources/image/subEditor.png")});
     background-position: top center;
     background-repeat: no-repeat;
     background-size: cover;

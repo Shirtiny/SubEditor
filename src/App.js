@@ -6,6 +6,7 @@ import SubEditor from "./components/subEditor";
 import Test from "./components/test";
 import notifier from "./utils/notifier";
 import guideService from "./services/guideService";
+import subeditorIco from "./resources/image/subeditor.ico"
 import "react-toastify/dist/ReactToastify.css";
 
 class App extends Component {
@@ -17,7 +18,7 @@ class App extends Component {
         <Helmet>
           <meta charSet="utf-8" />
           <title>SH - SubEditor App</title>
-          <link rel="icon" href={`${guideService.home}subeditor.ico`} />
+          <link rel="icon" href={subeditorIco} />
         </Helmet>
         <ToastContainer
           autoClose={3000}

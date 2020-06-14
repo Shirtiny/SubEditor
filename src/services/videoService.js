@@ -1,5 +1,6 @@
 import logger from "../utils/logger";
-import guideService from "./guideService";
+import defaultPic from "../resources/image/subEditor.png"
+import defaultSub from "../resources/subtitles/welcom.vtt"
 
 export function createVideoType(fileType) {
   if (typeof fileType !== "string") return "";
@@ -15,12 +16,12 @@ export function createVideoType(fileType) {
 
 //返回默认的视频封面
 export function getDefaultPicUrl() {
-  return `${guideService.home}subEditor.png`;
+  return defaultPic;
 }
 
 //默认字幕的地址
 export function getDefaultSubUrl() {
-  return `${guideService.home}welcom.vtt`;
+  return defaultSub;
 }
 
 const videoService = {
