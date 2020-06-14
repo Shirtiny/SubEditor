@@ -175,7 +175,8 @@ class Tools extends PureComponent {
   handleSubFile = async (e) => {
     progressor.start();
     const file = e.currentTarget.files[0];
-    if (file.type !== "text/vtt") {
+    // chrome vtt文件的file.type 为空串？
+    if (!/vtt$/i.test(file.name)) {
       progressor.done();
       notifier.notify(
         `暂只支持vtt格式的字幕文件，其他格式将在后续更新中加入`,

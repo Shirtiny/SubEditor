@@ -131,16 +131,18 @@ class SubEditor extends Component {
     });
   }
 
-  //组件更新后 在这里记录历史状态
+  //是否记录当前状态
+  WillMemorize = true;
+
+  //组件更新后 在这里记录状态
   componentDidUpdate(prevProps, prevState) {
-    //如果与之前state的subArray地址有变化
-    if (prevState.subArray !== this.state.subArray) {
+    //如果需要记录 并且state的subArray与之前的地址不同
+    if (this.WillMemorize && prevState.subArray !== this.state.subArray) {
       const editorstate = this.createEditorState();
       editorStateService.push(editorstate);
       const history = editorStateService.getHistory();
       console.log(history.length, history);
     }
-    return true;
   }
 
   //卸载组件前
@@ -148,7 +150,7 @@ class SubEditor extends Component {
     //移除添加的事件监听 不然页面切换多了会可能卡顿 ??
     // window.removeEventListener("resize", this.resizeContainer);
     // logger.clog("移除resize事件监听");
-    window.removeEventListener("keyup", this.videoControlsShortcutkey);
+    this.removeKeyboardListener();
   }
 
   //调整container的宽高
@@ -179,8 +181,6 @@ class SubEditor extends Component {
 
   //工具栏videoControl的快捷键
   videoControlsShortcutkey = (e) => {
-    //阻止默认行为
-    e.preventDefault();
     //对ctrl、alt键的up不处理
     if (e.keyCode === 17 || e.keyCode === 18) return;
     let step;
@@ -204,12 +204,38 @@ class SubEditor extends Component {
       default:
         return;
     }
+    //阻止默认行为
+    e.preventDefault();
     this.handleVideoControlActions(step);
+  };
+
+  //撤销快捷键
+  undoShortcutkey = (e) => {
+    let bool;
+    switch (e.keyCode) {
+      case 90:
+        if (e.ctrlKey) bool = true;
+        if (e.ctrlKey && e.shiftKey) bool = false;
+        break;
+      default:
+        return;
+    }
+    if (typeof bool === "undefined") return;
+    //阻止默认行为
+    e.preventDefault();
+    this.editorStateRollBack(bool);
   };
 
   //添加键盘事件监听
   addKeyboardListener = () => {
     window.addEventListener("keyup", this.videoControlsShortcutkey);
+    window.addEventListener("keyup", this.undoShortcutkey);
+  };
+
+  //移除键盘事件监听
+  removeKeyboardListener = () => {
+    window.removeEventListener("keyup", this.videoControlsShortcutkey);
+    window.removeEventListener("keyup", this.undoShortcutkey);
   };
 
   //更新一个属性 供子组件回调
@@ -324,12 +350,13 @@ class SubEditor extends Component {
     logger.clog("删除", sub, index);
   };
 
-  //编辑时
+  //编辑时 待改 编辑状态应当在subtable
   handleSubEdit = (sub) => {
-    const subArray = [...this.state.subArray];
     //将数组内每个sub的editing重置
-    subArray.map((sub) => (sub.editing = false));
-    const index = subArray.indexOf(sub);
+    const subArray = this.state.subArray.map((sub) => {
+      return { ...sub, editing: false };
+    });
+    const index = this.state.subArray.indexOf(sub);
     subArray[index].editing = true;
     this.updateSubArray(subArray);
     logger.clog("handleEdit", sub, index);
@@ -703,8 +730,27 @@ class SubEditor extends Component {
   //创建当前的编辑器状态对象副本
   createEditorState = () => {
     const { subArray, currentTime } = this.state;
-    // console.log("保存状态：", player, duration);
-    return new EditorState(subArray, currentTime);
+    const arr = [...subArray].map((sub) => ({ ...sub }));
+    return new EditorState(arr, currentTime);
+  };
+
+  //状态回滚 true向上回滚 false向下回滚
+  editorStateRollBack = (bool = true) => {
+    const { pop, unPop } = editorStateService;
+    let state;
+    try {
+      bool ? (state = pop()) : (state = unPop());
+    } catch (e) {
+      console.error(e);
+    }
+    if (typeof state === "undefined") return;
+    //标识此次更新不需要记录
+    this.WillMemorize = false;
+    //开始回滚
+    this.updateSubArray(state.subArray, true);
+    this.playerSeekTo(state.currentTime);
+    //回滚完成 重置标识
+    this.WillMemorize = true;
   };
 
   render() {
