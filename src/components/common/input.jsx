@@ -38,7 +38,7 @@ const Input = ({
   onChange,
   disabled,
   style,
-  errors
+  errors,
 }) => {
   return (
     <InputYinput
@@ -46,8 +46,11 @@ const Input = ({
       className={[...className, errors[name] ? "input_error" : "input_success"]}
       type={type}
       value={value}
-      onChange={event => onChange(name, event.currentTarget.value)}
+      onChange={(event) => onChange(name, event.currentTarget.value)}
       style={{ ...style }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     />
   );
 };

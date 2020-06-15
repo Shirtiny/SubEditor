@@ -350,7 +350,7 @@ class SubEditor extends Component {
     logger.clog("删除", sub, index);
   };
 
-  //编辑时 待改 编辑状态应当在subtable
+  //旧 编辑时 待改 编辑状态应当在subtable
   handleSubEdit = (sub) => {
     //将数组内每个sub的editing重置
     const subArray = this.state.subArray.map((sub) => {
@@ -376,7 +376,7 @@ class SubEditor extends Component {
     this.playerSeekTo(time);
   };
 
-  //取消时
+  //旧  取消时
   handleSubCancel = (sub) => {
     //取消编辑状态
     const subArray = [...this.state.subArray];
@@ -392,8 +392,6 @@ class SubEditor extends Component {
     const index = subArray.indexOf(sub);
     //覆盖原来的sub
     subArray[index] = editingSub;
-    //取消编辑状态
-    subArray[index].editing = false;
     //提交
     //更新state 并存储 如果存储 则会更新url
     this.updateSubArray(subArray, true);
@@ -786,10 +784,10 @@ class SubEditor extends Component {
       onDownload: this.handleSubDownload,
       onClean: this.handleSubClean,
       onRemove: this.handleSubRemove,
-      onEdit: this.handleSubEdit,
+      // onEdit: this.handleSubEdit,
       onClick: this.handleSubClick,
       onCommit: this.handleSubCommit,
-      onCancel: this.handleSubCancel,
+      // onCancel: this.handleSubCancel,
       onInsert: this.handleSubInsert,
       onSwitch: this.handleVideoSwitch,
       initPlayer: this.handlePlayerInit,

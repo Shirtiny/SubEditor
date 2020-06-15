@@ -7,7 +7,7 @@ import subService from "../services/subService";
 import validateService from "../services/validateService";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
-import lihuaMikuPng from "../resources/image/lihuaMiku.png"
+import lihuaMikuPng from "../resources/image/lihuaMiku.png";
 
 const TableWrapper = styled.div`
   .ReactVirtualized__Table {
@@ -90,6 +90,8 @@ class SubTable extends PureComponent {
   $tableRef = React.createRef();
 
   state = {
+    //正在编辑的字幕序号
+    editingIndex: -1,
     //当前正在编辑的字幕信息
     editingSub: {
       start: 0,
@@ -254,14 +256,16 @@ class SubTable extends PureComponent {
 
   //在编辑时 回显表单数据 校验数据以更新errors
   handleRowEdit = (sub) => {
-    const { onEdit } = this.props;
+    const { subArray } = this.props;
     const editingSub = subService.mapSubToFullModel(sub);
     this.setState({ editingSub }, () => {
       //校验数据 更新errors
       this.validate();
       logger.clog("表单回显：", this.state.editingSub);
     });
-    onEdit(sub);
+    // onEdit(sub);
+    const editingIndex = subArray.indexOf(sub);
+    this.setState({ editingIndex });
   };
 
   handleRowClick = (sub) => {
@@ -283,22 +287,23 @@ class SubTable extends PureComponent {
     } else {
       //无错 则关闭提示
       notifier.done(this.toast_validate);
+      //取消编辑状态
+      this.handleRowCancel();
       //提交 传入原sub 和 填写的sub， 传值前将填写的sub格式化
       onCommit(sub, subService.mapSubToFullModel(this.state.editingSub));
     }
   };
 
-  handleRowRemove = (sub) => {
+  handleRowRemove = (sub, index) => {
     const { onRemove } = this.props;
-    logger.clog("删除一行：", sub);
+    if (index === this.state.editingIndex) this.handleRowCancel();
     onRemove(sub);
   };
 
   //取消编辑
-  handleRowCancel = (sub) => {
-    const { onCancel } = this.props;
-    logger.clog("取消编辑：", sub);
-    onCancel(sub);
+  handleRowCancel = () => {
+    const editingIndex = -1;
+    this.setState({ editingIndex });
   };
 
   //改变table的背景色 ，ps： table被header 和 grid覆盖
@@ -351,7 +356,21 @@ class SubTable extends PureComponent {
     //table背景色 无内容时为银色 有内容和root背景一样
     this.tableBackGroundColor(subArray);
     return (
-      <TableWrapper>
+      <TableWrapper
+        onKeyUp={(e) => {
+          e.preventDefault();
+          switch (e.keyCode) {
+            //Esc 取消编辑
+            case 27:
+              this.handleRowCancel();
+              break;
+            default:
+              return;
+          }
+          //阻止事件进一步传播
+          e.stopPropagation();
+        }}
+      >
         <Table
           id="vSubTable"
           ref={this.$tableRef}

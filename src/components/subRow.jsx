@@ -142,6 +142,7 @@ const SubRow = ({
   onRowCommit,
   onRowCancel,
   onRowInsert,
+  editingIndex,
   editingSub,
   errors,
   onInputValueChange,
@@ -165,7 +166,7 @@ const SubRow = ({
           className,
           "rowClasses",
           index % 2 ? "odd" : "",
-          sub.editing ? "onEditing" : "",
+          editingIndex === index ? "onEditing" : "",
           scrollIndex === index ? "scrollIndexBackColor" : "",
         ].join(" ")}
         onClick={() => {
@@ -182,8 +183,6 @@ const SubRow = ({
         }}
         onKeyUp={(e) => {
           e.preventDefault();
-          //阻止事件进一步传播
-          e.stopPropagation();
           switch (e.keyCode) {
             //回车 提交
             case 13:
@@ -191,11 +190,13 @@ const SubRow = ({
               break;
             //Esc 取消编辑
             case 27:
-              onRowCancel(sub);
+              onRowCancel();
               break;
             default:
               return;
           }
+          //阻止事件进一步传播
+          e.stopPropagation();
         }}
       >
         {/* 操作按钮 */}
@@ -220,7 +221,7 @@ const SubRow = ({
             className="fa fa-times deleteIcon"
             onClick={(e) => {
               e.stopPropagation();
-              onRowRemove(sub);
+              onRowRemove(sub, index);
             }}
             title="删除"
           ></i>
