@@ -1,6 +1,7 @@
 import logger from "../utils/logger";
-import defaultPic from "../resources/image/subEditor.png"
-import defaultSub from "../resources/subtitles/welcom.vtt"
+import defaultPic from "../resources/image/subEditor.png";
+import defaultSub from "../resources/subtitles/welcom.vtt";
+import fileService from "./fileService";
 
 export function createVideoType(fileType) {
   if (typeof fileType !== "string") return "";
@@ -24,10 +25,78 @@ export function getDefaultSubUrl() {
   return defaultSub;
 }
 
+//ffmpeg的worker
+let worker = new Worker("/ffmpeg-worker-mp4.js");
+let outputUrl = "";
+initFfmpegWorker(worker);
+
+//配置worker
+function initFfmpegWorker(worker) {
+  worker.onmessage = function (e) {
+    const msg = e.data;
+    switch (msg.type) {
+      case "ready":
+        console.log("shFFmpegWorker ready");
+        break;
+      case "stdout":
+        console.log(msg.data);
+        break;
+      case "stderr":
+        console.log(msg.data);
+        break;
+      case "done":
+        console.log("shFFmpegWorker works done", msg.data);
+        const res = msg.data.MEMFS[0];
+        const { name, data } = res;
+        //释放上一个url
+        URL.revokeObjectURL(outputUrl);
+        outputUrl = URL.createObjectURL(new File([data.buffer], name));
+        fileService.downloadFromUrl(outputUrl, name);
+        break;
+      default:
+        return;
+    }
+  };
+}
+
+//终止worker
+export function stopFfmpegWorker() {
+  worker.terminate();
+  worker = new Worker("/ffmpeg-worker-mp4.js");
+  //将worker初始化
+  initFfmpegWorker(worker);
+}
+
+//内封字幕 使用ffmpeg的subtitle视频滤镜 fileName: name.mp4 name.vtt
+export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
+  const videoData = await fileService.fetchFileData(videoUrl);
+  const subData = await fileService.fetchFileData(subUrl);
+  const ttfData = await fileService.fetchFileData("/default.ttf");
+  worker.postMessage({
+    type: "run",
+    TOTAL_MEMORY: 256 * 1024 * 1024,
+    arguments: [
+      "-y",
+      "-i",
+      videoName,
+      "-vf",
+      `subtitles=${subName}`,
+      `output-${videoName}`,
+    ],
+    MEMFS: [
+      { name: videoName, data: videoData },
+      { name: subName, data: subData },
+      { name: "default.ttf", data: ttfData },
+    ],
+  });
+}
+
 const videoService = {
   createVideoType,
   getDefaultPicUrl,
   getDefaultSubUrl,
+  encodeVideoWithSub,
+  stopFfmpegWorker,
 };
 
 export default videoService;

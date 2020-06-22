@@ -108,11 +108,30 @@ export async function fetchFileAsText(url) {
   return text;
 }
 
+//通过url 下载文件给用户
+export function downloadFromUrl(url, fileName) {
+  //创建一个a标签
+  const aLink = document.createElement("a");
+  //设为不可见
+  aLink.style.display = "none";
+  //将a标签的href设为url
+  aLink.href = url;
+  //a标签的download属性 设置文件名 ，浏览器将自动检测正确的文件类型
+  aLink.download = fileName;
+  //放入body里
+  document.body.appendChild(aLink);
+  //点击a标签
+  aLink.click();
+  //从body中移除a标签
+  document.body.removeChild(aLink);
+}
+
 const fileService = {
   readFileData,
   fetchFileData,
   fetchFileAsText,
   fetchFileU8Data,
+  downloadFromUrl
 };
 
 export default fileService;
