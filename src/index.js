@@ -7,7 +7,6 @@ import App from "./App";
 import NotSupportMobile from "./components/notSupportMobile";
 import * as serviceWorker from "./serviceWorker";
 import guideService from "./services/guideService";
-import videoService from "./services/videoService";
 import "./index.css";
 import "normalize.css";
 import "font-awesome/css/font-awesome.css";
@@ -27,14 +26,6 @@ ReactDOM.render(
   ),
   document.getElementById("root")
 );
-
-videoService.encodeVideoWithSub(
-  "/friday.mp4",
-  "friday.mp4",
-  "/friday.vtt",
-  "friday.vtt"
-);
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

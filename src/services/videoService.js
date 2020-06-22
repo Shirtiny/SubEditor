@@ -69,6 +69,9 @@ export function stopFfmpegWorker() {
 
 //内封字幕 使用ffmpeg的subtitle视频滤镜 fileName: name.mp4 name.vtt
 export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
+  if (!videoUrl || !subUrl) {
+    throw new Error("视频或字幕地址为空");
+  }
   const videoData = await fileService.fetchFileData(videoUrl);
   const subData = await fileService.fetchFileData(subUrl);
   const ttfData = await fileService.fetchFileData("/default.ttf");
@@ -76,6 +79,7 @@ export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
     type: "run",
     TOTAL_MEMORY: 256 * 1024 * 1024,
     arguments: [
+      "-hide_banner",
       "-y",
       "-i",
       videoName,

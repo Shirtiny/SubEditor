@@ -7,6 +7,7 @@ import translater from "../utils/translater";
 import logger from "../utils/logger";
 import VideoControls from "./videoControls";
 import RippleButton from "./common/rippleButton";
+import videoService from "../services/videoService";
 
 const ToolsWrapper = styled.div`
   flex: 1;
@@ -150,6 +151,10 @@ class Tools extends PureComponent {
     currentLanguageKeyFrom: "auto",
     // 不能为auto
     currentLanguageKeyTo: "zh",
+    //视频文件名
+    videoName: "",
+    //字幕文件名 暂时固定为 subtitle.vtt
+    subName: "subtitle.vtt",
   };
 
   handleLanguageChange = (name, value) => {
@@ -224,6 +229,8 @@ class Tools extends PureComponent {
       return;
     }
     logger.clog("创建元素：", $video, $video.canPlayType(file.type));
+    //更新视频文件名
+    this.setState({ videoName: file.name });
     const videoUrl = URL.createObjectURL(file);
     logger.clog("视频url", videoUrl);
     const { onSwitch } = this.props;
@@ -235,6 +242,45 @@ class Tools extends PureComponent {
   handleSubFileDownload = () => {
     const { onDownload } = this.props;
     onDownload();
+  };
+
+  //标识正在编码视频
+  videoEncoding = false;
+
+  //下载内封字幕的视频
+  handleVideoWithSubDownload = async () => {
+    //确认框
+    const isConfirm = window.confirm(
+      "把字幕与视频合并后输出，将把整个视频重新编码，这会花费很长时间，是否继续？"
+    );
+    if (isConfirm) {
+      //停止上一个worker
+      this.handleVideoEncodeStop();
+      const { videoUrl, subUrl } = this.props;
+      try {
+        //加await才能捕获异步的异常
+        await videoService.encodeVideoWithSub(
+          videoUrl,
+          this.state.videoName,
+          subUrl,
+          this.state.subName
+        );
+      } catch (e) {
+        console.error(e);
+        return;
+      }
+      notifier.notify(
+        "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
+      );
+      this.videoEncoding = true;
+    }
+  };
+
+  //停止编码视频
+  handleVideoEncodeStop = () => {
+    if (!this.videoEncoding) return;
+    videoService.stopFfmpegWorker();
+    this.videoEncoding = false;
   };
 
   //清空字幕
@@ -429,6 +475,40 @@ class Tools extends PureComponent {
                   bgColor="#00dfea"
                   title="回退至上次翻译前的版本"
                   onClick={this.handleTranslateBackupReset}
+                />
+              </div>
+            </div>
+            <div className="shRow">
+              <div className="shRowHeader">
+                <RippleButton
+                  disabled={true}
+                  label="编码"
+                  width="50px"
+                  height="40px"
+                  color="gray"
+                  bgColor="white"
+                />
+              </div>
+              <div className="shRowBody">
+                <RippleButton
+                  className="toolsBtn"
+                  width="45px"
+                  height="35px"
+                  label={<i className="fa fa-download" aria-hidden="true"></i>}
+                  color="white"
+                  bgColor="#529393"
+                  title="将字幕内封到视频，并下载"
+                  onClick={this.handleVideoWithSubDownload}
+                />
+                <RippleButton
+                  className="toolsBtn"
+                  width="45px"
+                  height="35px"
+                  label={<i className="fa fa-ban" aria-hidden="true"></i>}
+                  color="white"
+                  bgColor="#ec6464"
+                  title="停止编码"
+                  onClick={this.handleVideoEncodeStop}
                 />
               </div>
             </div>

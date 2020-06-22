@@ -825,6 +825,8 @@ class SubEditor extends Component {
             />
             <Tools
               duration={duration}
+              videoUrl={videoUrl}
+              subUrl={subUrl}
               playerPaused={playerPaused}
               {...funcProps}
             />
