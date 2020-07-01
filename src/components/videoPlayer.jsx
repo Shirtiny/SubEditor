@@ -8,7 +8,6 @@ const VideoWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 70%;
   padding: 15px;
   // border-bottom: 1px solid rgb(10, 10, 10);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);

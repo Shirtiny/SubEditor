@@ -13,6 +13,7 @@ const ToolsWrapper = styled.div`
   flex: 1;
   display: flex;
   padding: 15px 0 15px 0;
+  overflow-y: auto;
   // backgroud-color: #c0d9d9;
 
   .toolsContainerBox {
@@ -21,8 +22,11 @@ const ToolsWrapper = styled.div`
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
     background-color: #e3eeeef2;
     padding: 15px;
-    max-width: 950px;
     max-height: 250px;
+    overflow-y: hidden;
+    :hover {
+      overflow-y: auto;
+    }
   }
 
   .leftBox {
@@ -42,6 +46,7 @@ const ToolsWrapper = styled.div`
 
   .toolsBox {
     flex: 1;
+    min-height: 150px;
     border: 1px dashed #529393;
     border-radius: 6px 6px;
     display: flex;

@@ -10,6 +10,7 @@ import notifier from "../utils/notifier";
 import lihuaMikuPng from "../resources/image/lihuaMiku.png";
 
 const TableWrapper = styled.div`
+  height: 100%;
   .ReactVirtualized__Table {
     font-size: 12px;
     background: #e3eeee;
@@ -376,7 +377,7 @@ class SubTable extends PureComponent {
           ref={this.$tableRef}
           headerHeight={35}
           width={containerWidth / 2}
-          height={containerHeight}
+          height={containerHeight + 35}
           gridClassName={"gridScrollWrap"}
           rowHeight={60}
           scrollToIndex={scrollIndex}

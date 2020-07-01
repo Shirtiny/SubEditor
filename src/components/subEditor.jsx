@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     #root {
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
         line-height: 1.5;
-        height: 100%;
+        height: 100vh;
         overflow: hidden;
         min-width: 1300px;
         min-height: 800px;
@@ -40,6 +40,7 @@ const GlobalStyle = createGlobalStyle`
         // color: #ccc; 白字
         background: #C0D9D9;
         // background: #66CCCC;
+        // overflow-y: scroll;
     }
 
     #nprogress .bar {
@@ -63,7 +64,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const Main = styled.div`
+let Main = styled.div`
   position: relative;
   display: flex;
   flex: 1;
@@ -158,7 +159,14 @@ class SubEditor extends Component {
     //减去导航栏的50 底部时间轴的150
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
-    logger.clog("更新container的宽高", containerWidth, containerHeight);
+    Main = Main = styled.div`
+    position: relative;
+    display: flex;
+    flex: 1;
+    max-width: ${containerWidth}px;
+    max-height: ${containerHeight}px;
+  `;
+    logger.clog("更新container的宽高", containerWidth, containerHeight,Main);
     this.setState({ container: { containerHeight, containerWidth } });
   };
 
