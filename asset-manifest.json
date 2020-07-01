@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "./static/css/main.81f9ad2d.chunk.css",
-    "main.js": "./static/js/main.00c6f16f.chunk.js",
-    "main.js.map": "./static/js/main.00c6f16f.chunk.js.map",
+    "main.js": "./static/js/main.b7ec9c22.chunk.js",
+    "main.js.map": "./static/js/main.b7ec9c22.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.1c3a9204.js",
     "runtime-main.js.map": "./static/js/runtime-main.1c3a9204.js.map",
-    "static/css/2.9773cc4f.chunk.css": "./static/css/2.9773cc4f.chunk.css",
-    "static/js/2.07f8e422.chunk.js": "./static/js/2.07f8e422.chunk.js",
-    "static/js/2.07f8e422.chunk.js.map": "./static/js/2.07f8e422.chunk.js.map",
+    "static/css/2.ff736fd4.chunk.css": "./static/css/2.ff736fd4.chunk.css",
+    "static/js/2.bf76e00b.chunk.js": "./static/js/2.bf76e00b.chunk.js",
+    "static/js/2.bf76e00b.chunk.js.map": "./static/js/2.bf76e00b.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.150a37938be1f599b60b686fbdfc01cf.js": "./precache-manifest.150a37938be1f599b60b686fbdfc01cf.js",
+    "precache-manifest.ef2e1f49cfac9b01990a8d20ddc7203a.js": "./precache-manifest.ef2e1f49cfac9b01990a8d20ddc7203a.js",
     "service-worker.js": "./service-worker.js",
-    "static/css/2.9773cc4f.chunk.css.map": "./static/css/2.9773cc4f.chunk.css.map",
+    "static/css/2.ff736fd4.chunk.css.map": "./static/css/2.ff736fd4.chunk.css.map",
     "static/css/main.81f9ad2d.chunk.css.map": "./static/css/main.81f9ad2d.chunk.css.map",
-    "static/js/2.07f8e422.chunk.js.LICENSE.txt": "./static/js/2.07f8e422.chunk.js.LICENSE.txt",
+    "static/js/2.bf76e00b.chunk.js.LICENSE.txt": "./static/js/2.bf76e00b.chunk.js.LICENSE.txt",
     "static/media/blackboard.png": "./static/media/blackboard.233681a4.png",
     "static/media/font-awesome.css": "./static/media/fontawesome-webfont.fee66e71.woff",
     "static/media/subEditor.png": "./static/media/subEditor.d0e3de75.png",
     "static/media/subeditor.ico": "./static/media/subeditor.928099fc.ico",
-    "static/media/welcom.vtt": "./static/media/welcom.b8b80cac.vtt"
+    "static/media/welcom.vtt": "./static/media/welcom.e6430cbb.vtt"
   },
   "entrypoints": [
     "static/js/runtime-main.1c3a9204.js",
-    "static/css/2.9773cc4f.chunk.css",
-    "static/js/2.07f8e422.chunk.js",
+    "static/css/2.ff736fd4.chunk.css",
+    "static/js/2.bf76e00b.chunk.js",
     "static/css/main.81f9ad2d.chunk.css",
-    "static/js/main.00c6f16f.chunk.js"
+    "static/js/main.b7ec9c22.chunk.js"
   ]
 }
