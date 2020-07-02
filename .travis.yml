@@ -1,0 +1,7 @@
+language: node_js
+# 查看node版本 node -v
+node_js:
+  - 12
+before_script:
+  - npm install
+script: npm run deploy
