@@ -1,7 +1,18 @@
 language: node_js
-# 查看node版本 node -v
-node_js:
-  - 12
+# node版本 node -v
+node_js: "12.14.0"
+#缓存依赖
+cache:
+  directories:
+    - node_modules
+install:
+  - npm i
 before_script:
-  - npm install
+  - git config user.name "${UserName}"
+  - git config user.email "${UserEmail}"
+  - git remote origin set-url https://${UserName}:${GithubToken}@github.com/${RepName}
 script: npm run deploy
+# 只有指定的分支提交时才会运行脚本
+branches:
+    only:
+      - master
