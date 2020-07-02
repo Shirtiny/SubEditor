@@ -160,13 +160,13 @@ class SubEditor extends Component {
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
     Main = Main = styled.div`
-    position: relative;
-    display: flex;
-    flex: 1;
-    max-width: ${containerWidth}px;
-    max-height: ${containerHeight}px;
-  `;
-    logger.clog("更新container的宽高", containerWidth, containerHeight,Main);
+      position: relative;
+      display: flex;
+      flex: 1;
+      max-width: ${containerWidth}px;
+      max-height: ${containerHeight}px;
+    `;
+    logger.clog("更新container的宽高", containerWidth, containerHeight);
     this.setState({ container: { containerHeight, containerWidth } });
   };
 
@@ -716,6 +716,11 @@ class SubEditor extends Component {
   //从存储中读取备份的字幕数组 并更新 但不存储
   handleSubArrayBackupReset = async () => {
     const backupSubArray = await subService.getSubArray(true);
+    if (backupSubArray.length === 0) {
+      //提示
+      notifier.notify("无备份", "top_center");
+      return;
+    }
     this.updateSubArray(backupSubArray, false);
     //提示
     notifier.notify(

@@ -509,6 +509,15 @@ class Tools extends PureComponent {
                   className="toolsBtn"
                   width="45px"
                   height="35px"
+                  label={<i className="fa fa-retweet fa-spin" aria-hidden="true"></i>}
+                  color="white"
+                  bgColor="#529393"
+                  title="字幕格式转换"
+                />
+                <RippleButton
+                  className="toolsBtn"
+                  width="45px"
+                  height="35px"
                   label={<i className="fa fa-ban" aria-hidden="true"></i>}
                   color="white"
                   bgColor="#ec6464"
