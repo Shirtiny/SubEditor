@@ -1,4 +1,12 @@
-# SubEditor
+<p align="center">
+<img src="https://user-images.githubusercontent.com/49592759/86320516-a12eac80-bc69-11ea-911c-1621cb2078d7.png" alt="SubEditor" width="150">
+</p>
+
+![GitHub package.json version](https://img.shields.io/github/package-json/v/shirtiny/subeditor) [![Build Status](https://www.travis-ci.org/Shirtiny/SubEditor.svg?branch=master)](https://www.travis-ci.org/Shirtiny/SubEditor) ![GitHub](https://img.shields.io/github/license/shirtiny/SubEditor)
+
+> An online subtitle editor， [homepage](https://subeditor.js.org)
+
+![](https://user-images.githubusercontent.com/49592759/86318993-f49efb80-bc65-11ea-9745-f4f93ac8bced.png)
 
 ## Available Scripts
 
