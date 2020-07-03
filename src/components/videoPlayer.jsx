@@ -108,6 +108,7 @@ class VideoPlayer extends Component {
           className={"playerBorder dplayer_disable "}
           style={{ resize: "both" }}
           options={{
+            hotkey: false,
             video: {
               url: videoUrl,
               pic: picUrl,

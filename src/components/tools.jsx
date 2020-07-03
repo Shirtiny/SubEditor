@@ -5,6 +5,7 @@ import notifier from "../utils/notifier";
 import subService from "../services/subService";
 import translater from "../utils/translater";
 import logger from "../utils/logger";
+import ffmpegWorker from "../utils/ffmpegWorker";
 import VideoControls from "./videoControls";
 import RippleButton from "./common/rippleButton";
 import videoService from "../services/videoService";
@@ -291,8 +292,9 @@ class Tools extends PureComponent {
   //停止编码视频
   handleFfmpegEncodeStop = () => {
     if (!this.ffmpegEncoding) return;
-    videoService.stopFfmpegWorker();
+    ffmpegWorker.terminateWork();
     this.ffmpegEncoding = false;
+    notifier.notify("已停止进行中的编码工作");
   };
 
   //清空字幕
