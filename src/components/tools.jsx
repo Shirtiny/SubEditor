@@ -186,7 +186,7 @@ class Tools extends PureComponent {
     progressor.start();
     const file = e.currentTarget.files[0];
     // chrome vtt文件的file.type 为空串？
-    if (!/vtt$/i.test(file.name)) {
+    if (!/\.vtt$/i.test(file.name)) {
       progressor.done();
       notifier.notify(
         `暂只支持vtt格式的字幕文件，其他格式将在后续更新中加入`,
@@ -220,10 +220,17 @@ class Tools extends PureComponent {
     const file = e.currentTarget.files[0];
     // maybe video/mp4 video/x-flv
     const $video = document.createElement("video");
-    //如果文件不能被web播放器播放，并且不是flv格式
+    logger.clog(
+      "创建元素：",
+      $video,
+      file,
+      file.type,
+      $video.canPlayType(file.type)
+    );
+    //如果文件不能被web播放器播放，并且不是.flv后缀
     if (
       $video.canPlayType(file.type) !== "maybe" &&
-      file.type !== "video/x-flv"
+      !/\.flv$/i.test(file.name)
     ) {
       progressor.done();
       notifier.notify(
@@ -233,13 +240,12 @@ class Tools extends PureComponent {
       );
       return;
     }
-    logger.clog("创建元素：", $video, $video.canPlayType(file.type));
     //更新视频文件名
     this.setState({ videoName: file.name });
     const videoUrl = URL.createObjectURL(file);
     logger.clog("视频url", videoUrl);
     const { onSwitch } = this.props;
-    onSwitch(file.type, videoUrl);
+    onSwitch(file.type || file.name, !file.type, videoUrl);
     progressor.done();
   };
 
@@ -509,7 +515,9 @@ class Tools extends PureComponent {
                   className="toolsBtn"
                   width="45px"
                   height="35px"
-                  label={<i className="fa fa-retweet fa-spin" aria-hidden="true"></i>}
+                  label={
+                    <i className="fa fa-retweet fa-spin" aria-hidden="true"></i>
+                  }
                   color="white"
                   bgColor="#529393"
                   title="字幕格式转换"

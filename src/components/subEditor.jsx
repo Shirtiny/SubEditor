@@ -489,8 +489,8 @@ class SubEditor extends Component {
   };
 
   //切换视频
-  handleVideoSwitch = (fileType, videoUrl) => {
-    const videoType = videoService.createVideoType(fileType);
+  handleVideoSwitch = (fileType, isFileName, videoUrl) => {
+    const videoType = videoService.createVideoType(fileType, isFileName);
     //释放前一个视频资源
     URL.revokeObjectURL(this.state.videoUrl);
     //更新视频url

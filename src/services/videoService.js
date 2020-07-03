@@ -3,8 +3,15 @@ import defaultPic from "../resources/image/subEditor.png";
 import defaultSub from "../resources/subtitles/welcom.vtt";
 import fileService from "./fileService";
 
-export function createVideoType(fileType) {
+export function createVideoType(fileType, isFileName = false) {
   if (typeof fileType !== "string") return "";
+  //如果是filename
+  if (isFileName) {
+    const fileName = fileType;
+    const index = fileName.lastIndexOf(".");
+    const type = fileName.substring(index + 1);
+    return type === "flv" ? "flvCustom": type;
+  }
   //video/x-flv video/mp4
   const videoRegx = /^video\/(mp4|x-(flv))+$/;
   const found = fileType.match(videoRegx);

@@ -6,20 +6,16 @@ import logger from "../utils/logger";
 
 const VideoWrapper = styled.div`
   display: flex;
+  max-height: 55vh;
   justify-content: center;
   align-items: center;
   padding: 15px;
   // border-bottom: 1px solid rgb(10, 10, 10);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
-  .dplayer_DefaultSize {
-    width: 90%;
-    height: 90%;
-  }
-
   .dplayer {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 50vw;
+    max-height: 50vh;
   }
 
   .dplayer_disable {
@@ -109,10 +105,7 @@ class VideoPlayer extends Component {
       <VideoWrapper id="playerBox">
         <DPlayer
           id="player"
-          className={
-            "playerBorder dplayer_disable " +
-            (picUrl ? "" : "dplayer_DefaultSize")
-          }
+          className={"playerBorder dplayer_disable "}
           style={{ resize: "both" }}
           options={{
             video: {
