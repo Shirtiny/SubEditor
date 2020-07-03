@@ -9,6 +9,7 @@ import ffmpegWorker from "../utils/ffmpegWorker";
 import VideoControls from "./videoControls";
 import RippleButton from "./common/rippleButton";
 import videoService from "../services/videoService";
+import ReactModal from "react-modal";
 
 const ToolsWrapper = styled.div`
   flex: 1;
@@ -161,6 +162,7 @@ class Tools extends PureComponent {
     videoName: "",
     //字幕文件名 暂时固定为 subtitle.vtt
     subName: "subtitle.vtt",
+    modalIsOpen: false,
   };
 
   handleLanguageChange = (name, value) => {
@@ -289,6 +291,16 @@ class Tools extends PureComponent {
     }
   };
 
+  //字幕格式转换
+  handlesubTransform = () => {
+    this.setState({ modalIsOpen: true });
+  };
+
+  //关闭modal
+  handleModalClose = () => {
+    this.setState({ modalIsOpen: false });
+  };
+
   //停止编码视频
   handleFfmpegEncodeStop = () => {
     if (!this.ffmpegEncoding) return;
@@ -305,7 +317,11 @@ class Tools extends PureComponent {
 
   render() {
     const { duration, playerPaused, onDurationChange } = this.props;
-    const { currentLanguageKeyFrom, currentLanguageKeyTo } = this.state;
+    const {
+      currentLanguageKeyFrom,
+      currentLanguageKeyTo,
+      modalIsOpen,
+    } = this.state;
     return (
       <ToolsWrapper>
         <div className="toolsContainerBox">
@@ -540,6 +556,43 @@ class Tools extends PureComponent {
             </div>
           </div>
         </div>
+        <ReactModal
+          isOpen={modalIsOpen}
+          closeTimeoutMS={300}
+          style={{
+            overlay: {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(102, 204, 204, 0.75)",
+              zIndex: 999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            },
+            content: {
+              position: "relative",
+              height: "40vh",
+              width: "40vw",
+              border: "1px solid #ccc",
+              background: "#fff",
+              overflow: "auto",
+              WebkitOverflowScrolling: "touch",
+              borderRadius: "4px",
+              outline: "none",
+              padding: "20px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexFlow: "column nowrap"
+            },
+          }}
+        >
+          <div>功能开发中</div>
+          <button onClick={this.handleModalClose}>关闭</button>
+        </ReactModal>
       </ToolsWrapper>
     );
   }
