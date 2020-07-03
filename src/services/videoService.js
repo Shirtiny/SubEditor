@@ -10,7 +10,7 @@ export function createVideoType(fileType, isFileName = false) {
     const fileName = fileType;
     const index = fileName.lastIndexOf(".");
     const type = fileName.substring(index + 1);
-    return type === "flv" ? "flvCustom": type;
+    return type === "flv" ? "flvCustom" : type;
   }
   //video/x-flv video/mp4
   const videoRegx = /^video\/(mp4|x-(flv))+$/;
@@ -79,12 +79,15 @@ export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
   if (!videoUrl || !subUrl) {
     throw new Error("视频或字幕地址为空");
   }
+  if (/\.flv$/.test(videoName)) {
+    throw new Error("暂不支持flv格式的编码");
+  }
   const videoData = await fileService.fetchFileData(videoUrl);
   const subData = await fileService.fetchFileData(subUrl);
   const ttfData = await fileService.fetchFileData("/default.ttf");
   worker.postMessage({
     type: "run",
-    TOTAL_MEMORY: 256 * 1024 * 1024,
+    TOTAL_MEMORY: 1024 * 1024 * 1024,
     arguments: [
       "-hide_banner",
       "-y",

@@ -360,6 +360,8 @@ class SubTable extends PureComponent {
       <TableWrapper
         onKeyUp={(e) => {
           e.preventDefault();
+          //阻止事件进一步传播
+          e.stopPropagation();
           switch (e.keyCode) {
             //Esc 取消编辑
             case 27:
@@ -368,8 +370,6 @@ class SubTable extends PureComponent {
             default:
               return;
           }
-          //阻止事件进一步传播
-          e.stopPropagation();
         }}
       >
         <Table

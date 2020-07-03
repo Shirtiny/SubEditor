@@ -183,6 +183,8 @@ const SubRow = ({
         }}
         onKeyUp={(e) => {
           e.preventDefault();
+          //阻止事件进一步传播
+          e.stopPropagation();
           switch (e.keyCode) {
             //回车 提交
             case 13:
@@ -195,8 +197,6 @@ const SubRow = ({
             default:
               return;
           }
-          //阻止事件进一步传播
-          e.stopPropagation();
         }}
       >
         {/* 操作按钮 */}

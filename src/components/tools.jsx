@@ -255,8 +255,8 @@ class Tools extends PureComponent {
     onDownload();
   };
 
-  //标识正在编码视频
-  videoEncoding = false;
+  //标识正在进行编码工作
+  ffmpegEncoding = false;
 
   //下载内封字幕的视频
   handleVideoWithSubDownload = async () => {
@@ -266,7 +266,7 @@ class Tools extends PureComponent {
     );
     if (isConfirm) {
       //停止上一个worker
-      this.handleVideoEncodeStop();
+      this.handleFfmpegEncodeStop();
       const { videoUrl, subUrl } = this.props;
       try {
         //加await才能捕获异步的异常
@@ -278,20 +278,21 @@ class Tools extends PureComponent {
         );
       } catch (e) {
         console.error(e);
+        notifier.notify(e.message);
         return;
       }
       notifier.notify(
         "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
       );
-      this.videoEncoding = true;
+      this.ffmpegEncoding = true;
     }
   };
 
   //停止编码视频
-  handleVideoEncodeStop = () => {
-    if (!this.videoEncoding) return;
+  handleFfmpegEncodeStop = () => {
+    if (!this.ffmpegEncoding) return;
     videoService.stopFfmpegWorker();
-    this.videoEncoding = false;
+    this.ffmpegEncoding = false;
   };
 
   //清空字幕
@@ -521,6 +522,7 @@ class Tools extends PureComponent {
                   color="white"
                   bgColor="#529393"
                   title="字幕格式转换"
+                  onClick={this.handlesubTransform}
                 />
                 <RippleButton
                   className="toolsBtn"
@@ -530,7 +532,7 @@ class Tools extends PureComponent {
                   color="white"
                   bgColor="#ec6464"
                   title="停止编码"
-                  onClick={this.handleVideoEncodeStop}
+                  onClick={this.handleFfmpegEncodeStop}
                 />
               </div>
             </div>

@@ -64,7 +64,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-let Main = styled.div`
+const Main = styled.div`
   position: relative;
   display: flex;
   flex: 1;
@@ -159,13 +159,9 @@ class SubEditor extends Component {
     //减去导航栏的50 底部时间轴的150
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
-    Main = Main = styled.div`
-      position: relative;
-      display: flex;
-      flex: 1;
-      max-width: ${containerWidth}px;
-      max-height: ${containerHeight}px;
-    `;
+    const $main = document.querySelector("#mainContainer");
+    $main.style.maxWidth = `${containerWidth}px;`
+    $main.style.maxHeight = `${containerHeight}px;`
     logger.clog("更新container的宽高", containerWidth, containerHeight);
     this.setState({ container: { containerHeight, containerWidth } });
   };
@@ -827,7 +823,7 @@ class SubEditor extends Component {
         </Helmet>
         <GlobalStyle />
         <Header {...funcProps} />
-        <Main>
+        <Main id="mainContainer">
           <Left>
             <VideoPlayer
               {...funcProps}
