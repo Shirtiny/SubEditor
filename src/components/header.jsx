@@ -137,7 +137,7 @@ class Header extends PureComponent {
           </div>
           <div className="users">
             <a
-              href="http://localhost:2020"
+              href="/"
               title={this.state.user.userName || "未登录"}
               style={{ marginRight: "10px" }}
             >
