@@ -586,12 +586,31 @@ class Tools extends PureComponent {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              flexFlow: "column nowrap"
+              flexFlow: "column nowrap",
             },
           }}
         >
           <div>功能开发中</div>
-          <button onClick={this.handleModalClose}>关闭</button>
+          <div
+            onClick={this.handleModalClose}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              width: 50,
+              height: 40,
+              outline: "none",
+              border: "none",
+              backgroundColor: "#66cccc",
+              boxShadow: "1px 2px 5px rgb(0,0,0,0.3)",
+              borderRadius: "5px 5px",
+              fontSize: 14,
+              margin: 10
+            }}
+          >
+            关闭
+          </div>
         </ReactModal>
       </ToolsWrapper>
     );
