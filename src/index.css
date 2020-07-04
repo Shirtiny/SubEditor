@@ -24,6 +24,23 @@ div[class*="Toastify__toast-container--bottom"] {
   /* height: 350px; */
 }
 
+/* tooltip提示 替代title */
+.shToolTip:hover:after {
+  /* content: attr(shtitle); */
+  content: attr(shtitle);
+  position: absolute;
+  display: inline-block;
+  top: -2rem;
+  padding: 5px;
+  border: 1px solid gray;
+  color: black;
+  z-index: 999999;
+  white-space: nowrap;
+  background: whitesmoke;
+  font-weight: 400;
+  font-size: 15px;
+}
+
 /* 动画  animation: scrollToRowAnimation 5s; */
 /* @keyframes scrollToRowAnimation {
   0% {
@@ -46,10 +63,10 @@ div[class*="Toastify__toast-container--bottom"] {
   transition: opacity 300ms ease-in;
 }
 
-.ReactModal__Overlay--after-open{
+.ReactModal__Overlay--after-open {
   opacity: 1;
 }
 
-.ReactModal__Overlay--before-close{
+.ReactModal__Overlay--before-close {
   opacity: 0;
 }

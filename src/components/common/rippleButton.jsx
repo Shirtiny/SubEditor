@@ -9,7 +9,6 @@ const RippleButtonWrapper = styled.div`
   user-select: none;
   position: relative;
   border-radius: 10px;
-  overflow: hidden;
   color: white;
   cursor: pointer;
   box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.2);
@@ -41,50 +40,55 @@ const RippleButton = ({
   onClick,
   title,
   className,
-  element
+  element,
 }) => {
-  const rippleBtnBoxRef = useCallback((node) => {
-    if (node !== null && !disabled) {
-      //鼠标进入
-      node.onmouseenter = function (event) {
-        let ripple = node.querySelector(".rippleSpan");
-        ripple.classList.add("rippleAnimation");
-        ripple.style.width = this.offsetWidth + "px";
-        ripple.style.height = this.offsetWidth + "px";
-        ripple.style.top = -(this.offsetHeight - event.offsetY) + "px";
-        ripple.style.left = -(this.offsetWidth / 2 - event.offsetX) + "px";
-        setTimeout(function () {
-          ripple.classList.remove("rippleAnimation");
-        }, 500);
-      };
-      //鼠标点下
-      node.onmousedown = function (e) {
-        this.style.opacity = 0.7;
-        this.style.boxShadow = "0px 0px 0px rgba(0, 0, 0, 0.2)";
-      };
-      //鼠标松开
-      node.onmouseup = function (e) {
-        this.style.opacity = "";
-        this.style.boxShadow = "";
-      };
-    }
-  }, [disabled]);
+  const rippleBtnBoxRef = useCallback(
+    (node) => {
+      if (node !== null && !disabled) {
+        //鼠标进入
+        node.onmouseenter = function (event) {
+          let ripple = node.querySelector(".rippleSpan");
+          ripple.classList.add("rippleAnimation");
+          ripple.style.width = this.offsetWidth + "px";
+          ripple.style.height = this.offsetWidth + "px";
+          ripple.style.top = -(this.offsetHeight - event.offsetY) + "px";
+          ripple.style.left = -(this.offsetWidth / 2 - event.offsetX) + "px";
+          setTimeout(function () {
+            ripple.classList.remove("rippleAnimation");
+          }, 500);
+        };
+        //鼠标点下
+        node.onmousedown = function (e) {
+          this.style.opacity = 0.7;
+          this.style.boxShadow = "0px 0px 0px rgba(0, 0, 0, 0.2)";
+        };
+        //鼠标松开
+        node.onmouseup = function (e) {
+          this.style.opacity = "";
+          this.style.boxShadow = "";
+        };
+        //设置属性
+        node.setAttribute("shtitle", title);
+      }
+    },
+    [disabled,title]
+  );
 
   return (
     <RippleButtonWrapper
       ref={rippleBtnBoxRef}
       onClick={onClick}
-      title={title}
       style={{
         width,
         height,
         color,
         backgroundColor: bgColor,
       }}
-      className={className}
+      className={`${className} ${title && "shToolTip"}`}
     >
       <span className="rippleSpan"></span>
-      {label}{element}
+      {label}
+      {element}
     </RippleButtonWrapper>
   );
 };

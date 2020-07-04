@@ -16,6 +16,7 @@ const ToolsWrapper = styled.div`
   display: flex;
   padding: 15px 0 15px 0;
   overflow-y: auto;
+  overflow-x: hidden;
   // backgroud-color: #c0d9d9;
 
   .toolsContainerBox {
@@ -27,7 +28,8 @@ const ToolsWrapper = styled.div`
     max-height: 250px;
     overflow-y: hidden;
     :hover {
-      overflow-y: auto;
+      // overflow-x: scroll;
+      overflow-y: visible;
     }
   }
 
@@ -369,9 +371,9 @@ class Tools extends PureComponent {
                       type="file"
                       name="file"
                       onChange={this.handleSubFile}
-                      title="打开字幕"
                     />
                   }
+                  title="打开本地字幕"
                   color="white"
                   bgColor="#529393"
                 />
@@ -388,12 +390,11 @@ class Tools extends PureComponent {
                       type="file"
                       name="file"
                       onChange={this.handleVideoFile}
-                      title="打开视频"
                     />
                   }
                   color="white"
                   bgColor="#529393"
-                  title="dd"
+                  title="打开本地视频"
                   onClick={() => console.log("click")}
                 />
                 <RippleButton
@@ -593,8 +594,11 @@ class Tools extends PureComponent {
           <div>功能开发中</div>
           <div
             onClick={this.handleModalClose}
+            className="shToolTip"
+            shtitle="关闭提示"
             style={{
               display: "flex",
+              position: "relative",
               justifyContent: "center",
               alignItems: "center",
               cursor: "pointer",
@@ -606,10 +610,10 @@ class Tools extends PureComponent {
               boxShadow: "1px 2px 5px rgb(0,0,0,0.3)",
               borderRadius: "5px 5px",
               fontSize: 14,
-              margin: 10
+              margin: 10,
             }}
           >
-            关闭
+            Close
           </div>
         </ReactModal>
       </ToolsWrapper>
