@@ -832,6 +832,7 @@ class SubEditor extends Component {
           <meta name="google" content="notranslate" />
           <meta httpEquiv="x-ua-compatible" content="IE=edge"/>
           <meta name="render" content="webkit"/>
+          <meta name="google-site-verification" content="pk7Eq6ZWO6v-bAvwlXC4VJzd4T-ONT0ATqwsVFUASUk" />
           <title>{config.subeditor_title}</title>
           <link rel="icon" href={subeditorIco} />
         </Helmet>
