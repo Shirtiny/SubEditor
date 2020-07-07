@@ -2,20 +2,22 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import _ from "lodash";
 import styled, { createGlobalStyle } from "styled-components";
+import subeditorIco from "../resources/image/subeditor.ico";
 import subService from "../services/subService";
 import videoService from "../services/videoService";
 import editorStateService from "../services/editorStateService";
+import config from "../config/config.json";
+import SubEditorPackage from "../../package.json"
+import EditorState from "../model/editorState";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
 import translater from "../utils/translater";
 import progressor from "../utils/progressor";
-import config from "../config/config.json";
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
 import SubTable from "./subTable";
 import Tools from "./tools";
 import WaveLine from "./waveLine";
-import EditorState from "../model/editorState";
 
 const GlobalStyle = createGlobalStyle`
     html,
@@ -160,8 +162,8 @@ class SubEditor extends Component {
     const containerHeight = document.body.clientHeight - 200;
     const containerWidth = document.body.clientWidth;
     const $main = document.querySelector("#mainContainer");
-    $main.style.maxWidth = `${containerWidth}px;`
-    $main.style.maxHeight = `${containerHeight}px;`
+    $main.style.maxWidth = `${containerWidth}px;`;
+    $main.style.maxHeight = `${containerHeight}px;`;
     logger.clog("更新container的宽高", containerWidth, containerHeight);
     this.setState({ container: { containerHeight, containerWidth } });
   };
@@ -819,7 +821,19 @@ class SubEditor extends Component {
     return (
       <React.Fragment>
         <Helmet>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="application-name" content={`${SubEditorPackage.name}`}/>
+          <meta name="description" content={`${SubEditorPackage.description}`} />
+          <meta name="author" content={`${SubEditorPackage.author.name}`} />
+          <meta name="keywords" content={`${SubEditorPackage.keywords.join(",")}`}/>
+          <meta name="generator" content="vscode"/>
+          <meta name="theme-color" content="#66cccc" />
+          <meta name="google" content="notranslate" />
+          <meta httpEquiv="x-ua-compatible" content="IE=edge"/>
+          <meta name="render" content="webkit"/>
           <title>{config.subeditor_title}</title>
+          <link rel="icon" href={subeditorIco} />
         </Helmet>
         <GlobalStyle />
         <Header {...funcProps} />
