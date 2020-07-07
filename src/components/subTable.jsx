@@ -375,7 +375,7 @@ class SubTable extends PureComponent {
         <Table
           id="vSubTable"
           ref={this.$tableRef}
-          headerHeight={35}
+          headerHeight={55}
           width={containerWidth / 2}
           height={containerHeight}
           gridClassName={"gridScrollWrap"}

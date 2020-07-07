@@ -5,6 +5,7 @@ import flvjs from "flv.js";
 import logger from "../utils/logger";
 
 const VideoWrapper = styled.div`
+  flex: 1;
   display: flex;
   max-height: 55vh;
   justify-content: center;
@@ -14,6 +15,11 @@ const VideoWrapper = styled.div`
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
   .dplayer {
+    // max-width: 50vw;
+    // max-height: 50vh;
+  }
+
+  .defaultSize {
     max-width: 50vw;
     max-height: 50vh;
   }
@@ -105,7 +111,7 @@ class VideoPlayer extends Component {
       <VideoWrapper id="playerBox">
         <DPlayer
           id="player"
-          className={"playerBorder dplayer_disable "}
+          className={`playerBorder dplayer_disable ${videoUrl ? "" : "defaultSize"}`}
           style={{ resize: "both" }}
           options={{
             hotkey: false,

@@ -24,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
         line-height: 1.5;
         height: 100vh;
-        overflow: hidden;
+        overflow: auto;
         min-width: 1300px;
         min-height: 800px;
     }
@@ -78,7 +78,7 @@ const Left = styled.div`
 
 const Right = styled.div`
   flex: 1;
-  margin-top: 5px;
+  padding-top: 5px;
 `;
 
 const requestAnimationFrameCom =
