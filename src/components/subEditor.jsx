@@ -7,12 +7,11 @@ import subService from "../services/subService";
 import videoService from "../services/videoService";
 import editorStateService from "../services/editorStateService";
 import config from "../config/config.json";
-import SubEditorPackage from "../../package.json"
+import SubEditorPackage from "../../package.json";
 import EditorState from "../model/editorState";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
 import translater from "../utils/translater";
-import progressor from "../utils/progressor";
 import Header from "./header";
 import VideoPlayer from "./videoPlayer";
 import SubTable from "./subTable";
@@ -643,7 +642,6 @@ class SubEditor extends Component {
 
   //翻译全部字幕 使用时 调下面那个去抖版本
   handleAllSubTranslate = async (fromKey, toKey) => {
-    progressor.start();
     //从存储中拿到字幕数组
     const subArray = await subService.getSubArray();
     //从存储中拿到字幕文本数组
@@ -651,11 +649,9 @@ class SubEditor extends Component {
     const translateText = translater.createTranslateTextFromStringArr(
       subTextArr
     );
-    progressor.set(10);
-    progressor.inc(50);
     //提示
     notifier.notify(
-      "翻译请求正准备发送，由于代理服务器位于美国，可能比较慢，请耐心等待...(翻译功能内置间隔为 2秒",
+      "翻译请求正准备发送，由于代理服务器位于美国，可能比较慢，请耐心等待...(翻译功能内置间隔为 2秒，超时为1分钟",
       "top_center"
     );
     //翻译内容为空或者出错时 返回空字符串
@@ -668,21 +664,18 @@ class SubEditor extends Component {
       );
     } catch (error) {
       console.log(error);
-      progressor.done();
       //提示
-      notifier.notify("翻译失败", "top_center", "warning");
+      notifier.notify(`翻译失败,${error.message}`, "top_center", "warning");
       return;
     }
     console.log("得到的翻译文本数组：", resultTextArr);
     //翻译出错 或结果为空时
     if (!resultTextArr || resultTextArr === []) {
-      progressor.done();
       return notifier.notify("翻译结果为空", "top_center", "warning");
     }
 
     //翻译成功 翻译结果的数组长度，与原字幕数组长度不一致时，结束
     if (resultTextArr !== [] && resultTextArr.length !== subArray.length) {
-      progressor.done();
       return notifier.notify(
         "未应用翻译结果，翻译前请不要在字幕里出现换行，也可能是原文本无需翻译",
         "top_center",
@@ -695,12 +688,10 @@ class SubEditor extends Component {
       ...sub,
       content: resultTextArr[index],
     }));
-    progressor.inc(20);
     //备份存储 翻译前的原数组
     this.storageSubs(subArray, true);
     //更新为 翻译后的数组 并存储
     this.updateSubArray(translatedSubArray, true);
-    progressor.done();
     //提示
     notifier.notify("翻译完成", "top_center");
   };
@@ -823,15 +814,21 @@ class SubEditor extends Component {
         <Helmet>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="application-name" content={`${SubEditorPackage.name}`}/>
-          <meta name="description" content={`${SubEditorPackage.description}`} />
+          <meta name="application-name" content={`${SubEditorPackage.name}`} />
+          <meta
+            name="description"
+            content={`${SubEditorPackage.description}`}
+          />
           <meta name="author" content={`${SubEditorPackage.author.name}`} />
-          <meta name="keywords" content={`${SubEditorPackage.keywords.join(",")}`}/>
-          <meta name="generator" content="vscode"/>
+          <meta
+            name="keywords"
+            content={`${SubEditorPackage.keywords.join(",")}`}
+          />
+          <meta name="generator" content="vscode" />
           <meta name="theme-color" content="#66cccc" />
           <meta name="google" content="notranslate" />
-          <meta httpEquiv="x-ua-compatible" content="IE=edge"/>
-          <meta name="render" content="webkit"/>
+          <meta httpEquiv="x-ua-compatible" content="IE=edge" />
+          <meta name="render" content="webkit" />
           <title>{config.subeditor_title}</title>
           <link rel="icon" href={subeditorIco} />
         </Helmet>

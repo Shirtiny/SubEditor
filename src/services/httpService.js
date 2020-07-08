@@ -1,12 +1,32 @@
 import axios from "axios";
+import progressor from "../utils/progressor";
 
 //https://github.com/axios/axios
 
-//拦截器
-// axios.interceptors.response.use(null, (error) => {
-//   console.log("请求出错",error,error.response.status);
-//   return Promise.reject(error);
-// });
+//请求拦截器
+axios.interceptors.request.use(
+  (config) => {
+    progressor.start();
+    return config;
+  },
+  (error) => {
+    progressor.done();
+    return Promise.reject(error);
+  }
+);
+
+// 响应拦截器
+axios.interceptors.response.use(
+  (res) => {
+    progressor.done();
+    return res;
+  },
+  (error) => {
+    progressor.done();
+    console.log("请求出错", error, error.response.status);
+    return Promise.reject(error);
+  }
+);
 
 /**
  * http get

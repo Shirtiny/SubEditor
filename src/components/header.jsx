@@ -59,6 +59,7 @@ const HeaderWrap = styled.header`
 
     .users {
       height: 100%;
+      padding-right: 20px;
       display: flex;
       align-items: center;
       justify-content: space-around;

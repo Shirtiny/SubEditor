@@ -46,7 +46,13 @@ export function baiduTranslate(from, to, text) {
   // const encodeHref = Base64.encodeURI(url.href);这个方法编码出的base64结尾没有=
   const encodeHref = Base64.btoa(baiduTranslateUrl.href);
   return httpService
-    .get(`https://shproxy.herokuapp.com/shProxyApi/v1/get?url=${encodeHref}`)
+    .get(
+      `https://shproxy.herokuapp.com/shProxyApi/v1/get?url=${encodeHref}`,
+      {},
+      {
+        timeout: 60000,
+      }
+    )
     .then((res) => {
       console.log("百度翻译请求结果：", res);
       if (!res.data || !res.data.trans_result) {
