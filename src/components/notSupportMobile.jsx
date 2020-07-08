@@ -19,6 +19,7 @@ const NotSupportMobileWrapper = styled.div`
     background-size: cover;
 
     .message {
+      font-size: 2em;
       color: #fff;
       position: relative;
       top: -15%;
