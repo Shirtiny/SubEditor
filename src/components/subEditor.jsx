@@ -7,7 +7,7 @@ import subService from "../services/subService";
 import videoService from "../services/videoService";
 import editorStateService from "../services/editorStateService";
 import config from "../config/config.json";
-import SubEditorPackage from "../../package.json";
+// import SubEditorPackage from "../../package.json";
 import EditorState from "../model/editorState";
 import logger from "../utils/logger";
 import notifier from "../utils/notifier";
