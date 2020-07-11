@@ -814,7 +814,7 @@ class SubEditor extends Component {
         <Helmet>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="application-name" content={`${SubEditorPackage.name}`} />
+          {/* <meta name="application-name" content={`${SubEditorPackage.name}`} />
           <meta
             name="description"
             content={`${SubEditorPackage.description}`}
@@ -828,7 +828,7 @@ class SubEditor extends Component {
           <meta name="theme-color" content="#66cccc" />
           <meta name="google" content="notranslate" />
           <meta httpEquiv="x-ua-compatible" content="IE=edge" />
-          <meta name="render" content="webkit" />
+          <meta name="render" content="webkit" /> */}
           <title>{config.subeditor_title}</title>
           <link rel="icon" href={subeditorIco} />
         </Helmet>
