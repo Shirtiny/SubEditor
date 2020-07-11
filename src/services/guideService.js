@@ -4,9 +4,11 @@ const trackTest = "/test";
 const home = `${window.location.protocol}//${window.location.host}/`;
 
 export function isMobile() {
-  console.log("用户agent：",window.navigator.userAgent);
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    window.navigator.userAgent
+  console.log("用户agent：", window.navigator.userAgent);
+  return (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      window.navigator.userAgent
+    ) && !/Googlebot/i.test(window.navigator.userAgent)
   );
 }
 
@@ -14,7 +16,7 @@ const guideService = {
   home,
   subEditorPath,
   trackTest,
-  isMobile
+  isMobile,
 };
 
 export default guideService;
