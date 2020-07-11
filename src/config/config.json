@@ -3,7 +3,7 @@
   "log": "on",
   "sub_storage_key": "Subs",
   "sub_storage_backup_key": "SubsBackup",
-  "subeditor_title":"SubEditor - 在线字幕编辑",
+  "subeditor_title":"SubEditor - 在线字幕编辑 An online Editor for subtitles",
   "test_title":"SH - SubEditor Test",
   "translate_arr_separator":"\n"
 }
