@@ -1,7 +1,7 @@
 import logger from "../utils/logger";
 import ffmpegWorker from "../utils/ffmpegWorker"
 import defaultPic from "../resources/image/subEditor.png";
-import defaultSub from "../resources/subtitles/welcom.vtt";
+import defaultSub from "../resources/subtitles/eva.vtt";
 import fileService from "./fileService";
 
 export function createVideoType(fileType, isFileName = false) {

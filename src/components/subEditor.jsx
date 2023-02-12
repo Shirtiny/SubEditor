@@ -366,6 +366,7 @@ class SubEditor extends Component {
       //初始字幕
       if (!subArray || subArray.length === 0) {
         const defaultSubUrl = videoService.getDefaultSubUrl();
+        debugger
         this.updateSubUrl(defaultSubUrl, true);
         const defaultSubArray = await subService.createSubArray(defaultSubUrl);
         this.updateSubArray(defaultSubArray);
@@ -686,7 +687,7 @@ class SubEditor extends Component {
       translater.createTranslateTextFromStringArr(subTextArr);
     //提示
     notifier.notify(
-      "翻译请求正准备发送，由于代理服务器位于美国，可能比较慢，请耐心等待...(翻译功能内置间隔为 2秒，超时为1分钟",
+      "翻译请求正准备发送，请耐心等待...(翻译功能内置间隔为 2秒，超时为1分钟",
       "top_center"
     );
     //翻译内容为空或者出错时 返回空字符串
