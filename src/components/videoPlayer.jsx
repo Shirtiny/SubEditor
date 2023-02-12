@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import DPlayer from "react-dplayer";
 import flvjs from "flv.js";
 import logger from "../utils/logger";
 
 const VideoWrapper = styled.div`
+  position: relative;
   flex: 1;
   display: flex;
   max-height: 55vh;
@@ -13,6 +14,28 @@ const VideoWrapper = styled.div`
   padding: 15px;
   // border-bottom: 1px solid rgb(10, 10, 10);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+
+  .play-icon-container {
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -75px 0 0 -66px;
+    height: 150px;
+    width: 150px;
+    padding: 12px;
+    box-sizing: border-box;
+    /* background: rgba(0, 0, 0, 0.5); */
+    border-radius: 50%;
+    opacity: 0.8;
+
+    > svg {
+      fill: rgba(0, 0, 0, 0.3);
+      width: 100%;
+      height: 100%;
+    }
+  }
 
   .dplayer {
     // max-width: 50vw;
@@ -41,11 +64,10 @@ const VideoWrapper = styled.div`
   }
 `;
 
-class VideoPlayer extends Component {
-  //组件是否需要更新 可以使用PureComponent来代替手写shouldComponentUpdate 它会自动浅比较前后的props有没有变化 这里不需要，因为VideoPlayer的props并不需要变化
-  shouldComponentUpdate(nextProps, nextState) {
-    return false;
-  }
+class VideoPlayer extends PureComponent {
+  state = {
+    showPlayIcon: false,
+  };
 
   //设置播放器
   load = (player) => {
@@ -63,7 +85,8 @@ class VideoPlayer extends Component {
   canPlay = () => {
     const { player, onVideoCanPlay } = this.props;
     //提示可播放 不然会有加载失败的提示残留
-    player.notice("√", 1500, 0.8);
+    player.notice("√ ready", 1500, 0.8);
+    this.setState({ showPlayIcon: true });
     //将subArray 交给worker生成subUrl
     onVideoCanPlay();
     const $playerContainer = document.getElementById("player");
@@ -75,6 +98,7 @@ class VideoPlayer extends Component {
   pause = () => {
     console.log("播放器暂停");
     const { onVideoPlayerPausedSwitch } = this.props;
+    this.setState({ showPlayIcon: false });
     onVideoPlayerPausedSwitch(true);
   };
 
@@ -82,12 +106,14 @@ class VideoPlayer extends Component {
   play = () => {
     console.log("播放器播放");
     const { onVideoPlayerPausedSwitch } = this.props;
+    this.setState({ showPlayIcon: false });
     onVideoPlayerPausedSwitch(false);
   };
 
   //播放中
   playing = () => {
     const { onVideoPlaying } = this.props;
+    this.setState({ showPlayIcon: false });
     onVideoPlaying();
   };
 
@@ -107,11 +133,14 @@ class VideoPlayer extends Component {
 
   render() {
     const { videoUrl, picUrl, subUrl } = this.props;
+    const { showPlayIcon } = this.state;
     return (
       <VideoWrapper id="playerBox">
         <DPlayer
           id="player"
-          className={`playerBorder dplayer_disable ${videoUrl ? "" : "defaultSize"}`}
+          className={`playerBorder dplayer_disable ${
+            videoUrl ? "" : "defaultSize"
+          }`}
           style={{ resize: "both" }}
           options={{
             hotkey: false,
@@ -185,6 +214,20 @@ class VideoPlayer extends Component {
           onFullscreen={this.fullscreen}
           onFullscreenCancel={this.fullscreenCancel}
         />
+        {Boolean(showPlayIcon) && (
+          <span
+            onClick={() => this.props.onVideoControlAction()}
+            class="play-icon-container"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              viewBox="0 0 16 32"
+            >
+              <path d="M15.552 15.168q0.448 0.32 0.448 0.832 0 0.448-0.448 0.768l-13.696 8.512q-0.768 0.512-1.312 0.192t-0.544-1.28v-16.448q0-0.96 0.544-1.28t1.312 0.192z"></path>
+            </svg>
+          </span>
+        )}
       </VideoWrapper>
     );
   }

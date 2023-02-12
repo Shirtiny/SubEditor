@@ -25,7 +25,6 @@ const GlobalStyle = createGlobalStyle`
         font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
         line-height: 1.5;
         height: 100vh;
-        overflow: auto;
         min-width: 1300px;
         min-height: 800px;
     }
@@ -52,7 +51,7 @@ const GlobalStyle = createGlobalStyle`
         }
     }
 
-    ::-webkit-scrollbar {
+    /* ::-webkit-scrollbar {
         width: 10px;
     }
     
@@ -62,7 +61,45 @@ const GlobalStyle = createGlobalStyle`
     
     ::-webkit-scrollbar-thumb:hover {
         background-color: #ccc;
+    } */
+    
+    @supports (scrollbar-width: thin) {
+    html {
+      scrollbar-color: #c1c1c1 #fafafa;
     }
+
+    body * {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 transparent;
+    }
+  }
+  html::-webkit-scrollbar {
+    background-color: #fafafa;
+    height: 12px;
+    width: 12px;
+  }
+
+  body ::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: #c1c1c1;
+    border: 3px solid transparent;
+    border-radius: 12px;
+  }
+
+  body ::-webkit-scrollbar-thumb {
+    border-width: 1.75px;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #9c9c9c;
+  }
+
 `;
 
 const Main = styled.div`
@@ -92,7 +129,7 @@ const requestAnimationFrameCom =
 class SubEditor extends Component {
   state = {
     // https://sh-rep.oss-cn-hongkong.aliyuncs.com/mll.mp4   /friday.mp4
-    videoUrl: "",
+    videoUrl: "https://sh-rep.oss-cn-hongkong.aliyuncs.com/eva-redit.mp4",
     subUrl: "",
     subArray: [],
     picUrl: videoService.getDefaultPicUrl(),
@@ -504,9 +541,8 @@ class SubEditor extends Component {
     const isChrome = navigator.userAgent.toLowerCase().indexOf("chrome") > 0;
     //如果是chrome 则把字幕改为透明 避免双字幕
     if (isChrome) {
-      const subtitleDiv = document.getElementsByClassName(
-        "dplayer-subtitle"
-      )[0];
+      const subtitleDiv =
+        document.getElementsByClassName("dplayer-subtitle")[0];
       if (subtitleDiv) {
         subtitleDiv.style.opacity = 0;
       }
@@ -535,11 +571,11 @@ class SubEditor extends Component {
 
   //更新播放器暂停状态
   handlePlayerPaused = (playerPaused) => {
+    console.log("更新播放器暂停状态", playerPaused);
     const player = this.state.player;
     if (player && player.video) {
       playerPaused = player.video.paused;
     }
-    this.setState({ playerPaused });
   };
 
   //在视频开始播放进行时
@@ -646,9 +682,8 @@ class SubEditor extends Component {
     const subArray = await subService.getSubArray();
     //从存储中拿到字幕文本数组
     const subTextArr = subService.createSubTextArr(subArray);
-    const translateText = translater.createTranslateTextFromStringArr(
-      subTextArr
-    );
+    const translateText =
+      translater.createTranslateTextFromStringArr(subTextArr);
     //提示
     notifier.notify(
       "翻译请求正准备发送，由于代理服务器位于美国，可能比较慢，请耐心等待...(翻译功能内置间隔为 2秒，超时为1分钟",

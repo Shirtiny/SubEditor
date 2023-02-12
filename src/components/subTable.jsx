@@ -104,7 +104,7 @@ class SubTable extends PureComponent {
     },
     errors: {},
     //是否显示index true：显示序号  false: 显示插入按钮
-    displayIndex: true,
+    displayIndex: false,
   };
 
   //校验规则

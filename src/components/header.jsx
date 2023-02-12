@@ -125,7 +125,7 @@ class Header extends PureComponent {
       <HeaderWrap>
         <div className="band">
           <LogoYa href={guideService.subEditorPath} title="Copyright © 2020 SH">
-            SubEditor
+            sub-editor
             <span className="version">version {SubEditorPackage.version}</span>
           </LogoYa>
         </div>
