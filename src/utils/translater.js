@@ -48,7 +48,7 @@ export function baiduTranslate(from, to, text) {
   const encodeHref = Base64.encodeURI(baiduTranslateUrl.href, true);
   return httpService
     .get(
-      `http://manager.shirtiny.cn/api/v1/proxy/get?url=${encodeHref}`,
+      `https://manager.shirtiny.cn/api/v1/proxy/get?url=${encodeHref}`,
       {},
       {
         timeout: 60000,
