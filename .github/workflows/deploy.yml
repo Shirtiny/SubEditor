@@ -5,11 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: configure
         run: |
           git config --global user.name 'shirtiny'
           git config --global user.email 'shirtiny@gmail.com' 
-          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/Shirtiny/SubEditor.git
+          git remote set-url origin https://shirtiny:${{ secrets.MY_PASSWORD }}@github.com/Shirtiny/SubEditor.git 
       - uses: actions/setup-node@v3
         with:
           node-version: 12
