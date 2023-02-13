@@ -4,7 +4,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/shirtiny/subeditor) [![Build Status](https://www.travis-ci.org/Shirtiny/SubEditor.svg?branch=master)](https://www.travis-ci.org/Shirtiny/SubEditor) ![GitHub](https://img.shields.io/github/license/shirtiny/SubEditor)
 
-> An online subtitle editor， [homepage](https://subeditor.js.org)
+> An online subtitle editor， [homepage](https://subeditor.shirtiny.cn)
 
 ![](https://user-images.githubusercontent.com/49592759/86318993-f49efb80-bc65-11ea-9745-f4f93ac8bced.png)
 
