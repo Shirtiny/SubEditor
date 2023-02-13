@@ -5,10 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: configure
         run: |
           git config --global user.name 'shirtiny'
-          git config --global user.email 'shirtiny@gmail.com'  
+          git config --global user.email 'shirtiny@gmail.com' 
       - uses: actions/setup-node@v3
         with:
           node-version: 12
