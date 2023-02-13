@@ -1,20 +1,20 @@
-language: node_js
-# node版本 node -v
-node_js: "12.14.0"
-#缓存依赖
-cache:
-  directories:
-    - node_modules
-install:
-  - npm i
-before_script:
-  - git config user.name "${UserName}"
-  - git config user.email "${UserEmail}"
-  - git remote rm origin
-  - git remote add origin https://${UserName}:${GithubToken}@github.com/${RepName}
-  - git remote -v
-script: npm run deploy
-# 只有指定的分支提交时才会运行脚本
-branches:
-  only:
-    - master
+# language: node_js
+# # node版本 node -v
+# node_js: "12.14.0"
+# #缓存依赖
+# cache:
+#   directories:
+#     - node_modules
+# install:
+#   - npm i
+# before_script:
+#   - git config user.name "${UserName}"
+#   - git config user.email "${UserEmail}"
+#   - git remote rm origin
+#   - git remote add origin https://${UserName}:${GithubToken}@github.com/${RepName}
+#   - git remote -v
+# script: npm run deploy
+# # 只有指定的分支提交时才会运行脚本
+# branches:
+#   only:
+#     - master
