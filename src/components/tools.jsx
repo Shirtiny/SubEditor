@@ -264,35 +264,36 @@ class Tools extends PureComponent {
 
   //下载内封字幕的视频
   handleVideoWithSubDownload = async () => {
-    //确认框
-    const isConfirm = window.confirm(
-      "把字幕与视频合并后输出，将把整个视频重新编码，这会花费很长时间，是否继续？"
+    notifier.notify(
+      "为节省带宽，此功能已停用"
     );
-    if (isConfirm) {
-      //停止上一个worker
-      this.handleFfmpegEncodeStop();
-      const { videoUrl, subUrl } = this.props;
-      try {
-        //加await才能捕获异步的异常
-        await videoService.encodeVideoWithSub(
-          videoUrl,
-          this.state.videoName,
-          subUrl,
-          this.state.subName
-        );
-      } catch (e) {
-        console.error(e);
-        notifier.notify(e.message);
-        return;
-      }
-      // notifier.notify(
-      //   "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
-      // );
-      notifier.notify(
-        "为节省带宽，此功能已停用"
-      );
-      this.ffmpegEncoding = true;
-    }
+    return;
+    //确认框
+    // const isConfirm = window.confirm(
+    //   "把字幕与视频合并后输出，将把整个视频重新编码，这会花费很长时间，是否继续？"
+    // );
+    // if (isConfirm) {
+    //   //停止上一个worker
+    //   this.handleFfmpegEncodeStop();
+    //   const { videoUrl, subUrl } = this.props;
+    //   try {
+    //     //加await才能捕获异步的异常
+    //     await videoService.encodeVideoWithSub(
+    //       videoUrl,
+    //       this.state.videoName,
+    //       subUrl,
+    //       this.state.subName
+    //     );
+    //   } catch (e) {
+    //     console.error(e);
+    //     notifier.notify(e.message);
+    //     return;
+    //   }
+    //   // notifier.notify(
+    //   //   "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
+    //   // );
+    //   this.ffmpegEncoding = true;
+    // }
   };
 
   //字幕格式转换

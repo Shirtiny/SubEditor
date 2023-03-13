@@ -44,6 +44,7 @@ export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
   const videoData = await fileService.fetchFileData(videoUrl);
   const subData = await fileService.fetchFileData(subUrl);
   const ttfData = await fileService.fetchFileData("/default.ttf");
+  console.log(videoData, subData, ttfData);
   // ffmpegWorker.postMessage({
   //   type: "run",
   //   TOTAL_MEMORY: 1024 * 1024 * 1024,
