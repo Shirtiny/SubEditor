@@ -1,5 +1,5 @@
 import logger from "../utils/logger";
-import ffmpegWorker from "../utils/ffmpegWorker"
+// import ffmpegWorker from "../utils/ffmpegWorker"
 import defaultPic from "../resources/image/subEditor.png";
 import defaultSub from "../resources/subtitles/eva.vtt";
 import fileService from "./fileService";
@@ -44,24 +44,24 @@ export async function encodeVideoWithSub(videoUrl, videoName, subUrl, subName) {
   const videoData = await fileService.fetchFileData(videoUrl);
   const subData = await fileService.fetchFileData(subUrl);
   const ttfData = await fileService.fetchFileData("/default.ttf");
-  ffmpegWorker.postMessage({
-    type: "run",
-    TOTAL_MEMORY: 1024 * 1024 * 1024,
-    arguments: [
-      "-hide_banner",
-      "-y",
-      "-i",
-      videoName,
-      "-vf",
-      `subtitles=${subName}`,
-      `output-${videoName}`,
-    ],
-    MEMFS: [
-      { name: videoName, data: videoData },
-      { name: subName, data: subData },
-      { name: "default.ttf", data: ttfData },
-    ],
-  });
+  // ffmpegWorker.postMessage({
+  //   type: "run",
+  //   TOTAL_MEMORY: 1024 * 1024 * 1024,
+  //   arguments: [
+  //     "-hide_banner",
+  //     "-y",
+  //     "-i",
+  //     videoName,
+  //     "-vf",
+  //     `subtitles=${subName}`,
+  //     `output-${videoName}`,
+  //   ],
+  //   MEMFS: [
+  //     { name: videoName, data: videoData },
+  //     { name: subName, data: subData },
+  //     { name: "default.ttf", data: ttfData },
+  //   ],
+  // });
 }
 
 const videoService = {

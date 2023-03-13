@@ -5,7 +5,7 @@ import notifier from "../utils/notifier";
 import subService from "../services/subService";
 import translater from "../utils/translater";
 import logger from "../utils/logger";
-import ffmpegWorker from "../utils/ffmpegWorker";
+// import ffmpegWorker from "../utils/ffmpegWorker";
 import VideoControls from "./videoControls";
 import RippleButton from "./common/rippleButton";
 import videoService from "../services/videoService";
@@ -285,8 +285,11 @@ class Tools extends PureComponent {
         notifier.notify(e.message);
         return;
       }
+      // notifier.notify(
+      //   "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
+      // );
       notifier.notify(
-        "视频编码开始，此功能仍在测试中，暂无进度条，可f12查看控制台信息。由于是在浏览器内js执行，并且是单worker，所以速度极慢，建议仅下载字幕文件，在本地合并视频与字幕。"
+        "为节省带宽，此功能已停用"
       );
       this.ffmpegEncoding = true;
     }
@@ -305,7 +308,7 @@ class Tools extends PureComponent {
   //停止编码视频
   handleFfmpegEncodeStop = () => {
     if (!this.ffmpegEncoding) return;
-    ffmpegWorker.terminateWork();
+    // ffmpegWorker.terminateWork();
     this.ffmpegEncoding = false;
     notifier.notify("已停止进行中的编码工作");
   };
