@@ -1,3 +1,5 @@
+> This project has stopped maintenance and development for many years.
+
 <p align="center">
 <img src="https://user-images.githubusercontent.com/49592759/86320516-a12eac80-bc69-11ea-911c-1621cb2078d7.png" alt="SubEditor" width="150">
 </p>
